@@ -38,7 +38,7 @@ MIPS-Anisotropy
 |   .gitignore
 |   figures.ai
 |   figXX.eps
-|   figXX.script
+|   figXX.py
 |   README.md
 |__ analysis
 |       aXXX_[name].py
@@ -46,13 +46,13 @@ MIPS-Anisotropy
 |   |   aXXX_[name].json
 |   \__ rawData
 |           *.json
-|           recording notes.txt   
+|           recording_notes.txt   
 |__ docs
-|       *.[text format]
+|       *.txt/docx
 |__ lib
 |       *.py
 |__ results
-|       *.pdf
+|       *.pdf/png
 |       *.key
 \__ stimulus
         expXX_[name].py

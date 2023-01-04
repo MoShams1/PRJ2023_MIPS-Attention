@@ -34,55 +34,29 @@ influence the magnitude and spatial profile of the effect.
 
 ### Directory Organization
 ```
-project
-
+MIPS-Anisotropy
 |   .gitignore
-
 |   figures.ai
-
 |   figXX.eps
-
 |   figXX.script
-
 |   README.md
-
 |__ analysis
-
-|       aXXX_[name].[script format]
-
+|       aXXX_[name].py
 |__ data
-
-|   |   aXXX_[name].[data format]
-
+|   |   aXXX_[name].json
 |   \__ rawData
-
-|           *.[data format]
-
+|           *.json
 |           recording notes.txt   
-
 |__ docs
-
 |       *.[text format]
-
 |__ lib
-
-|       *.[script format]
-
+|       *.py
 |__ results
-
-|       *.[image format]
-
-|       *.[presentation format]
-
+|       *.pdf
+|       *.key
 \__ stimulus
-
-    |   expXX_[name].[script format]
-
-    |   test_[name].[script format]
-
-    \__ image
-
-          *.[image format]
+        expXX_[name].py
+        test_[name].py
 ```
 ---
 

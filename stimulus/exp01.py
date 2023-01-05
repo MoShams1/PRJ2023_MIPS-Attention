@@ -9,7 +9,6 @@ probe in the vicinity of a moving object in high resolution.
 import os
 import numpy as np
 from lib import visual, genpath
-import psychopy
 
 # ----------------------------------------------------------------------------
 

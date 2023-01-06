@@ -6,3 +6,4 @@
 *.json
 *.eps
 .idea/
+.DS_Store

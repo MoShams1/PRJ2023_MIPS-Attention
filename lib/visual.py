@@ -33,14 +33,13 @@ def configwin(mon, fullscr, screen, color):
 
 
 def test_framerate(win, nominal_fr):
-    # todo: make this a real test and raise error in case of poor match
     actual_fr = win.getActualFrameRate(nIdentical=10, nMaxFrames=100,
                                        nWarmUpFrames=10, threshold=1)
-    if actual_fr is not None:
-        actual_fr = round(actual_fr, 2)
-    print('\n=======================================================')
-    print(f"Nominal frame rate:  {nominal_fr} Hz")
-    print(f"Measured frame rate: {actual_fr} Hz\n")
+    # if actual_fr is not None:
+    #     actual_fr = round(actual_fr, 2)
+    # print('\n=======================================================')
+    # print(f"Nominal frame rate:  {nominal_fr} Hz")
+    # print(f"Measured frame rate: {actual_fr} Hz\n")
 
 
 def addfixdot(win, size=1, pos=(0, 0), color='black'):
@@ -63,7 +62,7 @@ def addsquare(win, width, color, fillcolor, pos):
     inner_frame.draw()
 
 
-def gengrid(width, n, movpos1, movpos2, movsize, movdir):
+def gengrid(width, n, movpos1, movpos2):
     x = np.linspace(-width / 2, width / 2, n[0])
     y = np.linspace(-width / 2, width / 2, n[1])
     # move to moving object's starting position
@@ -73,13 +72,19 @@ def gengrid(width, n, movpos1, movpos2, movsize, movdir):
     # more important leading edge (offset)
     offset = 1.5
     midwayx = (movpos1[0] + movpos2[0]) / 2
-    if movdir == 1:
-        x = x + midwayx + offset
-    elif movdir == -1:
-        x = x - midwayx - offset
-
+    x = x + midwayx + offset
     xv, yv = np.meshgrid(x, y)
     return xv, yv
+
+
+def showgrid(win, grid_n, grid_x_tr, grid_y_tr):
+    for i in range(grid_n[1]):
+        for j in range(grid_n[0]):
+            probe = \
+                visual.Circle(win, radius=.05,
+                              pos=(grid_x_tr[i, j],
+                                   grid_y_tr[i, j]))
+            probe.draw()
 
 
 def infoscreen(win, iblock, command_keys):

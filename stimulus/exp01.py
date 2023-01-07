@@ -14,24 +14,27 @@ from lib import visual, genpath, keymouse, timestamp
 
 # ----------------------------------------------------------------------------
 
-# /// SESSION META DATA ///
+# /// GENERAL SETTINGS ///
 
-subID = 'MS1'
-NTESTS = 1  # this indicates how often each probe position has to be tested
-NGRIDS = (9, 9)  # number of dots along each dimension (x, y)
+subID = 'test'
+NTESTS = 3  # this indicates how often each probe position has to be tested
+NGRIDS = (2, 2)  # number of dots along each dimension (x, y)
 NTRIALS = NTESTS * NGRIDS[0] * NGRIDS[1]
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 120
 full_screen = True
+
+iblock = 0
+pause_after = 27
+nblocks = int(NTRIALS / pause_after)
+command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 # ----------------------------------------------------------------------------
 
 # /// SET UP DIRECTORY PATHS ///
 
-file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}.json"
 save_dir = os.path.join('..', 'data', 'raw')
-print(save_dir)
+file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}.json"
 save_address = os.path.join(save_dir, file_name)
-print(save_address)
 # ----------------------------------------------------------------------------
 
 # /// CONFIGURE VISUAL OBJECTS ///
@@ -61,7 +64,8 @@ movobj_size = 5
 movobj_color = 'white'
 movobj_firstpos = (-5, 5)
 movobj_lastpos = (5, 5)  # two potential last positions
-movobj_dur = 1 * practical_fr  # sec x Hz = frames
+movobj_dur = int(.5 * practical_fr)  # sec x Hz = frames
+movobj_atflash = None
 movobj_pathx, movobj_pathy = genpath.linear(pos1=movobj_firstpos,
                                             pos2=movobj_lastpos,
                                             dur=movobj_dur)
@@ -71,7 +75,7 @@ grid_width = 12
 grid_n = NGRIDS
 
 # /// flashing object(s)
-probe_rad = .25  # radius of the probe
+probe_rad = .4  # radius of the probe
 probe_color = 'red'
 probe_frame = int(movobj_dur / 2)  # frame number where the probe should flash
 
@@ -85,7 +89,7 @@ grid_x_arr = grid_x.flatten()
 grid_y_arr = grid_y.flatten()
 probe_pos_temp = list(zip(grid_x_arr, grid_y_arr))
 probe_pos_list = []
-for iblock in range(NTESTS):
+for itest in range(NTESTS):
     probe_pos_list = probe_pos_list + probe_pos_temp
 random.shuffle(probe_pos_list)
 # ----------------------------------------------------------------------------
@@ -128,6 +132,12 @@ for itrial in range(NTRIALS):
 
     # /// run task
 
+    # information screen
+    if itrial % pause_after == 0:
+        iblock += 1
+        visual.infoscreen(win, iblock=iblock, nblocks=nblocks,
+                          cmd=command_keys)
+
     # fixation period
     for frame in range(fixdot_dur):
         visual.addfixdot(win=win, size=fixdot_size, pos=fixdot_pos,
@@ -148,6 +158,8 @@ for itrial in range(NTRIALS):
             if iframe == probe_frame:
                 visual.addprobe(win=win, radius=probe_rad, color=probe_color,
                                 pos=probe_pos_tr)
+                movobj_atflash = (movobj_pathx_tr[iframe],
+                                  movobj_pathy_tr[iframe])
                 # +++ TEST +++
                 # visual.showgrid(win, grid_n, grid_x_tr, grid_y_tr)
                 # +++++++++++
@@ -168,12 +180,15 @@ for itrial in range(NTRIALS):
     trial_dict = {'trial_num': [itrial + 1],
                   'probe_loc': [probe_pos_tr],
                   'click_loc': [click_loc],
+                  'movobj_flashpos': [movobj_atflash],
                   'movobj_size': [movobj_size],
-                  'movobj_dur': [movobj_dur],
-                  'movobj_firstpos': [movobj_firstpos],
-                  'movobj_lastpos': [movobj_lastpos],
-                  'motion_dir': [movobj_dir],
-                  'gap_dur': [firstgap_dur]}
+                  'movobj_dur': [round(movobj_dur / practical_fr, 2)],
+                  'movobj_firstpos': [(movobj_pathx_tr[0],
+                                       movobj_pathy_tr[0])],
+                  'movobj_lastpos': [(movobj_pathx_tr[-1],
+                                      movobj_pathy_tr[-1])],
+                  'movobj_dir': movobj_dir,
+                  'gap_dur': [round(firstgap_dur / practical_fr, 2)]}
 
     # convert to data frame
     dfnew = pd.DataFrame(trial_dict)

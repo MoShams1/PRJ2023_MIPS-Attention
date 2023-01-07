@@ -54,7 +54,7 @@ def addprobe(win, radius, color, pos):
 
 
 def addsquare(win, width, color, fillcolor, pos):
-    line_width = 0.1
+    line_width = 0.2
     outer_frame = visual.Rect(win=win, size=width, fillColor=color, pos=pos)
     inner_frame = visual.Rect(win=win, size=width - line_width,
                               fillColor=fillcolor, pos=pos)
@@ -87,28 +87,25 @@ def showgrid(win, grid_n, grid_x_tr, grid_y_tr):
             probe.draw()
 
 
-def infoscreen(win, iblock, command_keys):
-    msg = f"< Block {iblock} >" \
-          f"\n\nReady to begin?"
+def infoscreen(win, iblock, nblocks, cmd):
+    msg = f"<<<   BLOCK {iblock}/{nblocks}   >>>" \
+          f"\n\nReady to proceed?"
     message = visual.TextStim(win,
-                              text=msg, color='black', height=.5,
+                              text=msg, color='white', height=.5,
                               alignText='center')
-    message.pos = (0, 0)
+    message.pos = (0, 1)
     message.draw()
 
-    commands = '[Backspace]: Quit\t[0/Insert]: Begin'
+    commands = '[Escape]: Quit\t[Space]: OK'
     cmnd_text = visual.TextStim(win,
-                                text=commands, color='black', height=.5,
+                                text=commands, color='white', height=.5,
                                 alignText='center')
     cmnd_text.pos = (0, -2)
     cmnd_text.draw()
 
     win.flip()
-    pressed_key = event.waitKeys(keyList=list(command_keys.values()))
-    if command_keys['quit_key'] in pressed_key:
+    pressed_key = event.waitKeys(keyList=list(cmd.values()))
+    if cmd['quit_key'] in pressed_key:
         core.quit()
-    elif command_keys['response_key'] in pressed_key:
+    elif cmd['response_key'] in pressed_key:
         pass
-    # show a blanck window for one second
-    for iframe in range(60):
-        win.flip()

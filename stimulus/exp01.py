@@ -1,6 +1,9 @@
 """
-Project MIPS-Anisotropy – Stimulus – Experiment 01
-Mo Shams <MShamsCBR@gmail.com> Jan 03, 2023
+***** Project MIPS-Anisotropy
+***** Experiment 01
+
+        Mo Shams <MShamsCBR@gmail.com>
+        Initiated on: Jan 03, 2023
 
 In this experiment, my aim is to map the mislocalization of single flashed
 probe in the vicinity of a moving object in high resolution.

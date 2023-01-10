@@ -1,9 +1,7 @@
-*.mat
 *.ai
-*.asv
-*.png
 *.pdf
-*.json
 *.eps
+data
+result
 .idea/
 .DS_Store

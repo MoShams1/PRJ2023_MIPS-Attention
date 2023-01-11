@@ -1,6 +1,9 @@
 """
-Project MIPS-Anisotropy – Analysis – Experiment 01
-Mo Shams <MShamsCBR@gmail.com> Jan 06, 2023
+***** Project MIPS-Anisotropy
+***** Experiment 01
+
+        Mo Shams <MShamsCBR@gmail.com>
+        Jan 06, 2023
 
 To show the spatial profile of the mislocalization of a flashed object in
 the vicinity of a moving object.
@@ -55,7 +58,7 @@ def modify_side_ax(ax):
 # /// CONFIGURE PATHS AND LOAD DATA ///
 
 data_dir = os.path.join('..', 'data', 'raw')
-save_dir = os.path.join('..', 'results')
+save_dir = os.path.join('..', 'result')
 file_name = "MS1_20230106_154600.json"
 subID = file_name[:3]
 file_address = os.path.join(data_dir, file_name)

@@ -8,21 +8,18 @@ probe in the vicinity of a moving object.
 ---
 
 ### Overview
-First, I will see how the spatial profile of the mislocalization looks like 
-and whether only the position of objects are miscalculated or also thier 
-shape deforms.
+Q1: What is the spatial profile of the mislocalization around a moving 
+object with different sizes and speeds?
 
-Next, I will investigate how low-level features:
-- size
-- speed
-- contrast/luminance
+Q2: Is it the space itself that distorts due to te motion or only the 
+position of objects flashing in the vicinity of a moving object?
 
-as well as higher-level features:
-- predictability
-- memory load
-- physical reasoning
+Q3: What is the temporal dynamic of a leading edge becoming a trailing edge 
+when the moving object reverses its motion direction?
 
-influence the magnitude and spatial profile of the effect.
+Q4: Is it possible to manipulate the spatial profile of the mislocalization 
+by adding mediant objects that interact with the moving object in different 
+ways?
 
 ---
 
@@ -38,25 +35,25 @@ MIPS-Anisotropy
 |   .gitignore
 |   figures.ai
 |   figXX.eps
-|   figXX.script
+|   figXX.[script]
 |   README.md
 |__ analysis
-|       aXXX_[name].py
+|       aXXX_[name].[script]
 |__ data
-|   |   aXXX_[name].json
-|   \__ rawData
-|           *.json
-|           recording notes.txt   
+|   |   aXXX_[name].[data]
+|   \__ raw
+|           *.[data]
+|           recording_notes.txt   
 |__ docs
-|       *.[text format]
+|       *.[text]
 |__ lib
-|       *.py
+|       *.[script]
 |__ results
 |       *.pdf
 |       *.key
 \__ stimulus
-        expXX_[name].py
-        test_[name].py
+        expXX_[name].[script]
+        test_[name].[script]
 ```
 ---
 

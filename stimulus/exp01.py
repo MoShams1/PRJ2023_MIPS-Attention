@@ -19,18 +19,23 @@ from lib import visual, genpath, keymouse, timestamp
 
 # /// GENERAL SETTINGS ///
 
-subID = 'test'
+subID = 'MS1_no_moving_obj'
 NTESTS = 3  # this indicates how often each probe position has to be tested
-NGRIDS = (2, 2)  # number of dots along each dimension (x, y)
+NGRIDS = [9, 9]  # number of dots along each dimension (x, y)
 NTRIALS = NTESTS * NGRIDS[0] * NGRIDS[1]
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 120
-full_screen = True
+full_screen = False
+show_movobj = False
 
 iblock = 0
-pause_after = 27
+pause_after = 1
 nblocks = int(NTRIALS / pause_after)
 command_keys = {'quit_key': 'escape', 'response_key': 'space'}
+
+# +++ TEST +++
+assert (NTRIALS % pause_after) == 0, " Check 'NGRIDS' and 'pause_after'"
+# ++++++++++++
 # ----------------------------------------------------------------------------
 
 # /// SET UP DIRECTORY PATHS ///
@@ -154,10 +159,11 @@ for itrial in range(NTRIALS):
     # motion period
     for iframe in range(movobj_dur):
         for ifrrep in range(frame_rate_rep):
-            visual.addsquare(win=win, width=movobj_size, color=movobj_color,
-                             fillcolor=bg_color,
-                             pos=(movobj_pathx_tr[iframe],
-                                  movobj_pathy_tr[iframe]))
+            if show_movobj:
+                visual.addsquare(win=win, width=movobj_size,
+                                 color=movobj_color, fillcolor=bg_color,
+                                 pos=(movobj_pathx_tr[iframe],
+                                      movobj_pathy_tr[iframe]))
             if iframe == probe_frame:
                 visual.addprobe(win=win, radius=probe_rad, color=probe_color,
                                 pos=probe_pos_tr)

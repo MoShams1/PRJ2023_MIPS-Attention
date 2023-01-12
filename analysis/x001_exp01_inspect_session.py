@@ -12,6 +12,7 @@ the vicinity of a moving object.
 import os
 import numpy as np
 import pandas as pd
+from matplotlib import ticker
 import matplotlib.pyplot as plt
 from lib import cleanplot as cp
 from matplotlib.patches import Polygon
@@ -36,7 +37,7 @@ def modify_maps(ax, contour=False, contour_im=None):
 
 
 def limit_large(ax):
-    ax.set(xlim=[-6, 9], ylim=[-3, 12])
+    ax.set(xlim=[-7, 10], ylim=[-4, 13])
 
 
 def limit_small(ax):
@@ -53,13 +54,19 @@ def modify_side_ax(ax):
     cp.remove_box(ax)
 
 
+def clean_colormap(ax):
+    xticks = ticker.MaxNLocator(min_n_ticks=3, nbins=5)
+    ax.xaxis.set_major_locator(xticks)
+
+
 # ----------------------------------------------------------------------------
 
 # /// CONFIGURE PATHS AND LOAD DATA ///
 
 data_dir = os.path.join('..', 'data', 'raw')
 save_dir = os.path.join('..', 'result')
-file_name = "MS1_20230106_154600.json"
+# file_name = "MS1_20230106_154600.json"
+file_name = "MS1_no_moving_obj_20230111_180112.json"
 subID = file_name[:3]
 file_address = os.path.join(data_dir, file_name)
 df = pd.read_json(file_address)
@@ -162,14 +169,14 @@ plt.savefig(os.path.join(save_dir, f"{subID}_probes_clicks_errors.pdf"))
 fig, axs = plt.subplots(3, 2, figsize=(5.5, 6),
                         gridspec_kw={'width_ratios': [4, 1],
                                      'height_ratios': [1, 4, .5]})
-fig.suptitle(f"subID: {subID} – Vertical Misloc. Map")
+fig.suptitle(f"subID: {subID} – Horizontal Misloc. Map")
 im = axs[1, 0].contourf(probe_map_x, probe_map_y, herr_map,
                         levels=ncontours, cmap='viridis')
 limit_small(axs[1, 0])
 modify_maps(axs[1, 0])
 cbar_ax = axs[1, 0].inset_axes([0, -.2, 1, .02])
 fig.colorbar(im, cax=cbar_ax, orientation='horizontal')
-cbar_ax.set(xticks=[0, .5, 1, 1.5])
+clean_colormap(cbar_ax)
 axs[1, 0].set(xlabel='Horizontal position wrt fixation [deg]',
               ylabel='Vertical position wrt fixation [deg]')
 limit_small(axs[1, 0])
@@ -201,7 +208,7 @@ limit_small(axs[1, 0])
 modify_maps(axs[1, 0])
 cbar_ax = axs[1, 0].inset_axes([0, -.2, 1, .02])
 fig.colorbar(im, cax=cbar_ax, orientation='horizontal')
-cbar_ax.set(xticks=[0, .5, 1, 1.5, 2])
+clean_colormap(cbar_ax)
 axs[1, 0].set(xlabel='Horizontal position wrt fixation [deg]',
               ylabel='Vertical position wrt fixation [deg]')
 limit_small(axs[1, 0])

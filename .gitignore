@@ -3,5 +3,6 @@
 *.eps
 data
 result
+raw
 .idea/
 .DS_Store

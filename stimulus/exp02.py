@@ -3,10 +3,12 @@
 ***** Experiment 01
 
         Mo Shams <MShamsCBR@gmail.com>
-        Initiated on: Jan 03, 2023
+        Initiated on: Jan 16, 2023
 
-In this experiment, my aim is to map the mislocalization of single flashed
-probe in the vicinity of a moving object in high resolution.
+This is a control experiment for exp01.
+The aim is to see how much of the vertical mislocalization toward the gaze
+was due to the motion. Hence, here the moving frame is not shown,
+but everything else is the same as in exp01.
 """
 
 import os
@@ -154,11 +156,6 @@ for itrial in range(NTRIALS):
     # motion period
     for iframe in range(movobj_dur):
         for ifrrep in range(frame_rate_rep):
-            cvis.addsquare(win=win, width=movobj_size, color=movobj_color,
-                           fillcolor=bg_color,
-                           pos=(movobj_pathx_tr[iframe],
-                                movobj_pathy_tr[iframe]),
-                           line_width=.1)
             if iframe == probe_frame:
                 cvis.addprobe(win=win, radius=probe_rad, color=probe_color,
                               pos=probe_pos_tr)

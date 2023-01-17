@@ -1,12 +1,13 @@
 """
 ***** Project MIPS-Anisotropy
-***** Experiment 01
+***** Experiment 02
 
         Mo Shams <MShamsCBR@gmail.com>
-        Initiated on: Jan 03, 2023
+        Initiated on: Jan 16, 2023
 
-In this experiment, my aim is to map the mislocalization of single flashed
-probe in the vicinity of a moving object in high resolution.
+Here, the aim is to see whether the shape of flashed objects distort in the
+same way as the mislocaliztion maps expect. If not, the space distortion
+idea will be challenged.
 """
 
 import os
@@ -63,7 +64,7 @@ fixdot_color = 'white'
 fixdot_dur = 1 * practical_fr  # sec x Hz = frames
 
 # /// moving object
-movobj_size = 5
+movobj_size = 3
 movobj_color = 'white'
 movobj_firstpos = (-5, 5)
 movobj_lastpos = (5, 5)  # two potential last positions
@@ -155,17 +156,16 @@ for itrial in range(NTRIALS):
     for iframe in range(movobj_dur):
         for ifrrep in range(frame_rate_rep):
             cvis.addsquare(win=win, width=movobj_size, color=movobj_color,
-                           fillcolor=bg_color,
+                           fillcolor=bg_color, line_width=.1,
                            pos=(movobj_pathx_tr[iframe],
-                                movobj_pathy_tr[iframe]),
-                           line_width=.1)
+                                movobj_pathy_tr[iframe]))
             if iframe == probe_frame:
-                cvis.addprobe(win=win, radius=probe_rad, color=probe_color,
-                              pos=probe_pos_tr)
+                cvis.addline(win=win, pos=(3, 2.5), size=(.3, 5),
+                             color='tomato')
                 movobj_atflash = (movobj_pathx_tr[iframe],
                                   movobj_pathy_tr[iframe])
                 # +++ TEST +++
-                # cvis.showgrid(win, grid_n, grid_x_tr, grid_y_tr)
+                # visual.showgrid(win, grid_n, grid_x_tr, grid_y_tr)
                 # +++++++++++
             win.flip()
 

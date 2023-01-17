@@ -53,13 +53,18 @@ def addprobe(win, radius, color, pos):
     probe.draw()
 
 
-def addsquare(win, width, color, fillcolor, pos):
-    line_width = 0.2
+def addsquare(win, width, color, fillcolor, pos, line_width=0.2):
     outer_frame = visual.Rect(win=win, size=width, fillColor=color, pos=pos)
     inner_frame = visual.Rect(win=win, size=width - line_width,
                               fillColor=fillcolor, pos=pos)
     outer_frame.draw()
     inner_frame.draw()
+
+
+def addline(win, size, color, pos, ori=0):
+    line = visual.Rect(win=win, size=size, fillColor=color,
+                       pos=pos, ori=ori)
+    line.draw()
 
 
 def gengrid(width, n, movpos1, movpos2):
@@ -71,6 +76,21 @@ def gengrid(width, n, movpos1, movpos2):
     # trailing edge to give more room to the
     # more important leading edge (offset)
     offset = 1.5
+    midwayx = (movpos1[0] + movpos2[0]) / 2
+    x = x + midwayx + offset
+    xv, yv = np.meshgrid(x, y)
+    return xv, yv
+
+
+def gengrid2(width, n, movpos1, movpos2):
+    x = np.linspace(-width[0] / 2, width[0] / 2, n[0])
+    y = np.linspace(-width[1] / 2, width[1] / 2, n[1])
+    # move to moving object's starting position
+    y = y + movpos1[1]
+    # move horizontally to moving object's midway then push it back to the
+    # trailing edge to give more room to the
+    # more important leading edge (offset)
+    offset = 2.5
     midwayx = (movpos1[0] + movpos2[0]) / 2
     x = x + midwayx + offset
     xv, yv = np.meshgrid(x, y)

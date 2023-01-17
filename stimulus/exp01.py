@@ -13,7 +13,7 @@ import os
 import random
 import numpy as np
 import pandas as pd
-from lib import visual, genpath, keymouse, timestamp
+from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 # ----------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ from lib import visual, genpath, keymouse, timestamp
 
 subID = 'test'
 NTESTS = 3  # this indicates how often each probe position has to be tested
-NGRIDS = (2, 2)  # number of dots along each dimension (x, y)
+NGRIDS = (9, 9)  # number of dots along each dimension (x, y)
 NTRIALS = NTESTS * NGRIDS[0] * NGRIDS[1]
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 120
@@ -83,9 +83,9 @@ probe_color = 'red'
 probe_frame = int(movobj_dur / 2)  # frame number where the probe should flash
 
 # generate test grid
-grid_x, grid_y = visual.gengrid(width=grid_width, n=grid_n,
-                                movpos1=movobj_firstpos,
-                                movpos2=movobj_lastpos)
+grid_x, grid_y = cvis.gengrid(width=grid_width, n=grid_n,
+                              movpos1=movobj_firstpos,
+                              movpos2=movobj_lastpos)
 
 # generate probe positions
 grid_x_arr = grid_x.flatten()
@@ -99,11 +99,11 @@ random.shuffle(probe_pos_list)
 
 # /// CONFIGURE MONITOR ///
 
-mon = visual.configmon_imac()
-win = visual.configwin(mon=mon, screen=screen_num,
-                       fullscr=full_screen,
-                       color=bg_color)
-visual.test_framerate(win=win, nominal_fr=frame_rate)
+mon = cvis.configmon_imac()
+win = cvis.configwin(mon=mon, screen=screen_num,
+                     fullscr=full_screen,
+                     color=bg_color)
+cvis.test_framerate(win=win, nominal_fr=frame_rate)
 # ----------------------------------------------------------------------------
 
 # /// START TRIAL ///
@@ -138,13 +138,13 @@ for itrial in range(NTRIALS):
     # information screen
     if itrial % pause_after == 0:
         iblock += 1
-        visual.infoscreen(win, iblock=iblock, nblocks=nblocks,
-                          cmd=command_keys)
+        cvis.infoscreen(win, iblock=iblock, nblocks=nblocks,
+                        cmd=command_keys)
 
     # fixation period
     for frame in range(fixdot_dur):
-        visual.addfixdot(win=win, size=fixdot_size, pos=fixdot_pos,
-                         color=fixdot_color)
+        cvis.addfixdot(win=win, size=fixdot_size, pos=fixdot_pos,
+                       color=fixdot_color)
         win.flip()
 
     # gap period
@@ -154,17 +154,18 @@ for itrial in range(NTRIALS):
     # motion period
     for iframe in range(movobj_dur):
         for ifrrep in range(frame_rate_rep):
-            visual.addsquare(win=win, width=movobj_size, color=movobj_color,
-                             fillcolor=bg_color,
-                             pos=(movobj_pathx_tr[iframe],
-                                  movobj_pathy_tr[iframe]))
+            cvis.addsquare(win=win, width=movobj_size, color=movobj_color,
+                           fillcolor=bg_color,
+                           pos=(movobj_pathx_tr[iframe],
+                                movobj_pathy_tr[iframe]),
+                           line_width=.1)
             if iframe == probe_frame:
-                visual.addprobe(win=win, radius=probe_rad, color=probe_color,
-                                pos=probe_pos_tr)
+                cvis.addprobe(win=win, radius=probe_rad, color=probe_color,
+                              pos=probe_pos_tr)
                 movobj_atflash = (movobj_pathx_tr[iframe],
                                   movobj_pathy_tr[iframe])
                 # +++ TEST +++
-                # visual.showgrid(win, grid_n, grid_x_tr, grid_y_tr)
+                # cvis.showgrid(win, grid_n, grid_x_tr, grid_y_tr)
                 # +++++++++++
             win.flip()
 

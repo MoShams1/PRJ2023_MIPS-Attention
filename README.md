@@ -42,8 +42,9 @@ MIPS-Anisotropy
 |__ data
 |   |   aXXX_[name].[data]
 |   \__ raw
-|           *.[data]
-|           recording_notes.txt   
+|       \__ expXX
+|               *.[data]
+|               recording_notes.txt   
 |__ docs
 |       *.[text]
 |__ lib

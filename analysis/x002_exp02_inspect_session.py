@@ -3,10 +3,10 @@
 ***** Experiment 01
 
         Mo Shams <MShamsCBR@gmail.com>
-        Jan 06, 2023
+        Jan 17, 2023
 
-To show the spatial profile of the mislocalization of a flashed object in
-the vicinity of a moving object.
+To show whether the vertical mislocalizaions observed in exp01 are due to
+motion or gaze.
 
 """
 import os
@@ -23,12 +23,6 @@ from matplotlib.patches import Polygon
 # /// FUNCTIONS ///
 
 def modify_maps(ax, contour=False, contour_im=None):
-    vertices = np.array([(0 - 2.5, 5 - 2.5),
-                         (0 + 2.5, 5 - 2.5),
-                         (0 + 2.5, 5 + 2.5),
-                         (0 - 2.5, 5 + 2.5)])
-    poly = Polygon(vertices, fc='none', ec='black', lw=2)
-    ax.add_patch(poly)
     ax.plot(0, 0, '+', markersize=15, color='black')
     cp.remove_box(ax)
     if contour:
@@ -63,9 +57,9 @@ def clean_colormap(ax):
 
 # /// CONFIGURE PATHS AND LOAD DATA ///
 
-data_dir = os.path.join('..', 'data', 'raw', 'exp01')
-save_dir = os.path.join('..', 'result', 'exp01')
-file_name = "MS1_20230106_154600.json"
+data_dir = os.path.join('..', 'data', 'raw', 'exp02')
+save_dir = os.path.join('..', 'result', 'exp02')
+file_name = "MS1_20230111_180112.json"
 subID = file_name[:3]
 file_address = os.path.join(data_dir, file_name)
 df = pd.read_json(file_address)

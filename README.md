@@ -2,7 +2,7 @@
 Mo Shams <MShamsCBR.gmail.com>  
 Jan 03, 2023    
 
-To investigate the anisotropic nature of the midlocalization of a flashed
+To investigate the anisotropic nature of the mislocalization of a flashed
 probe in the vicinity of a moving object.
 
 ---

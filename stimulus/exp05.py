@@ -1,12 +1,12 @@
 """
 ***** Project MIPS-Anisotropy
-***** Experiment 01
+***** Experiment 05
 
         Mo Shams <MShamsCBR@gmail.com>
-        Initiated on: Jan 03, 2023
+        Initiated on: Jan 18, 2023
 
-In this experiment, my aim is to map the mislocalization of single flashed
-probe in the vicinity of a moving object in high resolution.
+How does an unpredictable change in the moving object's trajectory
+affect the mislocalization of a flashed probe in its vicinity?
 """
 
 import os
@@ -19,24 +19,22 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 # /// GENERAL SETTINGS ///
 
-subID = 'test'
-NTESTS = 3  # this indicates how often each probe position has to be tested
-NGRIDS = (9, 9)  # number of dots along each dimension (x, y)
-NTRIALS = NTESTS * NGRIDS[0] * NGRIDS[1]
+subID = 'MS1'
+NTESTS = 5  # this indicates how often each probe position has to be tested
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 120
 full_screen = True
+condition_order = 'random'  # random / blocked
 
 iblock = 0
-pause_after = 27
-nblocks = int(NTRIALS / pause_after)
 command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 # ----------------------------------------------------------------------------
 
 # /// SET UP DIRECTORY PATHS ///
 
-save_dir = os.path.join('..', 'data', 'raw')
-file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}.json"
+save_dir = os.path.join('..', 'data', 'raw', 'exp05')
+file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}_" \
+            f"{condition_order}.json"
 save_address = os.path.join(save_dir, file_name)
 # ----------------------------------------------------------------------------
 
@@ -58,43 +56,44 @@ gap_dur_arr = gap_dur_arr.astype(int)
 
 # /// fixation dot
 fixdot_size = .7
-fixdot_pos = (0, 0)
+fixdot_pos = [0, -5]
 fixdot_color = 'white'
 fixdot_dur = 1 * practical_fr  # sec x Hz = frames
 
 # /// moving object
 movobj_size = 5
+movobj_thickness = 0.2
 movobj_color = 'white'
-movobj_firstpos = (-5, 5)
-movobj_lastpos = (5, 5)  # two potential last positions
-movobj_dur = int(.5 * practical_fr)  # sec x Hz = frames
+movobj_pathlen = 11  # must be an odd number
+movobj_dur = int(0.5 * practical_fr)  # sec x Hz = frames
 movobj_atflash = None
-movobj_pathx, movobj_pathy = genpath.linear(pos1=movobj_firstpos,
-                                            pos2=movobj_lastpos,
-                                            dur=movobj_dur)
-
-# /// test grid
-grid_width = 12
-grid_n = NGRIDS
 
 # /// flashing object(s)
 probe_rad = .4  # radius of the probe
 probe_color = 'red'
-probe_frame = int(movobj_dur / 2)  # frame number where the probe should flash
+probe_edge_offset = 0.5
+PROBE_POSX = np.array([movobj_size / 2 + probe_edge_offset, 0])  # predefined
+# position of the porbe
 
-# generate test grid
-grid_x, grid_y = cvis.gengrid(width=grid_width, n=grid_n,
-                              movpos1=movobj_firstpos,
-                              movpos2=movobj_lastpos)
+movobj_predir_arr = np.repeat([1, -1, 1, -1], NTESTS * 2)
+movobj_postdir_arr = np.repeat([1, 1, -1, -1], NTESTS * 2)
+probe_pos_temp1 = np.repeat([1, -1], NTESTS)
+probe_pos_temp2 = np.repeat([1, -1], NTESTS)
+probe_pos_temp3 = np.repeat([1, -1], NTESTS)
+probe_pos_temp4 = np.repeat([1, -1], NTESTS)
+np.random.shuffle(probe_pos_temp1)
+np.random.shuffle(probe_pos_temp2)
+np.random.shuffle(probe_pos_temp3)
+np.random.shuffle(probe_pos_temp4)
+probe_pos_arr = np.concatenate((probe_pos_temp1, probe_pos_temp2,
+                                probe_pos_temp3, probe_pos_temp4))
+cnd_arr = np.vstack((movobj_predir_arr,
+                     movobj_postdir_arr,
+                     probe_pos_arr)).transpose()
+if condition_order == 'random':
+    np.random.shuffle(cnd_arr)
+ntrials = movobj_postdir_arr.shape[0]
 
-# generate probe positions
-grid_x_arr = grid_x.flatten()
-grid_y_arr = grid_y.flatten()
-probe_pos_temp = list(zip(grid_x_arr, grid_y_arr))
-probe_pos_list = []
-for itest in range(NTESTS):
-    probe_pos_list = probe_pos_list + probe_pos_temp
-random.shuffle(probe_pos_list)
 # ----------------------------------------------------------------------------
 
 # /// CONFIGURE MONITOR ///
@@ -108,7 +107,8 @@ cvis.test_framerate(win=win, nominal_fr=frame_rate)
 
 # /// START TRIAL ///
 
-for itrial in range(NTRIALS):
+for itrial in range(ntrials):
+
     # -------------------------------
 
     # /// set up trial variables
@@ -118,28 +118,27 @@ for itrial in range(NTRIALS):
     lastgap_dur = np.random.choice(gap_dur_arr)
 
     # decide on the motion direction and adjust motion path and flash position
-    movobj_dir = random.choice([-1, 1])
-    if movobj_dir == -1:
-        movobj_pathx_tr = -movobj_pathx
-        probe_pos_tr = (-probe_pos_list[itrial][0],
-                        probe_pos_list[itrial][1])
-        grid_x_tr = -grid_x
-    else:
-        movobj_pathx_tr = movobj_pathx
-        probe_pos_tr = (probe_pos_list[itrial][0],
-                        probe_pos_list[itrial][1])
-        grid_x_tr = grid_x
-    movobj_pathy_tr = movobj_pathy
-    grid_y_tr = grid_y
+    movobj_pre_dir = random.choice([-1, 1])
+
+    movobj_pathx, movobj_pathy = genpath.two_ways(pathlen=movobj_pathlen,
+                                                  dur=movobj_dur,
+                                                  cnd=cnd_arr[itrial])
+    probe_posx_tr = cnd_arr[itrial][2] * PROBE_POSX
+    probe_pos_tr = cnd_arr[itrial][0] * probe_posx_tr
+
     # -------------------------------
 
     # /// run task
 
     # information screen
-    if itrial % pause_after == 0:
+    if itrial == 0:
+        cvis.infoscreen_exp5(win, cmd=command_keys)
+
+    if itrial % (NTESTS * 2) == 0:
         iblock += 1
-        cvis.infoscreen(win, iblock=iblock, nblocks=nblocks,
-                        cmd=command_keys)
+        cvis.run_pause_screen(win=win, current_block=iblock,
+                              cmd=command_keys, cnd=cnd_arr[itrial],
+                              cnd_order=condition_order)
 
     # fixation period
     for frame in range(fixdot_dur):
@@ -152,25 +151,23 @@ for itrial in range(NTRIALS):
         win.flip()
 
     # motion period
-    for iframe in range(movobj_dur):
+    for iframe in range(len(movobj_pathx)):
         for ifrrep in range(frame_rate_rep):
             cvis.addsquare(win=win, width=movobj_size, color=movobj_color,
                            fillcolor=bg_color,
-                           pos=(movobj_pathx_tr[iframe],
-                                movobj_pathy_tr[iframe]),
-                           line_width=.1)
-            if iframe == probe_frame:
+                           pos=(movobj_pathx[iframe],
+                                movobj_pathy[iframe]),
+                           line_width=movobj_thickness)
+            if movobj_pathx[iframe] == 0:
                 cvis.addprobe(win=win, radius=probe_rad, color=probe_color,
                               pos=probe_pos_tr)
-                movobj_atflash = (movobj_pathx_tr[iframe],
-                                  movobj_pathy_tr[iframe])
                 # +++ TEST +++
                 # cvis.showgrid(win, grid_n, grid_x_tr, grid_y_tr)
                 # +++++++++++
             win.flip()
 
     # response period
-    click_loc = keymouse.get_mouseclick(win)
+    click_loc = keymouse.get_mouseclick_exp5(win, pos=fixdot_pos)
 
     # gap period
     for frame in range(lastgap_dur):
@@ -184,15 +181,13 @@ for itrial in range(NTRIALS):
     trial_dict = {'trial_num': [itrial + 1],
                   'probe_loc': [probe_pos_tr],
                   'click_loc': [click_loc],
-                  'movobj_flashpos': [movobj_atflash],
+                  'movobj_flashpos': [[0, 0]],
                   'movobj_size': [movobj_size],
                   'movobj_dur': [round(movobj_dur / practical_fr, 2)],
-                  'movobj_firstpos': [(movobj_pathx_tr[0],
-                                       movobj_pathy_tr[0])],
-                  'movobj_lastpos': [(movobj_pathx_tr[-1],
-                                      movobj_pathy_tr[-1])],
-                  'movobj_dir': movobj_dir,
-                  'gap_dur': [round(firstgap_dur / practical_fr, 2)]}
+                  'movobj_firstpos': [[movobj_pathx[0], movobj_pathy[0]]],
+                  'movobj_lastpos': [[movobj_pathx[-1], movobj_pathy[-1]]],
+                  'gap_dur': [round(firstgap_dur / practical_fr, 2)],
+                  'cnd': [cnd_arr[itrial]]}
 
     # convert to data frame
     dfnew = pd.DataFrame(trial_dict)

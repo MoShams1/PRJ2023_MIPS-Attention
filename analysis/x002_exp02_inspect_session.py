@@ -24,7 +24,7 @@ from matplotlib.patches import Polygon
 
 def modify_maps(ax, contour=False, contour_im=None):
     ax.plot(0, 0, '+', markersize=15, color='black')
-    cp.remove_box(ax)
+    cp.trim_spines(ax)
     if contour:
         for c in contour_im.collections:
             c.set_edgecolor("face")
@@ -40,12 +40,12 @@ def limit_small(ax):
 
 def modify_upper_ax(ax):
     ax.set(xlim=[-5, 8])
-    cp.remove_box(ax)
+    cp.trim_spines(ax)
 
 
 def modify_side_ax(ax):
     ax.set(ylim=[-1.5, 11.5])
-    cp.remove_box(ax)
+    cp.trim_spines(ax)
 
 
 def clean_colormap(ax):

@@ -107,9 +107,72 @@ def showgrid(win, grid_n, grid_x_tr, grid_y_tr):
             probe.draw()
 
 
-def infoscreen(win, iblock, nblocks, cmd):
+def infoscreen_exp1(win, iblock, cmd, nblocks):
     msg = f"<<<   BLOCK {iblock}/{nblocks}   >>>" \
           f"\n\nReady to proceed?"
+    message = visual.TextStim(win,
+                              text=msg, color='white', height=.5,
+                              alignText='center')
+    message.pos = (0, 1)
+    message.draw()
+
+    commands = '[Escape]: Quit\t[Space]: OK'
+    cmnd_text = visual.TextStim(win,
+                                text=commands, color='white', height=.5,
+                                alignText='center')
+    cmnd_text.pos = (0, -2)
+    cmnd_text.draw()
+
+    win.flip()
+    pressed_key = event.waitKeys(keyList=list(cmd.values()))
+    if cmd['quit_key'] in pressed_key:
+        core.quit()
+    elif cmd['response_key'] in pressed_key:
+        pass
+
+
+def infoscreen_exp5(win, cmd):
+    msg = f"<<<   Locate the probe!   >>>" \
+          f"\n\nReady to proceed?"
+    message = visual.TextStim(win,
+                              text=msg, color='white', height=.5,
+                              alignText='center')
+    message.pos = (0, 1)
+    message.draw()
+
+    commands = '[Escape]: Quit\t[Space]: OK'
+    cmnd_text = visual.TextStim(win,
+                                text=commands, color='white', height=.5,
+                                alignText='center')
+    cmnd_text.pos = (0, -2)
+    cmnd_text.draw()
+
+    win.flip()
+    pressed_key = event.waitKeys(keyList=list(cmd.values()))
+    if cmd['quit_key'] in pressed_key:
+        core.quit()
+    elif cmd['response_key'] in pressed_key:
+        pass
+
+
+def run_pause_screen(win, current_block, cmd, cnd, cnd_order):
+    if cnd[0] == 1:
+        dir1 = 'rightward'
+    else:
+        dir1 = 'leftward'
+    if cnd[1] == 1:
+        trj = 'passing'
+    else:
+        trj = 'reversive'
+    if cnd_order == 'blocked':
+        msg = f"<<<   Block {current_block}/4   >>>" \
+              f"\n\nStarting motion direction: {dir1}" \
+              f"\nTrajectory mode: {trj}" \
+              f"\n\n\nReady to proceed?"
+    else:
+        msg = f"<<<   Block {current_block}/4   >>>" \
+              f"\n\n\nReady to proceed?"
+
     message = visual.TextStim(win,
                               text=msg, color='white', height=.5,
                               alignText='center')

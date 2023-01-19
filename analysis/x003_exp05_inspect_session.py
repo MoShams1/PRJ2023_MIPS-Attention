@@ -70,11 +70,9 @@ errs_ld_rev = errs[msk_lead & msk_reversed][0]
 
 # @@@ PLOT RESULTS @@@
 
-# /// set plot parameters
 cp.prep4ai()
-# --------------------------------------
 
-# @@@
+# @@@ plot magnitude of the mislocalization across conditions
 fig, axs = plt.subplots(1, 2, figsize=(4, 4), sharey=True)
 fig.suptitle(f"subID: {subID} – Blocked order")
 axs[0].bar([1, 2], [np.mean(errs_tr_pas), np.mean(errs_ld_pas)], color='grey')

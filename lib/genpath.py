@@ -18,5 +18,5 @@ def two_ways(pathlen, dur, cnd):
     pathx = np.concatenate((pathx_pre, pathx_pst))
     if cnd[0] == -1:
         pathx = -pathx
-    pathy = np.repeat([0], pathx.size)
+    pathy = np.repeat([5], pathx.size)
     return pathx, pathy

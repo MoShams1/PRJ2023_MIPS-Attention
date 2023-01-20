@@ -32,7 +32,7 @@ command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 
 # /// SET UP DIRECTORY PATHS ///
 
-save_dir = os.path.join('..', 'data', 'raw', 'exp05')
+save_dir = os.path.join('..', 'data', 'exp05', 'raw')
 file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}_" \
             f"{condition_order}.json"
 save_address = os.path.join(save_dir, file_name)

@@ -107,6 +107,12 @@ def showgrid(win, grid_n, grid_x_tr, grid_y_tr):
             probe.draw()
 
 
+def showgrid_exp6(win, x, y):
+    for i in range(len(x)):
+        probe = visual.Circle(win, radius=.05, pos=(x[i], y))
+        probe.draw()
+
+
 def infoscreen_exp1(win, iblock, cmd, nblocks):
     msg = f"<<<   BLOCK {iblock}/{nblocks}   >>>" \
           f"\n\nReady to proceed?"
@@ -133,7 +139,7 @@ def infoscreen_exp1(win, iblock, cmd, nblocks):
 
 def infoscreen_exp5(win, cmd):
     msg = f"<<<   Locate the probe!   >>>" \
-          f"\n\nReady to proceed?"
+          f"\n\n\nReady to proceed?"
     message = visual.TextStim(win,
                               text=msg, color='white', height=.5,
                               alignText='center')
@@ -155,22 +161,23 @@ def infoscreen_exp5(win, cmd):
         pass
 
 
-def run_pause_screen(win, current_block, cmd, cnd, cnd_order):
-    if cnd[0] == 1:
-        dir1 = 'rightward'
-    else:
-        dir1 = 'leftward'
-    if cnd[1] == 1:
-        trj = 'passing'
-    else:
-        trj = 'reversive'
+def run_pause_screen(win, current_block, cmd, nblocks, cnd=None,
+                     cnd_order=None):
     if cnd_order == 'blocked':
-        msg = f"<<<   Block {current_block}/4   >>>" \
+        if cnd[0] == 1:
+            dir1 = 'rightward'
+        else:
+            dir1 = 'leftward'
+        if cnd[1] == 1:
+            trj = 'passing'
+        else:
+            trj = 'reversive'
+        msg = f"<<<   Block {current_block}/{nblocks}   >>>" \
               f"\n\nStarting motion direction: {dir1}" \
               f"\nTrajectory mode: {trj}" \
               f"\n\n\nReady to proceed?"
     else:
-        msg = f"<<<   Block {current_block}/4   >>>" \
+        msg = f"<<<   Block {current_block}/{nblocks}   >>>" \
               f"\n\n\nReady to proceed?"
 
     message = visual.TextStim(win,
@@ -192,3 +199,4 @@ def run_pause_screen(win, current_block, cmd, cnd, cnd_order):
         core.quit()
     elif cmd['response_key'] in pressed_key:
         pass
+

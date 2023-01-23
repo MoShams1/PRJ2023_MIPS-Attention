@@ -20,9 +20,9 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 # /// GENERAL SETTINGS ///
 
 subID = 'MS1'
-NTESTS = 1  # this indicates how often each probe position has to be tested
+NTESTS = 3  # this indicates how often each probe position has to be tested
 screen_num = 0  # 0: primary    1: secondary
-frame_rate = 480
+frame_rate = 120
 full_screen = True
 condition_order = 'random'  # random / blocked
 
@@ -73,6 +73,7 @@ probe_rad = .4  # radius of the probe
 probe_color = 'red'
 # predefined horizontal positions of the porbe
 PROBE_POSX = np.linspace(-movobj_size, movobj_size, 11)
+PROBE_POSY = 5
 nprobes = len(PROBE_POSX)
 # 1: rightward  -1: leftward
 movobj_predir_arr = np.repeat([1, -1, 1, -1], NTESTS * nprobes)
@@ -94,6 +95,7 @@ cnd_arr = np.vstack((movobj_predir_arr,
 if condition_order == 'random':
     np.random.shuffle(cnd_arr)
 ntrials = movobj_postdir_arr.shape[0]
+
 # ----------------------------------------------------------------------------
 
 # /// CONFIGURE MONITOR ///
@@ -123,7 +125,7 @@ for itrial in range(ntrials):
                                                   dur=movobj_dur,
                                                   cnd=cnd_arr[itrial])
     # extract current trial's probe position
-    probe_pos_tr = [PROBE_POSX[cnd_arr[itrial][2]], 5]
+    probe_pos_tr = [PROBE_POSX[cnd_arr[itrial][2]], PROBE_POSY]
     # -------------------------------
 
     # /// run task
@@ -132,11 +134,10 @@ for itrial in range(ntrials):
     if itrial == 0:
         cvis.infoscreen_exp5(win, cmd=command_keys)
 
-    if itrial % (NTESTS * nprobes) == 0:
+    if itrial % (ntrials / NTESTS) == 0:
         iblock += 1
         cvis.run_pause_screen(win=win, current_block=iblock,
-                              cmd=command_keys, cnd=cnd_arr[itrial],
-                              cnd_order=condition_order)
+                              cmd=command_keys, nblocks=NTESTS)
 
     # fixation period
     for frame in range(fixdot_dur):
@@ -160,7 +161,7 @@ for itrial in range(ntrials):
                 cvis.addprobe(win=win, radius=probe_rad, color=probe_color,
                               pos=probe_pos_tr)
                 # +++ TEST +++
-                # cvis.showgrid(win, grid_n, grid_x_tr, grid_y_tr)
+                # cvis.showgrid_exp6(win, PROBE_POSX, PROBE_POSY)
                 # +++++++++++
             win.flip()
 

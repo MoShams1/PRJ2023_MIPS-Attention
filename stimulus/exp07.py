@@ -1,6 +1,6 @@
 """
 ***** Project MIPS-Anisotropy
-***** Experiment 06
+***** Experiment 07
 
         Mo Shams <MShamsCBR@gmail.com>
         Initiated on: Jan 19, 2023
@@ -19,10 +19,10 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 # /// GENERAL SETTINGS ///
 
-subID = 'test'
-NTESTS = 1  # this indicates how often each probe position has to be tested
+subID = 'MS1'
+NTESTS = 3  # this indicates how often each probe position has to be tested
 screen_num = 0  # 0: primary    1: secondary
-frame_rate = 480
+frame_rate = 120
 full_screen = True
 condition_order = 'random'  # random / blocked
 
@@ -32,7 +32,7 @@ command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 
 # /// SET UP DIRECTORY PATHS ///
 
-save_dir = os.path.join('..', 'data', 'exp06', 'raw')
+save_dir = os.path.join('..', 'data', 'exp07', 'raw')
 file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}_" \
             f"{condition_order}.json"
 save_address = os.path.join(save_dir, file_name)
@@ -76,9 +76,9 @@ PROBE_POSX = np.linspace(-movobj_size, movobj_size, 11)
 PROBE_POSY = 5
 nprobes = len(PROBE_POSX)
 # 1: rightward  -1: leftward
-movobj_predir_arr = np.repeat([1, 1, 1, 1], NTESTS * nprobes)
+movobj_predir_arr = np.repeat([1, -1, 1, -1], NTESTS * nprobes)
 # 1: passing  -1: reversing
-movobj_postdir_arr = np.repeat([1, 1, 1, 1], NTESTS * nprobes)
+movobj_postdir_arr = np.repeat([1, 1, -1, -1], NTESTS * nprobes)
 probe_pos_temp1 = np.repeat(range(nprobes), NTESTS)
 probe_pos_temp2 = np.repeat(range(nprobes), NTESTS)
 probe_pos_temp3 = np.repeat(range(nprobes), NTESTS)

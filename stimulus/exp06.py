@@ -24,7 +24,7 @@ NTESTS = 3  # this indicates how often each probe position has to be tested
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 120
 full_screen = True
-condition_order = 'random'  # random / blocked
+condition_order = 'blocked'  # random / blocked
 
 iblock = 0
 command_keys = {'quit_key': 'escape', 'response_key': 'space'}

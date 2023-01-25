@@ -3,11 +3,10 @@
 ***** Experiment 07
 
         Mo Shams <MShamsCBR@gmail.com>
-        Initiated on: Jan 23, 2023
+        Initiated on: Jan 24, 2023
 
-An extension of exp06. Here, in addition to presenting several probes along
-the moving object's trajectory, I vary the temporal difference between the
-flash and the potential reversal time.
+Same as exp07 but only rightward, passing, fixed probe position.
+The aim is to replicate the result of ECVP22's experiment 3.
 """
 
 import os
@@ -21,7 +20,7 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 # /// GENERAL SETTINGS ///
 
 subID = 'MS1'
-NTESTS = 2  # this indicates how often each probe position has to be tested
+NTESTS = 1  # this indicates how often each probe position has to be tested
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 120
 full_screen = True
@@ -35,7 +34,7 @@ command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 
 save_dir = os.path.join('..', 'data', 'exp07', 'raw')
 file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}_" \
-            f"{condition_order}.json"
+            f"{condition_order}_control.json"
 save_address = os.path.join(save_dir, file_name)
 # ----------------------------------------------------------------------------
 
@@ -73,13 +72,13 @@ movobj_posatflash = None
 probe_rad = .4  # radius of the probe
 probe_color = 'red'
 # predefined horizontal positions of the porbe
-PROBE_POSX = np.linspace(-movobj_size, movobj_size, 11)
+PROBE_POSX = 0
 PROBE_POSY = 5
-nprobes = len(PROBE_POSX)
+nprobes = 1
 # 1: rightward  -1: leftward
-movobj_predir_arr = np.repeat([1, -1, 1, -1], NTESTS * nprobes)
+movobj_predir_arr = np.repeat([1, 1, 1, 1], NTESTS * nprobes)
 # 1: passing  -1: reversing
-movobj_postdir_arr = np.repeat([1, 1, -1, -1], NTESTS * nprobes)
+movobj_postdir_arr = np.repeat([1, 1, 1, 1], NTESTS * nprobes)
 probe_pos_temp1 = np.repeat(range(nprobes), NTESTS)
 probe_pos_temp2 = np.repeat(range(nprobes), NTESTS)
 probe_pos_temp3 = np.repeat(range(nprobes), NTESTS)
@@ -94,7 +93,7 @@ cnd_arr_temp = np.vstack((movobj_predir_arr,
                           movobj_postdir_arr,
                           probe_pos_arr))
 # delta T with respect to the potential reversal time [in frames]
-# negative values mean the flash should occur before the reversal point
+# negative values mean the flash should occur before the reversal time
 probe_time_offset_arr = [-12, -6, 0, 6, 12]
 cnd_arr = np.tile(cnd_arr_temp, (1, len(probe_time_offset_arr)))
 probe_time_offset_arr = np.repeat(probe_time_offset_arr,
@@ -134,7 +133,7 @@ for itrial in range(ntrials):
                                                   cnd=cnd_arr[itrial])
     iframe_movobj_center = np.where(movobj_pathx == 0)
     # extract current trial's probe position
-    probe_pos_tr = [PROBE_POSX[cnd_arr[itrial][2]], PROBE_POSY]
+    probe_pos_tr = [PROBE_POSX, PROBE_POSY]
     # extract current trial's probe time
     probe_timeoffset_tr = cnd_arr[itrial][3]
 
@@ -146,10 +145,10 @@ for itrial in range(ntrials):
     if itrial == 0:
         cvis.infoscreen_exp5(win, cmd=command_keys)
 
-    if itrial % (ntrials / 11) == 0:
-        iblock += 1
-        cvis.run_pause_screen(win=win, current_block=iblock,
-                              cmd=command_keys, nblocks=11)
+    # if itrial % (ntrials / 11) == 0:
+    #     iblock += 1
+    #     cvis.run_pause_screen(win=win, current_block=iblock,
+    #                           cmd=command_keys, nblocks=11)
 
     # fixation period
     for frame in range(fixdot_dur):

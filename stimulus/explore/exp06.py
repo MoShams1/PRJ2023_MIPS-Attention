@@ -1,13 +1,12 @@
 """
 ***** Project MIPS-Anisotropy
-***** Experiment 07
+***** Experiment 06
 
         Mo Shams <MShamsCBR@gmail.com>
-        Initiated on: Jan 23, 2023
+        Initiated on: Jan 19, 2023
 
-An extension of exp06. Here, in addition to presenting several probes along
-the moving object's trajectory, I vary the temporal difference between the
-flash and the potential reversal time.
+An extension of exp05. Here I present several probes along the moving
+object's trajectory.
 """
 
 import os
@@ -20,10 +19,10 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 # /// GENERAL SETTINGS ///
 
-subID = 'MS1'
-NTESTS = 2  # this indicates how often each probe position has to be tested
+subID = 'test'
+NTESTS = 1  # this indicates how often each probe position has to be tested
 screen_num = 0  # 0: primary    1: secondary
-frame_rate = 120
+frame_rate = 480
 full_screen = True
 condition_order = 'random'  # random / blocked
 
@@ -33,7 +32,7 @@ command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 
 # /// SET UP DIRECTORY PATHS ///
 
-save_dir = os.path.join('..', 'data', 'exp07', 'raw')
+save_dir = os.path.join('../..', 'data', 'exp06', 'raw')
 file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}_" \
             f"{condition_order}.json"
 save_address = os.path.join(save_dir, file_name)
@@ -67,7 +66,7 @@ movobj_thickness = 0.2
 movobj_color = 'white'
 movobj_pathlen = 11  # must be an odd number
 movobj_dur = int(0.5 * practical_fr)  # sec x Hz = frames
-movobj_posatflash = None
+movobj_atflash = None
 
 # /// flashing object(s)
 probe_rad = .4  # radius of the probe
@@ -77,9 +76,9 @@ PROBE_POSX = np.linspace(-movobj_size, movobj_size, 11)
 PROBE_POSY = 5
 nprobes = len(PROBE_POSX)
 # 1: rightward  -1: leftward
-movobj_predir_arr = np.repeat([1, -1, 1, -1], NTESTS * nprobes)
+movobj_predir_arr = np.repeat([1, 1, 1, 1], NTESTS * nprobes)
 # 1: passing  -1: reversing
-movobj_postdir_arr = np.repeat([1, 1, -1, -1], NTESTS * nprobes)
+movobj_postdir_arr = np.repeat([1, 1, 1, 1], NTESTS * nprobes)
 probe_pos_temp1 = np.repeat(range(nprobes), NTESTS)
 probe_pos_temp2 = np.repeat(range(nprobes), NTESTS)
 probe_pos_temp3 = np.repeat(range(nprobes), NTESTS)
@@ -90,19 +89,12 @@ np.random.shuffle(probe_pos_temp3)
 np.random.shuffle(probe_pos_temp4)
 probe_pos_arr = np.concatenate((probe_pos_temp1, probe_pos_temp2,
                                 probe_pos_temp3, probe_pos_temp4))
-cnd_arr_temp = np.vstack((movobj_predir_arr,
-                          movobj_postdir_arr,
-                          probe_pos_arr))
-# delta T with respect to the potential reversal time [in frames]
-# negative values mean the flash should occur before the reversal point
-probe_time_offset_arr = [-12, -6, 0, 6, 12]
-cnd_arr = np.tile(cnd_arr_temp, (1, len(probe_time_offset_arr)))
-probe_time_offset_arr = np.repeat(probe_time_offset_arr,
-                                  cnd_arr_temp.shape[1])
-cnd_arr = np.vstack((cnd_arr, probe_time_offset_arr)).transpose()
+cnd_arr = np.vstack((movobj_predir_arr,
+                     movobj_postdir_arr,
+                     probe_pos_arr)).transpose()
 if condition_order == 'random':
     np.random.shuffle(cnd_arr)
-ntrials = cnd_arr.shape[0]
+ntrials = movobj_postdir_arr.shape[0]
 
 # ----------------------------------------------------------------------------
 
@@ -132,12 +124,8 @@ for itrial in range(ntrials):
     movobj_pathx, movobj_pathy = genpath.two_ways(pathlen=movobj_pathlen,
                                                   dur=movobj_dur,
                                                   cnd=cnd_arr[itrial])
-    iframe_movobj_center = np.where(movobj_pathx == 0)
     # extract current trial's probe position
     probe_pos_tr = [PROBE_POSX[cnd_arr[itrial][2]], PROBE_POSY]
-    # extract current trial's probe time
-    probe_timeoffset_tr = cnd_arr[itrial][3]
-
     # -------------------------------
 
     # /// run task
@@ -146,10 +134,10 @@ for itrial in range(ntrials):
     if itrial == 0:
         cvis.infoscreen_exp5(win, cmd=command_keys)
 
-    if itrial % (ntrials / 11) == 0:
+    if itrial % (ntrials / NTESTS) == 0:
         iblock += 1
         cvis.run_pause_screen(win=win, current_block=iblock,
-                              cmd=command_keys, nblocks=11)
+                              cmd=command_keys, nblocks=NTESTS)
 
     # fixation period
     for frame in range(fixdot_dur):
@@ -169,11 +157,9 @@ for itrial in range(ntrials):
                            pos=(movobj_pathx[iframe],
                                 movobj_pathy[iframe]),
                            line_width=movobj_thickness)
-            if (iframe - probe_timeoffset_tr) == iframe_movobj_center:
+            if movobj_pathx[iframe] == 0:
                 cvis.addprobe(win=win, radius=probe_rad, color=probe_color,
                               pos=probe_pos_tr)
-                movobj_posatflash = [movobj_pathx[iframe],
-                                     movobj_pathy[iframe]]
                 # +++ TEST +++
                 # cvis.showgrid_exp6(win, PROBE_POSX, PROBE_POSY)
                 # +++++++++++
@@ -193,13 +179,11 @@ for itrial in range(ntrials):
     trial_dict = {'trial_num': [itrial + 1],
                   'probe_loc': [probe_pos_tr],
                   'click_loc': [click_loc],
-                  'movobj_posatflash': [movobj_posatflash],
+                  'movobj_flashpos': [[0, 0]],
                   'movobj_size': [movobj_size],
                   'movobj_dur': [round(movobj_dur / practical_fr, 2)],
                   'movobj_firstpos': [[movobj_pathx[0], movobj_pathy[0]]],
                   'movobj_lastpos': [[movobj_pathx[-1], movobj_pathy[-1]]],
-                  'iframe_movobj_center': [iframe_movobj_center],
-                  'iframe_flash': [probe_timeoffset_tr],
                   'gap_dur': [round(firstgap_dur / practical_fr, 2)],
                   'cnd': [cnd_arr[itrial]]}
 

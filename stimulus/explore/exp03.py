@@ -1,16 +1,13 @@
 """
 ***** Project MIPS-Anisotropy
-***** Experiment 03
+***** Experiment 02
 
         Mo Shams <MShamsCBR@gmail.com>
         Initiated on: Jan 16, 2023
 
-In this experiment, the aim is to see wether the moving object's trajectory
-after the flash affects the positional judgment of the flash.
-
-A frame moves in one direction and hits a vertical bar, longer than its
-leading edge. After hit, the frame stops and the bar moves. Does the the
-span of the mislocalization expand to the length of the bar?
+Here, the aim is to see whether the shape of flashed objects distort in the
+same way as the mislocaliztion maps expect. If not, the space distortion
+idea will be challenged.
 """
 
 import os
@@ -25,7 +22,7 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 subID = 'test'
 NTESTS = 3  # this indicates how often each probe position has to be tested
-NGRIDS = [1, 9]  # number of dots along each dimension (x, y)
+NGRIDS = (9, 9)  # number of dots along each dimension (x, y)
 NTRIALS = NTESTS * NGRIDS[0] * NGRIDS[1]
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 120
@@ -39,7 +36,7 @@ command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 
 # /// SET UP DIRECTORY PATHS ///
 
-save_dir = os.path.join('..', 'data', 'raw')
+save_dir = os.path.join('../..', 'data', 'raw')
 file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}.json"
 save_address = os.path.join(save_dir, file_name)
 # ----------------------------------------------------------------------------
@@ -77,12 +74,8 @@ movobj_pathx, movobj_pathy = genpath.linear(pos1=movobj_firstpos,
                                             pos2=movobj_lastpos,
                                             dur=movobj_dur)
 
-# /// vertical bar
-bar_length = 7
-bar_width = 0.05
-
 # /// test grid
-grid_width = [0, 12]
+grid_width = 12
 grid_n = NGRIDS
 
 # /// flashing object(s)
@@ -91,9 +84,9 @@ probe_color = 'red'
 probe_frame = int(movobj_dur / 2)  # frame number where the probe should flash
 
 # generate test grid
-grid_x, grid_y = cvis.gengrid2(width=grid_width, n=grid_n,
-                               movpos1=movobj_firstpos,
-                               movpos2=movobj_lastpos)
+grid_x, grid_y = cvis.gengrid(width=grid_width, n=grid_n,
+                              movpos1=movobj_firstpos,
+                              movpos2=movobj_lastpos)
 
 # generate probe positions
 grid_x_arr = grid_x.flatten()
@@ -129,18 +122,15 @@ for itrial in range(NTRIALS):
     movobj_dir = random.choice([-1, 1])
     if movobj_dir == -1:
         movobj_pathx_tr = -movobj_pathx
-        bar_pathx_tr = movobj_pathx_tr - movobj_size / 2
         probe_pos_tr = (-probe_pos_list[itrial][0],
                         probe_pos_list[itrial][1])
         grid_x_tr = -grid_x
     else:
         movobj_pathx_tr = movobj_pathx
-        bar_pathx_tr = movobj_pathx_tr + movobj_size / 2
         probe_pos_tr = (probe_pos_list[itrial][0],
                         probe_pos_list[itrial][1])
         grid_x_tr = grid_x
     movobj_pathy_tr = movobj_pathy
-    bar_pathy_tr = movobj_pathy
     grid_y_tr = grid_y
     # -------------------------------
 
@@ -162,36 +152,22 @@ for itrial in range(NTRIALS):
     for frame in range(firstgap_dur):
         win.flip()
 
-    flash_flag = False
-
     # motion period
     for iframe in range(movobj_dur):
         for ifrrep in range(frame_rate_rep):
-            movobj_pos = np.array([movobj_pathx_tr[iframe],
-                                   movobj_pathy_tr[iframe]])
-            if not flash_flag:
-                bar_pos = np.array([bar_pathx_tr[probe_frame],
-                                    bar_pathy_tr[probe_frame]])
-            else:
-                bar_pos = np.array([bar_pathx_tr[iframe],
-                                    bar_pathy_tr[iframe]])
             cvis.addsquare(win=win, width=movobj_size, color=movobj_color,
-                           fillcolor=bg_color, pos=movobj_pos)
-            cvis.addline(win=win, pos=bar_pos,
-                         size=(bar_width, bar_length), color='white')
+                           fillcolor=bg_color, line_width=.1,
+                           pos=(movobj_pathx_tr[iframe],
+                                movobj_pathy_tr[iframe]))
             if iframe == probe_frame:
-                flash_flag = True
-                cvis.addprobe(win=win, radius=probe_rad, color=probe_color,
-                              pos=probe_pos_tr)
+                cvis.addline(win=win, pos=(3, 2.5), size=(.3, 5),
+                             color='tomato')
+                movobj_atflash = (movobj_pathx_tr[iframe],
+                                  movobj_pathy_tr[iframe])
                 # +++ TEST +++
-                # cvis.showgrid(win, grid_n, grid_x_tr, grid_y_tr)
+                # visual.showgrid(win, grid_n, grid_x_tr, grid_y_tr)
                 # +++++++++++
             win.flip()
-
-    movobj_atflash = (movobj_pathx_tr[probe_frame],
-                      movobj_pathy_tr[probe_frame])
-    bar_atflash = np.array([bar_pathx_tr[probe_frame],
-                            bar_pathy_tr[probe_frame]])
 
     # response period
     click_loc = keymouse.get_mouseclick(win)
@@ -208,7 +184,7 @@ for itrial in range(NTRIALS):
     trial_dict = {'trial_num': [itrial + 1],
                   'probe_loc': [probe_pos_tr],
                   'click_loc': [click_loc],
-                  'movobj_flashloc': [movobj_atflash],
+                  'movobj_flashpos': [movobj_atflash],
                   'movobj_size': [movobj_size],
                   'movobj_dur': [round(movobj_dur / practical_fr, 2)],
                   'movobj_firstpos': [(movobj_pathx_tr[0],
@@ -216,8 +192,6 @@ for itrial in range(NTRIALS):
                   'movobj_lastpos': [(movobj_pathx_tr[-1],
                                       movobj_pathy_tr[-1])],
                   'movobj_dir': movobj_dir,
-                  'bar_flashloc': bar_atflash,
-                  'bar_width': bar_width,
                   'gap_dur': [round(firstgap_dur / practical_fr, 2)]}
 
     # convert to data frame

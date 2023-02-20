@@ -7,6 +7,11 @@ def linear(pos1, pos2, dur):
     return pathx, pathy
 
 
+def angular(theta1, theta2, dur):
+    paththeta = np.linspace(theta1, theta2, dur)
+    return paththeta
+
+
 def two_ways(pathlen, dur, cnd):
     halfpath = int((pathlen - 1) / 2)
     halfdur = int(dur / 2)

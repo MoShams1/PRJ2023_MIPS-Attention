@@ -26,7 +26,7 @@ def configwin(mon, fullscr, screen, color):
                             pos=[0, 0], fullscr=fullscr, color=color)
     else:
         win = visual.Window(monitor=mon, units='deg',
-                            size=[1200, 1000], pos=[0, 0],
+                            size=[800, 800], pos=[0, 0],
                             color=color)
     win.mouseVisible = False
     return win
@@ -51,6 +51,34 @@ def addfixdot(win, size=1, pos=(0, 0), color='black'):
 def addprobe(win, radius, color, pos):
     probe = visual.Circle(win, radius=radius, fillColor=color, pos=pos)
     probe.draw()
+
+
+def addprobe2(win, radius, color, pos):
+    probe_ring = visual.Circle(win, radius=radius*1.2, fillColor='black',
+                               pos=pos)
+    probe = visual.Circle(win, radius=radius, fillColor=color, pos=pos)
+    probe_ring.draw()
+    probe.draw()
+
+
+def addbar(win, size, color, theta, radius):
+    # convert degree to radian
+    theta_rad = (theta / 360) * 2 * np.pi
+    # calculate the bar position
+    posx = radius * np.cos(theta_rad)
+    posy = radius * np.sin(theta_rad)
+    # convert theta to the orientation convention of Pcyhopy
+    orientation = (360 - theta) + 90
+    bar = visual.Rect(win=win, size=size, fillColor=color,
+                      ori=orientation, pos=(posx, posy),
+                      lineWidth=.3)
+    # cover = visual.Rect(win=win, size=width, fillColor=color, pos=pos,
+    #                     width=line_width, ori=45)
+    # inner_frame = visual.Rect(win=win, size=[width[0] - line_width,
+    #                                          width[1] - line_width],
+    #                           fillColor=fillcolor, pos=pos)
+    # outer_frame.draw()
+    bar.draw()
 
 
 def addsquare(win, width, color, fillcolor, pos, line_width=0.2):
@@ -199,4 +227,3 @@ def run_pause_screen(win, current_block, cmd, nblocks, cnd=None,
         core.quit()
     elif cmd['response_key'] in pressed_key:
         pass
-

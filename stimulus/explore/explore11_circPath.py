@@ -26,8 +26,8 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 # /// GENERAL SETTINGS ///
 
 subID = 'test'
-NTRIALS = 3
-screen_num = 0  # 0: primary    1: secondary
+NTRIALS = 1
+screen_num = 1  # 0: primary    1: secondary
 frame_rate = 120
 full_screen = False
 

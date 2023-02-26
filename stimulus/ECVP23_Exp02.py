@@ -1,14 +1,16 @@
 """
-Project MIPS-Anisotropy (Exploration 11)
+Project MIPS-Anisotropy
 Mo Shams <MShamsCBR@gmail.com>
 Initiated on: Feb 20, 2023
 ---
 
-SPATIAL PROFILE OF THE ANISOTROPY (LOCALLY PREDICTABLE FLASH)
+SPATIAL PROFILE OF THE ANISOTROPY (ECVP23 - Experiment 02)
+    unpredictable moving object's trajectory
+    unpredictable location of the bar at the time of flash
 
-- A bar rotates around the fixation dot.
-- The path, direction, and the phase of the trajectory is constant.
-- When the bar is at top, a probe flashes at different positions wrt the bar.
+TASK OVERVIEW
+- A bar rotates around the gaze.
+- After the bar disappears, the flash has to be localized.
 
 """
 
@@ -35,7 +37,7 @@ command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 
 # /// SET UP DIRECTORY PATHS ///
 
-save_dir = os.path.join('..', '..', 'data', 'explore11')
+save_dir = os.path.join('', '..', 'data', 'ECVP23_Exp01')
 file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}.json"
 save_address = os.path.join(save_dir, file_name)
 # ----------------------------------------------------------------------------
@@ -103,14 +105,14 @@ cvis.test_framerate(win=win, nominal_fr=frame_rate)
 
 # /// START TRIAL ///
 
-for itrial in range(3):
+for itrial in range(ntrials):
 
     # -------------------------------
 
     # /// set up trial variables
 
     # decide on starting point and rotating direction of the bar
-    movobj_dir = 'ccw'  # 'cw' or 'ccw'
+    movobj_dir = random.choice(['cw', 'ccw'])
     movobj_theta_first = random.choice(range(180, 360, 10))
     movobj_thetas = genpath.angular(theta1=movobj_theta_first,
                                     dur=movobj_dur,
@@ -123,11 +125,11 @@ for itrial in range(3):
 
     # adjust flash position wrt bar position
     probe_pos_trial = probe_pos_list[itrial]
-    theta = movobj_thetas[probe_frame]
-    theta_rad = theta / 360 * 2 * np.pi
+    probe_theta = movobj_thetas[probe_frame]
+    probe_theta_rad = probe_theta / 360 * 2 * np.pi
     probe_pos_trial = cvis.rotate_point(origin=(0, 0),
                                         point=probe_pos_trial,
-                                        angle=theta_rad,
+                                        angle=probe_theta_rad,
                                         rotdir=movobj_dir)
     # decide on gap durations
     firstgap_dur = np.random.choice(gap_dur_arr)
@@ -174,6 +176,8 @@ for itrial in range(3):
                   'click_loc': [click_loc],
                   'movobj_atflash': [movobj_atflash],
                   'movobj_dur_sec': [movobj_dur_sec],
+                  'movobj_theta_first': [movobj_theta_first],
+                  'probe_theta': [probe_theta],
                   'movobj_dir': [movobj_dir]}
 
     # convert to data frame

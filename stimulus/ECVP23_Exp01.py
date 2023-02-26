@@ -24,7 +24,7 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 # /// GENERAL SETTINGS ///
 
-subID = 'test'
+subID = 'MS1'
 n_tests_per_position = 3
 test_grid_width_n = 5
 ntrials = n_tests_per_position * test_grid_width_n * test_grid_width_n
@@ -83,7 +83,9 @@ probe_frame = int(movobj_dur / 2)  # frame num where the probe flashes
 probe_frame_offset_coeff = 6  # tolerance to deviate from midway
 probe_frame_limit = int(movobj_dur / probe_frame_offset_coeff)
 # generate test grid
-grid_x, grid_y = cvis.gengrid3(width=4, n=[5, 5], pos=[movobj_path_radius, 0])
+grid_x, grid_y = cvis.gengrid3(width=4,
+                               n=[test_grid_width_n, test_grid_width_n],
+                               pos=[movobj_path_radius, 0])
 # generate probe positions
 grid_x_arr = grid_x.flatten()
 grid_y_arr = grid_y.flatten()

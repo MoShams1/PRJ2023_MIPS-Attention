@@ -240,15 +240,11 @@ def run_pause_screen(win, current_block, cmd, nblocks, cnd=None,
         pass
 
 
-def rotate_point(origin, point, angle, rotdir='ccw'):
+def rotate_point(origin, point, angle):
     """
     Rotate a point counterclockwise by a given angle around a given origin.
     The angle should be given in degrees.
     """
-    # convert angle to radians
-    if rotdir == 'cw':
-        angle = -angle
-
     ox, oy = origin
     px, py = point
 

@@ -24,13 +24,13 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 # /// GENERAL SETTINGS ///
 
-subID = 'MS1'
+subID = 'AR1'
 n_tests_per_position = 3
 test_grid_width_n = 5
 ntrials = n_tests_per_position * test_grid_width_n * test_grid_width_n
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 60
-full_screen = False
+full_screen = True
 
 command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 # ----------------------------------------------------------------------------
@@ -133,8 +133,8 @@ for itrial in range(ntrials):
     probe_theta_rad = probe_theta / 360 * 2 * np.pi
     probe_pos_trial = cvis.rotate_point(origin=(0, 0),
                                         point=probe_pos_trial,
-                                        angle=probe_theta_rad,
-                                        rotdir=movobj_dir)
+                                        angle=probe_theta_rad)
+    probe_pos_trial = [round(item, 2) for item in probe_pos_trial]
     # decide on gap durations
     firstgap_dur = np.random.choice(gap_dur_arr)
     lastgap_dur = np.random.choice(gap_dur_arr)
@@ -161,6 +161,27 @@ for itrial in range(ntrials):
                 cvis.addprobe2(win=win, radius=probe_rad,
                                color=probe_color,
                                pos=probe_pos_trial)
+
+                # %%% TEST %%%
+                # for itest in range(60):
+                #     cvis.addbar(win=win, size=movobj_size, color=movobj_color,
+                #                 theta=movobj_thetas[iframe],
+                #                 radius=movobj_path_radius)
+                #     cvis.addprobe2(win=win, radius=probe_rad,
+                #                    color=probe_color,
+                #                    pos=[-2, -2+5])
+                #     cvis.addprobe2(win=win, radius=probe_rad,
+                #                    color=probe_color,
+                #                    pos=[2, 2+5])
+                #     cvis.addprobe2(win=win, radius=probe_rad,
+                #                    color=probe_color,
+                #                    pos=[-2, 2+5])
+                #     cvis.addprobe2(win=win, radius=probe_rad,
+                #                    color=probe_color,
+                #                    pos=[2, -2+5])
+                #     win.flip()
+                # -------------
+
                 movobj_atflash = movobj_thetas[iframe]
             win.flip()
 

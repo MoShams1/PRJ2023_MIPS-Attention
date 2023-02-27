@@ -65,7 +65,7 @@ def clean_colormap(ax):
 
 data_dir = os.path.join('..', 'data', 'ECVP23_Exp01')
 save_dir = os.path.join('..', 'result', 'ECVP23')
-file_name = "MS1_20230227_132026.json"
+file_name = "AR1_20230227_193736.json"
 subID = file_name[:3]
 file_address = os.path.join(data_dir, file_name)
 df = pd.read_json(file_address)
@@ -154,7 +154,8 @@ axs[1].set(xlabel='Horizontal position wrt fixation [deg]',
 limit_large(axs[1])
 modify_maps(axs[1])
 
-plt.savefig(os.path.join(save_dir, f"{subID}_probes_clicks_errors.pdf"))
+plt.savefig(os.path.join(save_dir,
+                         f"ECVP23_Exp01_{subID}_probes_clicks_errors.pdf"))
 # --------------------------------------
 
 # @@@ horizontal mislocalization map
@@ -186,7 +187,8 @@ axs[0, 1].axis('off')
 axs[2, 0].axis('off')
 axs[2, 1].axis('off')
 
-plt.savefig(os.path.join(save_dir, f"{subID}_horizontal_err_map.pdf"))
+plt.savefig(os.path.join(save_dir,
+                         f"ECVP23_Exp01_{subID}_horizontal_err_map.pdf"))
 # --------------------------------------
 
 # @@@ vertical mislocalization map

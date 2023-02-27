@@ -4,9 +4,9 @@ Mo Shams <MShamsCBR@gmail.com>
 Initiated on: Feb 27, 2023
 ---
 
-Analyzes data from ECVP23_Exp03
+Analyzes data from ECVP23_Exp05
 To show the magnitude of the mislocalization of a flashed object at
-different times wrt a moving object's sweep
+different times wrt a moving object's sweep at half speed
 
 """
 import os
@@ -22,9 +22,9 @@ from matplotlib.patches import Polygon
 
 # /// CONFIGURE PATHS AND LOAD DATA ///
 
-data_dir = os.path.join('..', 'data', 'ECVP23_Exp03')
+data_dir = os.path.join('..', 'data', 'ECVP23_Exp05')
 save_dir = os.path.join('..', 'result', 'ECVP23')
-file_name = "MS1_20230227_163002.json"
+file_name = "AR1_20230227_200934.json"
 subID = file_name[:3]
 file_address = os.path.join(data_dir, file_name)
 df = pd.read_json(file_address)
@@ -58,7 +58,7 @@ for theta in thetas:
 cp.prep4ai()
 
 # convert theta to time
-times = (thetas - 90) / 90 * 250  # in ms
+times = (thetas - 90) / 90 * 500  # in ms
 # --------------------------------------
 
 fig, ax = plt.subplots(1, figsize=(4, 4))
@@ -70,5 +70,5 @@ ax.set(xlabel='Sweep time wrt flash time [ms]',
        ylabel='Mislocalization in direction of motion [dva]')
 plt.tight_layout()
 plt.savefig(os.path.join(save_dir,
-                         f"ECVP23_Exp03_{subID}_misloc_vs_sweeptime.pdf"))
+                         f"ECVP23_Exp05_{subID}_misloc_vs_sweeptime.pdf"))
 # --------------------------------------

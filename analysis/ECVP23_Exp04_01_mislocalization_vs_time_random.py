@@ -24,7 +24,7 @@ from matplotlib.patches import Polygon
 
 data_dir = os.path.join('..', 'data', 'ECVP23_Exp04')
 save_dir = os.path.join('..', 'result', 'ECVP23')
-file_name = "MS1_20230227_174704.json"
+file_name = "AR1_20230227_200155.json"
 subID = file_name[:3]
 file_address = os.path.join(data_dir, file_name)
 df = pd.read_json(file_address)
@@ -65,11 +65,11 @@ times = (thetas - 90) / 90 * 250  # in ms
 fig, ax = plt.subplots(1, figsize=(4, 4))
 fig.suptitle(f"subID: {subID} – Effect of sweep time - random")
 ax.plot(times, err_arr_x)
-# ax.axhline(color='k', linestyle='--')
-# ax.axvline(color='k', linestyle='--')
-# ax.set(xlabel='Sweep time wrt flash time [ms]',
-#        ylabel='Mislocalization in direction of motion [dva]')
-# plt.tight_layout()
-# plt.savefig(os.path.join(save_dir,
-#                          f"ECVP23_Exp04_{subID}_misloc_vs_sweeptime.pdf"))
+ax.axhline(color='k', linestyle='--')
+ax.axvline(color='k', linestyle='--')
+ax.set(xlabel='Sweep time wrt flash time [ms]',
+       ylabel='Mislocalization in direction of motion [dva]')
+plt.tight_layout()
+plt.savefig(os.path.join(save_dir,
+                         f"ECVP23_Exp04_{subID}_misloc_vs_sweeptime.pdf"))
 # --------------------------------------

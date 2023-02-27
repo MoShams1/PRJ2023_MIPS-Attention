@@ -24,7 +24,7 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 # /// GENERAL SETTINGS ///
 
 subID = 'AR1'
-n_tests_per_position = 1
+n_tests_per_position = 3
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 60
 full_screen = True
@@ -62,7 +62,7 @@ fixdot_color = 'white'
 fixdot_dur = 1 * practical_fr  # sec x Hz = frames
 
 # /// moving object
-movobj_size = [.15, 3]
+movobj_size = [.3, 3]
 movobj_color = 'white'
 movobj_path_radius = 5
 movobj_dur_sec = 2
@@ -73,7 +73,7 @@ assert movobj_dur % 2 == 1, 'Number of frames is not an odd number.'
 movobj_atflash = None
 
 # /// flashing object(s)
-probe_rad = .25  # radius of the probe
+probe_rad = .5  # radius of the probe
 probe_color = 'red'
 probe_quarter_frame = int(movobj_dur / 4)
 probe_frame_list = list(range(15*2, (43 + 1) * 2, 4))

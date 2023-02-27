@@ -63,7 +63,7 @@ fixdot_color = 'white'
 fixdot_dur = 1 * practical_fr  # sec x Hz = frames
 
 # /// moving object
-movobj_size = [.15, 3]
+movobj_size = [.3, 3]
 movobj_color = 'white'
 movobj_path_radius = 5
 movobj_dur_sec = 1
@@ -74,7 +74,7 @@ assert movobj_dur % 2 == 1, 'Number of frames is not an odd number.'
 movobj_atflash = None
 
 # /// flashing object(s)
-probe_rad = .25  # radius of the probe
+probe_rad = .5  # radius of the probe
 probe_color = 'red'
 probe_quarter_frame = int(movobj_dur / 4)
 probe_frame_list = list(range(15, 43 + 1, 2))

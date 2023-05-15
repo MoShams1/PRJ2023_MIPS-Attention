@@ -1,14 +1,16 @@
 """
-Project MIPS-Anisotropy (Exploration 11)
+Project MIPS-Anisotropy
 Mo Shams <MShamsCBR@gmail.com>
 Initiated on: Feb 20, 2023
 ---
 
-SPATIAL PROFILE OF THE ANISOTROPY (LOCALLY PREDICTABLE FLASH)
+SPATIAL PROFILE OF THE ANISOTROPY (ECVP23 - Experiment 01)
+    predictable moving object's trajectory
+    predictable location of the bar at the time of flash
 
-- A bar rotates around the fixation dot.
-- The path, direction, and the phase of the trajectory is constant.
-- When the bar is at top, a probe flashes at different positions wrt the bar.
+TASK OVERVIEW
+- A bar rotates around the gaze.
+- After the bar disappears, the flash has to be localized.
 
 """
 
@@ -22,20 +24,20 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 # /// GENERAL SETTINGS ///
 
-subID = 'test'
+subID = 'AR1'
 n_tests_per_position = 3
 test_grid_width_n = 5
 ntrials = n_tests_per_position * test_grid_width_n * test_grid_width_n
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 60
-full_screen = False
+full_screen = True
 
 command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 # ----------------------------------------------------------------------------
 
 # /// SET UP DIRECTORY PATHS ///
 
-save_dir = os.path.join('..', '..', 'data', 'explore11')
+save_dir = os.path.join('', '..', 'data', 'ECVP23_Exp01')
 file_name = f"{subID}_{timestamp.getdate()}_{timestamp.gettime()}.json"
 save_address = os.path.join(save_dir, file_name)
 # ----------------------------------------------------------------------------
@@ -63,7 +65,7 @@ fixdot_color = 'white'
 fixdot_dur = 1 * practical_fr  # sec x Hz = frames
 
 # /// moving object
-movobj_size = [.15, 3]
+movobj_size = [.3, 3]
 movobj_color = 'white'
 movobj_path_radius = 5
 movobj_dur_sec = 1
@@ -74,14 +76,16 @@ assert movobj_dur % 2 == 1, 'Number of frames is not an odd number.'
 movobj_atflash = None
 
 # /// flashing object(s)
-probe_rad = .25  # radius of the probe
+probe_rad = .5  # radius of the probe
 probe_color = 'red'
 # probe_frame_offset_range = 0
 probe_frame = int(movobj_dur / 2)  # frame num where the probe flashes
 probe_frame_offset_coeff = 6  # tolerance to deviate from midway
 probe_frame_limit = int(movobj_dur / probe_frame_offset_coeff)
 # generate test grid
-grid_x, grid_y = cvis.gengrid3(width=4, n=[5, 5], pos=[movobj_path_radius, 0])
+grid_x, grid_y = cvis.gengrid3(width=4,
+                               n=[test_grid_width_n, test_grid_width_n],
+                               pos=[movobj_path_radius, 0])
 # generate probe positions
 grid_x_arr = grid_x.flatten()
 grid_y_arr = grid_y.flatten()
@@ -103,32 +107,34 @@ cvis.test_framerate(win=win, nominal_fr=frame_rate)
 
 # /// START TRIAL ///
 
-for itrial in range(3):
+for itrial in range(ntrials):
 
     # -------------------------------
 
     # /// set up trial variables
 
     # decide on starting point and rotating direction of the bar
-    movobj_dir = 'ccw'  # 'cw' or 'ccw'
-    movobj_theta_first = random.choice(range(180, 360, 10))
+    movobj_dir = 'cw'  # 'cw' or 'ccw'
+    # movobj_theta_first = random.choice(range(180, 360, 10))
+    movobj_theta_first = 270
     movobj_thetas = genpath.angular(theta1=movobj_theta_first,
                                     dur=movobj_dur,
                                     rotdir=movobj_dir)
 
     # slightly jitter the time of the flash
-    probe_frame_offset = random.choice(range(-probe_frame_limit,
-                                             probe_frame_limit))
+    # probe_frame_offset = random.choice(range(-probe_frame_limit,
+    #                                          probe_frame_limit))
+    probe_frame_offset = 0
     probe_frame = probe_frame + probe_frame_offset
 
     # adjust flash position wrt bar position
     probe_pos_trial = probe_pos_list[itrial]
-    theta = movobj_thetas[probe_frame]
-    theta_rad = theta / 360 * 2 * np.pi
+    probe_theta = movobj_thetas[probe_frame]
+    probe_theta_rad = probe_theta / 360 * 2 * np.pi
     probe_pos_trial = cvis.rotate_point(origin=(0, 0),
                                         point=probe_pos_trial,
-                                        angle=theta_rad,
-                                        rotdir=movobj_dir)
+                                        angle=probe_theta_rad)
+    probe_pos_trial = [round(item, 2) for item in probe_pos_trial]
     # decide on gap durations
     firstgap_dur = np.random.choice(gap_dur_arr)
     lastgap_dur = np.random.choice(gap_dur_arr)
@@ -155,6 +161,27 @@ for itrial in range(3):
                 cvis.addprobe2(win=win, radius=probe_rad,
                                color=probe_color,
                                pos=probe_pos_trial)
+
+                # %%% TEST %%%
+                # for itest in range(60):
+                #     cvis.addbar(win=win, size=movobj_size, color=movobj_color,
+                #                 theta=movobj_thetas[iframe],
+                #                 radius=movobj_path_radius)
+                #     cvis.addprobe2(win=win, radius=probe_rad,
+                #                    color=probe_color,
+                #                    pos=[-2, -2+5])
+                #     cvis.addprobe2(win=win, radius=probe_rad,
+                #                    color=probe_color,
+                #                    pos=[2, 2+5])
+                #     cvis.addprobe2(win=win, radius=probe_rad,
+                #                    color=probe_color,
+                #                    pos=[-2, 2+5])
+                #     cvis.addprobe2(win=win, radius=probe_rad,
+                #                    color=probe_color,
+                #                    pos=[2, -2+5])
+                #     win.flip()
+                # -------------
+
                 movobj_atflash = movobj_thetas[iframe]
             win.flip()
 
@@ -174,6 +201,8 @@ for itrial in range(3):
                   'click_loc': [click_loc],
                   'movobj_atflash': [movobj_atflash],
                   'movobj_dur_sec': [movobj_dur_sec],
+                  'movobj_theta_first': [movobj_theta_first],
+                  'probe_theta': [probe_theta],
                   'movobj_dir': [movobj_dir]}
 
     # convert to data frame

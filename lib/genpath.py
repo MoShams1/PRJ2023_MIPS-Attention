@@ -7,7 +7,11 @@ def linear(pos1, pos2, dur):
     return pathx, pathy
 
 
-def angular(theta1, theta2, dur):
+def angular(theta1, dur, rotdir='ccw'):
+    if rotdir == 'ccw':
+        theta2 = theta1 + 360
+    else:
+        theta2 = theta1 - 360
     paththeta = np.linspace(theta1, theta2, dur)
     return paththeta
 

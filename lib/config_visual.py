@@ -125,6 +125,17 @@ def gengrid2(width, n, movpos1, movpos2):
     return xv, yv
 
 
+def gengrid3(width, n, pos, pos_offset=0):
+    x = np.linspace(-width / 2, width / 2, n[0])
+    y = np.linspace(-width / 2, width / 2, n[1])
+    # move to desired position
+    x = x + pos[0]
+    y = y + pos[1]
+    # generate meshgrid
+    xv, yv = np.meshgrid(x, y)
+    return xv, yv
+
+
 def showgrid(win, grid_n, grid_x_tr, grid_y_tr):
     for i in range(grid_n[1]):
         for j in range(grid_n[0]):
@@ -227,3 +238,17 @@ def run_pause_screen(win, current_block, cmd, nblocks, cnd=None,
         core.quit()
     elif cmd['response_key'] in pressed_key:
         pass
+
+
+def rotate_point(origin, point, angle):
+    """
+    Rotate a point counterclockwise by a given angle around a given origin.
+    The angle should be given in degrees.
+    """
+    ox, oy = origin
+    px, py = point
+
+    qx = ox + np.cos(angle) * (px - ox) - np.sin(angle) * (py - oy)
+    qy = oy + np.sin(angle) * (px - ox) + np.cos(angle) * (py - oy)
+    q = (qx, qy)
+    return q

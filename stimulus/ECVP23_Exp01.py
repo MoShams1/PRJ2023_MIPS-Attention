@@ -24,13 +24,13 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 # /// GENERAL SETTINGS ///
 
-subID = 'AR1'
-n_tests_per_position = 3
+subID = '0004'
+n_tests_per_position = 5
 test_grid_width_n = 5
 ntrials = n_tests_per_position * test_grid_width_n * test_grid_width_n
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 60
-full_screen = True
+full_screen = True  # True / False
 
 command_keys = {'quit_key': 'escape', 'response_key': 'space'}
 # ----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ movobj_atflash = None
 
 # /// flashing object(s)
 probe_rad = .5  # radius of the probe
-probe_color = 'red'
+probe_color = 'tomato'
 # probe_frame_offset_range = 0
 probe_frame = int(movobj_dur / 2)  # frame num where the probe flashes
 probe_frame_offset_coeff = 6  # tolerance to deviate from midway

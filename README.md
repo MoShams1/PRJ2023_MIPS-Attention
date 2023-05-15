@@ -1,4 +1,4 @@
-# Project MIPS-Anisotropy
+# Project MIPS-SProf
 Mo Shams <MShamsCBR.gmail.com>  
 Jan 03, 2023    
 

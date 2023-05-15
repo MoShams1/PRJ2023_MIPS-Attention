@@ -1,5 +1,5 @@
 """
-Project MIPS-Anisotropy (Exploration 11)
+Project MIPS-SProf (Exploration 11)
 Mo Shams <MShamsCBR@gmail.com>
 Initiated on: Feb 20, 2023
 ---

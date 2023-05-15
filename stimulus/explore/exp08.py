@@ -1,5 +1,5 @@
 """
-***** Project MIPS-Anisotropy
+***** Project MIPS-SProf
 ***** Experiment 07
 
         Mo Shams <MShamsCBR@gmail.com>

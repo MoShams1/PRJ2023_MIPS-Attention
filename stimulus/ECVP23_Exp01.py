@@ -1,5 +1,5 @@
 """
-Project MIPS-Anisotropy
+Project MIPS-SProf
 Mo Shams <MShamsCBR@gmail.com>
 Initiated on: Feb 20, 2023
 ---

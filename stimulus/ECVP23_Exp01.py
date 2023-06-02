@@ -24,7 +24,7 @@ from lib import config_visual as cvis, genpath, keymouse, timestamp
 
 # /// GENERAL SETTINGS ///
 
-subID = '0005'
+subID = '1191'
 n_tests_per_position = 5
 test_grid_width_n = 5
 ntrials = n_tests_per_position * test_grid_width_n * test_grid_width_n

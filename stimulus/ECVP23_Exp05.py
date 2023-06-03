@@ -18,12 +18,13 @@ import random
 import numpy as np
 import pandas as pd
 from lib import config_visual as cvis, genpath, keymouse, timestamp
+import warnings
 
 # ----------------------------------------------------------------------------
 
 # /// GENERAL SETTINGS ///
 
-subID = '1191'
+subID = 'test'
 n_tests_per_position = 5
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 60
@@ -85,6 +86,9 @@ probe_frame_offset_coeff = 4  # tolerance to deviate from midway
 probe_frame_limit = int(movobj_dur / probe_frame_offset_coeff)
 # generate test grid
 probe_pos_trial = [0, 5]
+
+# turn of Numpy's FutureWarning
+warnings.simplefilter(action='ignore', category=FutureWarning)
 # ----------------------------------------------------------------------------
 
 # /// CONFIGURE MONITOR ///

@@ -19,12 +19,13 @@ import random
 import numpy as np
 import pandas as pd
 from lib import config_visual as cvis, genpath, keymouse, timestamp
+import warnings
 
 # ----------------------------------------------------------------------------
 
 # /// GENERAL SETTINGS ///
 
-subID = '1191'
+subID = 'test'
 n_tests_per_position = 5
 test_grid_width_n = 5
 ntrials = n_tests_per_position * test_grid_width_n * test_grid_width_n
@@ -94,6 +95,9 @@ probe_pos_list = []
 for itest in range(n_tests_per_position):
     probe_pos_list = probe_pos_list + probe_pos_temp
 random.shuffle(probe_pos_list)
+
+# turn of Numpy's FutureWarning
+warnings.simplefilter(action='ignore', category=FutureWarning)
 # ----------------------------------------------------------------------------
 
 # /// CONFIGURE MONITOR ///

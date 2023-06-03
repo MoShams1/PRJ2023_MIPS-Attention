@@ -19,7 +19,7 @@ import random
 import numpy as np
 import pandas as pd
 from lib import config_visual as cvis, genpath, keymouse, timestamp
-
+import warnings
 # ----------------------------------------------------------------------------
 
 # /// GENERAL SETTINGS ///
@@ -86,6 +86,9 @@ probe_frame_offset_coeff = 4  # tolerance to deviate from midway
 probe_frame_limit = int(movobj_dur / probe_frame_offset_coeff)
 # generate test grid
 probe_pos_trial = [0, 5]
+
+# turn of Numpy's FutureWarning
+warnings.simplefilter(action='ignore', category=FutureWarning)
 # ----------------------------------------------------------------------------
 
 # /// CONFIGURE MONITOR ///

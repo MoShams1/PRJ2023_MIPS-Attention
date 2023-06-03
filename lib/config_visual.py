@@ -15,7 +15,7 @@ def configmon_macair():
 
 
 def configmon_dell():
-    monitor = monitors.Monitor('prim_mon', width=60.45, distance=57)
+    monitor = monitors.Monitor('prim_mon', width=52, distance=70)
     monitor.setSizePix([1920, 1080])
     return monitor
 
@@ -26,7 +26,7 @@ def configwin(mon, fullscr, screen, color):
                             pos=[0, 0], fullscr=fullscr, color=color)
     else:
         win = visual.Window(monitor=mon, units='deg',
-                            size=[800, 800], pos=[0, 0],
+                            size=[1920, 700], pos=[0, 0],
                             color=color)
     win.mouseVisible = False
     return win

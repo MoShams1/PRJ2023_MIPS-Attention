@@ -24,8 +24,14 @@ from matplotlib.patches import Polygon
 
 data_dir = os.path.join('..', 'data', 'ECVP23_Exp03')
 save_dir = os.path.join('..', 'result', 'ECVP23')
-file_name = "AR1_20230227_195314.json"
-subID = file_name[:3]
+# file_name = "AR1_20230227_195314.json"
+# file_name = "MS1_20230228_115227.json"
+# file_name = "0001_20230601_112438.json"
+# file_name = "0005_20230602_105623.json"
+# file_name = "0011_20230601_120919.json"
+# file_name = "1191_20230602_113813.json"
+file_name = "2002_20230601_105314.json"
+subID = file_name[:4]
 file_address = os.path.join(data_dir, file_name)
 df = pd.read_json(file_address)
 # ----------------------------------------------------------------------------

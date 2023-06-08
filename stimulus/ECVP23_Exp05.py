@@ -24,7 +24,7 @@ import warnings
 
 # /// GENERAL SETTINGS ///
 
-subID = 'test'
+subID = '0013'
 n_tests_per_position = 5
 screen_num = 0  # 0: primary    1: secondary
 frame_rate = 60

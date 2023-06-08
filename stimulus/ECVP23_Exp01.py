@@ -25,7 +25,7 @@ import warnings
 
 # /// GENERAL SETTINGS ///
 
-subID = 'test'
+subID = '0013'
 n_tests_per_position = 5
 test_grid_width_n = 5
 ntrials = n_tests_per_position * test_grid_width_n * test_grid_width_n

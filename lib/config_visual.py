@@ -20,13 +20,25 @@ def configmon_dell():
     return monitor
 
 
-def configwin(mon, fullscr, screen, color):
+def configwin(mon, fullscr, color, screen=0):
     if fullscr:
         win = visual.Window(monitor=mon, screen=screen, units='deg',
                             pos=[0, 0], fullscr=fullscr, color=color)
     else:
         win = visual.Window(monitor=mon, units='deg',
                             size=[1920, 700], pos=[0, 0],
+                            color=color)
+    win.mouseVisible = False
+    return win
+
+
+def configwin_macair(mon, fullscr, color, screen=0):
+    if fullscr:
+        win = visual.Window(monitor=mon, screen=screen, units='deg',
+                            pos=[0, 0], fullscr=fullscr, color=color)
+    else:
+        win = visual.Window(monitor=mon, units='deg',
+                            size=[1440, 450], pos=[0, 0],
                             color=color)
     win.mouseVisible = False
     return win

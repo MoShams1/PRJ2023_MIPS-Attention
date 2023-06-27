@@ -6,10 +6,8 @@ June 2023
 The subject's task is to localize a flashing probe in the presence of a moving
 annulus.
 
-15 repetitions
-2 direction condisions (first half of rotatioin is considered): cw or ccw
-2 annulus conditions: with and without visual marker
-2 reversal conditions: with and without reversal
+20 repetitions
+5 spatio-temporal conditions
 
 """
 
@@ -40,11 +38,11 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # /// GENERAL SETTINGS ///
 
 subID = 'test'
-rep_per_cnd = 15  # repetition per condition
+rep_per_cnd = 24  # repetition per condition
 full_screen = False
 running_device = 'mac'  # 'linux' or 'mac'
 
-n_trials = rep_per_cnd * 2 * 2 * 2
+n_trials = rep_per_cnd * 5
 frame_rate = 60
 frame_repeat = 2  # flash duration [frames]
 command_keys = {'quit_key': 'escape', 'response_key': 'space'}
@@ -57,7 +55,7 @@ image_folder = os.path.join('', '..', 'stimulus', 'image')
 
 save_path = \
     os.path.join(save_folder,
-                 f"{subID}_task01_{timestamp.getdate()}_"
+                 f"{subID}_task02_{timestamp.getdate()}_"
                  f"{timestamp.gettime()}.json")
 # ----------------------------------------------------------------------------
 
@@ -85,18 +83,33 @@ fixdot_dur = 1 * practical_fr  # sec x Hz = frames
 
 # /// moving object
 mov_size = 10
-mov_dur = int(2 * practical_fr)  # in frames
-# create orientation array (row 1: w/o rev | row 2: w/ rev)
-rot_array_base = np.linspace(-90, 90, int(mov_dur / 2) + 1)
-rot_array_rev = \
-    np.concatenate((rot_array_base[:int(len(rot_array_base) / 2) + 1],
-                    np.flip(rot_array_base[:int(len(rot_array_base) / 2)])))
-rot_array = np.vstack((rot_array_base, rot_array_rev))
+mov_dur = int(.9 * practical_fr / frame_repeat)  # in frames
+# create orientation arrays
+rot_array_th135_t300 = np.linspace(-135, 135, int(mov_dur / 3 * 2) + 1)
+rot_array_th90_t300 = \
+    np.clip(rot_array_th135_t300, -90, np.max(rot_array_th135_t300))
+rot_array_th45_t300 = \
+    np.clip(rot_array_th135_t300, -45, np.max(rot_array_th135_t300))
+rot_array_th135_t500 = \
+    np.concatenate((np.repeat([-135], int(mov_dur / 3 / 3 * 2)),
+                    rot_array_th135_t300))
+rot_array_th135_t700 = \
+    np.concatenate((np.repeat([-135], int(mov_dur / 3 / 3 * 4)),
+                    rot_array_th135_t300))
+# create orientation dictionary
+rot_dict = {
+    'rot_array_th135_t300': [rot_array_th135_t300],
+    'rot_array_th90_t300': [rot_array_th90_t300],
+    'rot_array_th45_t300': [rot_array_th45_t300],
+    'rot_array_th135_t500': [rot_array_th135_t500],
+    'rot_array_th135_t700': [rot_array_th135_t700],
+}
 
 # /// probe
 probe_rad = .5  # radius of the probe
 probe_color = 'red'
-
+probe_ori = 90
+probe_pos = np.round(pol2cart(4, probe_ori), 2)
 # ----------------------------------------------------------------------------
 
 # # /// CONFIGURE MONITOR AND SCREEN ///
@@ -115,24 +128,20 @@ cvis.test_framerate(win=win, nominal_fr=frame_rate)
 ind_cnd = np.arange(n_trials)
 np.random.shuffle(ind_cnd)
 
-# annulus conditions
-ring_array = np.repeat(['marked', 'noise'], n_trials / 2)[ind_cnd]
-
-# reversal conditions
-rev_array = np.tile(np.repeat([0, 1], n_trials / 2 / 2), 2)[ind_cnd]
+cnd_array = np.repeat(['rot_array_th135_t300',
+                       'rot_array_th90_t300',
+                       'rot_array_th45_t300',
+                       'rot_array_th135_t500',
+                       'rot_array_th135_t700'],
+                      n_trials / 5)[ind_cnd]
 
 # rotation direction conditions
-dir_array = np.tile(np.repeat(['cw', 'ccw'], n_trials / 2 / 2 / 2), 4)[ind_cnd]
+dir_array = np.tile(np.repeat(['cw', 'ccw'], n_trials / 5 / 2), 5)[ind_cnd]
 
 # probe position conditions
 offset_array_deg = [-10, 0, 10]
-# offset_array_rad = [np.nan, np.nan, np.nan]
-# for ind, rad in enumerate(offset_array_deg):
-#     offset_array_rad[ind] = deg2rad(rad)
 offset_array_deg = np.tile(
-    np.repeat(offset_array_deg, n_trials / 3 / 2 / 2 / 2), 8)[ind_cnd]
-# offset_array_rad = np.tile(
-#     np.repeat(offset_array_rad, n_trials / 3 / 2 / 2 / 2), 8)[ind_cnd]
+    np.repeat(offset_array_deg, n_trials / 5 / 2 / 3), 10)[ind_cnd]
 # ----------------------------------------------------------------------------
 
 # /// START TRIAL ///
@@ -145,28 +154,21 @@ for itrial in range(n_trials):
 
     # decide on annulus type
     ring_directory = os.path.join(image_folder,
-                                  f"ring_{ring_array[itrial]}.png")
-    opacity = 1 if ring_array[itrial] == 'marked' else .5
+                                  f"ring_marked.png")
     ring = visual.ImageStim(win,
                             image=ring_directory,
                             size=mov_size,
-                            opacity=opacity,
+                            opacity=1,
                             pos=(0, 0))
+
+    rot_array_tr = rot_dict[cnd_array[itrial]][0]
     # decide on rotation direction and reversal
     if dir_array[itrial] == 'ccw':
-        rot_array_tr = -rot_array[rev_array[itrial], :] \
-                       + offset_array_deg[itrial]
+        rot_array_tr = -rot_array_tr + offset_array_deg[itrial]
     else:
-        rot_array_tr = rot_array[rev_array[itrial], :] \
-                       + offset_array_deg[itrial]
-
-    # decide on flash time
-    flash_at_ori = rot_array_tr[int(len(rot_array_tr) / 2)]
-
-    # decide on flash position
-    # convert annulus coordinate to triang. co.
-    probe_ori = -offset_array_deg[itrial] + 90
-    probe_pos = np.round(pol2cart(4, probe_ori), 2)
+        rot_array_tr = rot_array_tr + offset_array_deg[itrial]
+    flash_at_ori = rot_array_tr[0]
+    flash_flag = True
 
     # decide on gap durations
     firstgap_dur = np.random.choice(gap_dur_arr)
@@ -190,11 +192,12 @@ for itrial in range(n_trials):
         for irep in range(frame_repeat):
             ring.ori = iori
             ring.draw()
-            if iori == flash_at_ori:
+            if iori == flash_at_ori and flash_flag:
                 cvis.addprobe(win=win, radius=probe_rad,
                               color=probe_color,
                               pos=probe_pos)
             win.flip()
+        flash_flag = False
 
     # response period
     click_loc = keymouse.get_mouseclick11(win)
@@ -207,27 +210,27 @@ for itrial in range(n_trials):
 
     # /// save data
 
-    # create a dictionary
-    trial_dict = {'trial_num': [itrial + 1],
-                  'frame_rate': [frame_rate],
-                  'frame_repeat': [frame_repeat],
-                  'probe_loc': [probe_pos],
-                  'click_loc': [click_loc],
-                  'mov_traj': [rot_array_tr],
-                  'cnd_dir': [dir_array[itrial]],
-                  'cnd_rev': [rev_array[itrial]],
-                  'cnd_probe_pos': [offset_array_deg[itrial]],
-                  'cnd_annulus': [ring_array[itrial]]}
-
-    # convert to data frame
-    dfnew = pd.DataFrame(trial_dict)
-
-    # if first trial create a file, else load and add the new data frame
-    if itrial == 0:
-        dfnew.to_json(save_path)
-    else:
-        df = pd.read_json(save_path)
-        dfnew = pd.concat([df, dfnew], ignore_index=True)
-        dfnew.to_json(save_path)
+    # # create a dictionary
+    # trial_dict = {
+    #     'trial_num': [itrial + 1],
+    #     'frame_rate': [frame_rate],
+    #     'frame_repeat': [frame_repeat],
+    #     'probe_loc': [probe_pos],
+    #     'click_loc': [click_loc],
+    #     'mov_traj': [rot_array_tr],
+    #     'cnd_dir': [dir_array[itrial]],
+    #     'cnd_probe_pos': [offset_array_deg[itrial]]
+    # }
+    #
+    # # convert to data frame
+    # dfnew = pd.DataFrame(trial_dict)
+    #
+    # # if first trial create a file, else load and add the new data frame
+    # if itrial == 0:
+    #     dfnew.to_json(save_path)
+    # else:
+    #     df = pd.read_json(save_path)
+    #     dfnew = pd.concat([df, dfnew], ignore_index=True)
+    #     dfnew.to_json(save_path)
 
 win.close()

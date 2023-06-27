@@ -218,6 +218,7 @@ for itrial in range(n_trials):
         'probe_loc': [probe_pos],
         'click_loc': [click_loc],
         'mov_traj': [rot_array_tr],
+        'cnd_space_time': [cnd_array[itrial]],
         'cnd_dir': [dir_array[itrial]],
         'cnd_probe_pos': [offset_array_deg[itrial]]
     }

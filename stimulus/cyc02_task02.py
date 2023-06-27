@@ -210,27 +210,27 @@ for itrial in range(n_trials):
 
     # /// save data
 
-    # # create a dictionary
-    # trial_dict = {
-    #     'trial_num': [itrial + 1],
-    #     'frame_rate': [frame_rate],
-    #     'frame_repeat': [frame_repeat],
-    #     'probe_loc': [probe_pos],
-    #     'click_loc': [click_loc],
-    #     'mov_traj': [rot_array_tr],
-    #     'cnd_dir': [dir_array[itrial]],
-    #     'cnd_probe_pos': [offset_array_deg[itrial]]
-    # }
-    #
-    # # convert to data frame
-    # dfnew = pd.DataFrame(trial_dict)
-    #
-    # # if first trial create a file, else load and add the new data frame
-    # if itrial == 0:
-    #     dfnew.to_json(save_path)
-    # else:
-    #     df = pd.read_json(save_path)
-    #     dfnew = pd.concat([df, dfnew], ignore_index=True)
-    #     dfnew.to_json(save_path)
+    # create a dictionary
+    trial_dict = {
+        'trial_num': [itrial + 1],
+        'frame_rate': [frame_rate],
+        'frame_repeat': [frame_repeat],
+        'probe_loc': [probe_pos],
+        'click_loc': [click_loc],
+        'mov_traj': [rot_array_tr],
+        'cnd_dir': [dir_array[itrial]],
+        'cnd_probe_pos': [offset_array_deg[itrial]]
+    }
+
+    # convert to data frame
+    dfnew = pd.DataFrame(trial_dict)
+
+    # if first trial create a file, else load and add the new data frame
+    if itrial == 0:
+        dfnew.to_json(save_path)
+    else:
+        df = pd.read_json(save_path)
+        dfnew = pd.concat([df, dfnew], ignore_index=True)
+        dfnew.to_json(save_path)
 
 win.close()

@@ -40,7 +40,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 subID = 'test'
 rep_per_cnd = 24  # repetition per condition
 full_screen = False
-running_device = 'mac'  # 'linux' or 'mac'
+running_device = 'linux'  # 'linux' or 'mac'
 
 n_trials = rep_per_cnd * 5
 frame_rate = 60
@@ -79,11 +79,11 @@ gap_dur_arr = gap_dur_arr.astype(int)
 fixdot_size = .7
 fixdot_pos = (0, 0)
 fixdot_color = 'black'
-fixdot_dur = 1 * practical_fr  # sec x Hz = frames
+fixdot_dur = int(1 * practical_fr)  # sec x Hz = frames
 
 # /// moving object
 mov_size = 10
-mov_dur = int(.9 * practical_fr / frame_repeat)  # in frames
+mov_dur = int(.9 * practical_fr / frame_repeat)  # one revolution in frames
 # create orientation arrays
 rot_array_th135_t300 = np.linspace(-135, 135, int(mov_dur / 3 * 2) + 1)
 rot_array_th90_t300 = \

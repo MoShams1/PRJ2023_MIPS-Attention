@@ -16,7 +16,7 @@ annulus.
 import os
 import numpy as np
 import pandas as pd
-from psychopy import visual
+from psychopy import visual, core
 from lib import config_visual as cvis, keymouse, timestamp
 import warnings
 
@@ -42,7 +42,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 subID = 'test'
 rep_per_cnd = 15  # repetition per condition
 full_screen = False
-running_device = 'mac'  # 'linux' or 'mac'
+running_device = 'linux'  # 'linux' or 'mac'
 
 n_trials = rep_per_cnd * 2 * 2 * 2
 frame_rate = 60
@@ -85,14 +85,14 @@ fixdot_dur = 1 * practical_fr  # sec x Hz = frames
 
 # /// moving object
 mov_size = 10
-mov_dur = int(2 * practical_fr)  # in frames
+mov_dur = int(2 * practical_fr / frame_repeat)  # one revolution in frames
 # create orientation array (row 1: w/o rev | row 2: w/ rev)
-rot_array_base = np.linspace(-90, 90, int(mov_dur / 2) + 1)
+rot_array_base = np.linspace(-90, 90, int(mov_dur / 2) - 1)
 rot_array_rev = \
     np.concatenate((rot_array_base[:int(len(rot_array_base) / 2) + 1],
                     np.flip(rot_array_base[:int(len(rot_array_base) / 2)])))
 rot_array = np.vstack((rot_array_base, rot_array_rev))
-
+print(rot_array.shape)
 # /// probe
 probe_rad = .5  # radius of the probe
 probe_color = 'red'
@@ -126,13 +126,10 @@ dir_array = np.tile(np.repeat(['cw', 'ccw'], n_trials / 2 / 2 / 2), 4)[ind_cnd]
 
 # probe position conditions
 offset_array_deg = [-10, 0, 10]
-# offset_array_rad = [np.nan, np.nan, np.nan]
-# for ind, rad in enumerate(offset_array_deg):
-#     offset_array_rad[ind] = deg2rad(rad)
 offset_array_deg = np.tile(
     np.repeat(offset_array_deg, n_trials / 3 / 2 / 2 / 2), 8)[ind_cnd]
-# offset_array_rad = np.tile(
-#     np.repeat(offset_array_rad, n_trials / 3 / 2 / 2 / 2), 8)[ind_cnd]
+
+timer = core.Clock()
 # ----------------------------------------------------------------------------
 
 # /// START TRIAL ///
@@ -186,6 +183,7 @@ for itrial in range(n_trials):
         win.flip()
 
     # motion period
+    timer.reset()
     for iori in rot_array_tr:
         for irep in range(frame_repeat):
             ring.ori = iori
@@ -195,7 +193,8 @@ for itrial in range(n_trials):
                               color=probe_color,
                               pos=probe_pos)
             win.flip()
-
+    delta_t = timer.getTime()
+    print(delta_t*1000)
     # response period
     click_loc = keymouse.get_mouseclick11(win)
 

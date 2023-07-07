@@ -44,7 +44,7 @@ rep_per_cnd = 15  # repetition per condition
 full_screen = False
 running_device = 'linux'  # 'linux' or 'mac'
 
-n_trials = rep_per_cnd * 2 * 2 * 2
+n_trials = rep_per_cnd * 3 * 2 * 2
 frame_rate = 60
 frame_repeat = 2  # flash duration [frames]
 command_keys = {'quit_key': 'escape', 'response_key': 'space'}
@@ -115,18 +115,19 @@ ind_cnd = np.arange(n_trials)
 np.random.shuffle(ind_cnd)
 
 # annulus conditions
-ring_array = np.repeat(['marked', 'noise'], n_trials / 2)[ind_cnd]
+ring_array = np.repeat(['marked', 'marked_inv', 'noise'],
+                       n_trials / 3)[ind_cnd]
 
 # reversal conditions
-rev_array = np.tile(np.repeat([0, 1], n_trials / 2 / 2), 2)[ind_cnd]
+rev_array = np.tile(np.repeat([0, 1], n_trials / 3 / 2), 3)[ind_cnd]
 
 # rotation direction conditions
-dir_array = np.tile(np.repeat(['cw', 'ccw'], n_trials / 2 / 2 / 2), 4)[ind_cnd]
+dir_array = np.tile(np.repeat(['cw', 'ccw'], n_trials / 3 / 2 / 2), 6)[ind_cnd]
 
 # probe position conditions
 offset_array_deg = [-10, 0, 10]
 offset_array_deg = np.tile(
-    np.repeat(offset_array_deg, n_trials / 3 / 2 / 2 / 2), 8)[ind_cnd]
+    np.repeat(offset_array_deg, n_trials / 3 / 2 / 2 / 3), 12)[ind_cnd]
 
 timer = core.Clock()
 # ----------------------------------------------------------------------------
@@ -142,7 +143,7 @@ for itrial in range(n_trials):
     # decide on annulus type
     ring_directory = os.path.join(image_folder,
                                   f"ring_{ring_array[itrial]}.png")
-    opacity = 1 if ring_array[itrial] == 'marked' else .5
+    opacity = .5 if ring_array[itrial] == 'noise' else 1
     ring = visual.ImageStim(win,
                             image=ring_directory,
                             size=mov_size,

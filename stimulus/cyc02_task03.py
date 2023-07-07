@@ -38,11 +38,11 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # /// GENERAL SETTINGS ///
 
 subID = 'test'
-rep_per_cnd = 15  # repetition per condition
+rep_per_cnd = 10  # repetition per condition
 full_screen = False
-running_device = 'mac'  # 'linux' or 'mac'
+running_device = 'linux'  # 'linux' or 'mac'
 
-n_trials = rep_per_cnd * 2 * 2 * 2
+n_trials = rep_per_cnd * 5 * 5
 frame_rate = 60
 frame_repeat = 2  # flash duration [frames]
 command_keys = {'quit_key': 'escape', 'response_key': 'space'}
@@ -83,18 +83,13 @@ mov_size = 10
 mov_dur_sec = 4  # sec per revolution
 mov_dur = mov_dur_sec * int(practical_fr / frame_repeat)  # dur in frames
 # create orientation array (row 1: w/o rev | row 2: w/ rev)
-rot_array_org = np.linspace(-90, 0, int(mov_dur / 4) - 1)
-rot_offset = rot_array_org[-1]
-rot_array_tow = rot_array_org - rot_offset
-rot_array = np.concatenate((rot_array_tow[:-1], np.flip(rot_array_tow)))
-if 0 not in rot_array:
-    print(f'rot_array: {rot_array}')
-    raise ValueError("'rot_array' must contain the value '0'.")
+rot_array_org = np.linspace(-90, 0, int(mov_dur / 4))
 
 # /// probe
 probe_rad = .5  # radius of the probe
 probe_color = 'red'
 probe_ecc = 4  # probe eccentricity in dva
+flash_at_ori = 0  # flash probe at annulus orientation/phase
 
 # ----------------------------------------------------------------------------
 
@@ -114,19 +109,17 @@ cvis.test_framerate(win=win, nominal_fr=frame_rate)
 ind_cnd = np.arange(n_trials)
 np.random.shuffle(ind_cnd)
 
-# annulus conditions
-ring_array = np.repeat(['marked', 'marked'], n_trials / 2)[ind_cnd]
+# probe to marker conditions
+probe2mark_arr_sec = [-.3, -.15, 0, .15, .3]
+probe2mark_arr_sec = np.repeat(probe2mark_arr_sec,
+                               n_trials / len(probe2mark_arr_sec))
+probe2mark_arr_sec = probe2mark_arr_sec[ind_cnd]
 
-# reversal conditions
-rev_array = np.tile(np.repeat([1, 1], n_trials / 2 / 2), 2)[ind_cnd]
-
-# rotation direction conditions
-dir_array = np.tile(np.repeat(['cw', 'cw'], n_trials / 2 / 2 / 2), 4)[ind_cnd]
-
-# probe position conditions
-offset_array_deg = [0, 0, 0]
-offset_array_deg = np.tile(np.repeat(offset_array_deg,
-                                     n_trials / 3 / 2 / 2 / 2), 8)[ind_cnd]
+# probe to reversal conditions
+probe2rev_arr_ind = np.linspace(-len(rot_array_org) + 1, 0, 5, dtype=int) - 1
+probe2rev_arr_ind = np.tile(probe2rev_arr_ind,
+                            int(n_trials / len(probe2rev_arr_ind)))
+probe2rev_arr_ind = probe2rev_arr_ind[ind_cnd]
 
 timer = core.Clock()
 # ----------------------------------------------------------------------------
@@ -134,7 +127,14 @@ timer = core.Clock()
 # /// START TRIAL ///
 
 for itrial in range(n_trials):
-
+    
+    rot_offset = rot_array_org[probe2rev_arr_ind[itrial]]
+    rot_array_tow = rot_array_org - rot_offset
+    rot_array = np.concatenate((rot_array_tow[:-1], np.flip(rot_array_tow)))
+    if 0 not in rot_array:
+        print(f'rot_array: {rot_array}')
+        raise ValueError("'rot_array' must contain the value '0'.")
+    
     # -------------------------------
 
     # /// set up trial variables
@@ -144,28 +144,24 @@ for itrial in range(n_trials):
     ring = visual.ImageStim(win,
                             image=ring_directory,
                             size=mov_size, pos=(0, 0))
-    # decide on rotation direction and reversal
-    if dir_array[itrial] == 'ccw':
-        rot_array_tr = -rot_array + offset_array_deg[itrial]
-    else:
-        rot_array_tr = rot_array + offset_array_deg[itrial]
 
-    # decide on flash time rel. to marker orientation
-    flash_at_ori = 0
+    rot_array_tr = rot_array
+    
+    probe2rev_deg = -rot_offset
+    probe2rev_sec = probe2rev_deg * mov_dur_sec / 360
 
-    probe2rev_sec = -rot_offset * mov_dur_sec / 360
-
-    # decide on flash position
-    probe2mark_sec = .3
+    # decide on position wrt to the marker
+    probe2mark_sec = probe2mark_arr_sec[itrial]
     probe2mark_deg = probe2mark_sec * 360 / mov_dur_sec
-    probe_pos = pol2cart(probe_ecc, probe2mark_deg)
+    probe_loc = pol2cart(probe_ecc, probe2mark_deg)
 
     # decide on gap durations
     firstgap_dur = np.random.choice(gap_dur_arr)
     lastgap_dur = np.random.choice(gap_dur_arr)
 
+    print('\t-----------------------')
     print(f'\n\tflash2rev = {probe2rev_sec} sec')
-    print(f'\n\tflash2mark = {probe2mark_sec} sec')
+    print(f'\tflash2mark = {probe2mark_sec} sec')
     # -------------------------------
 
     # /// run task
@@ -190,11 +186,10 @@ for itrial in range(n_trials):
                     (ind_ori >= (len(rot_array) / 2) - 1):
                 cvis.addprobe(win=win, radius=probe_rad,
                               color=probe_color,
-                              pos=probe_pos)
-            core.wait(.05)
+                              pos=probe_loc)
             win.flip()
     delta_t = timer.getTime()
-    print(f'\n\tMotion duration: {delta_t * 1000} ms')
+    print(f'\tMotion duration = {delta_t} s')
     # response period
     click_loc = keymouse.get_mouseclick11(win)
 
@@ -210,12 +205,12 @@ for itrial in range(n_trials):
     trial_dict = {'trial_num': [itrial + 1],
                   'frame_rate': [frame_rate],
                   'frame_repeat': [frame_repeat],
-                  'probe_loc': [probe_pos],
-                  'click_loc': [click_loc],
-                  'mov_traj': [rot_array_tr],
-                  'cnd_dir': [dir_array[itrial]],
-                  'cnd_rev': [rev_array[itrial]],
-                  'cnd_probe_pos': [offset_array_deg[itrial]]}
+                  'probe2mark_ms': [np.round(probe2mark_sec*1000)],
+                  'probe2mark_deg': [probe2mark_deg],
+                  'probe2rev_ms': [np.round(probe2rev_sec*1000)],
+                  'probe2rev_deg': [probe2rev_deg],
+                  'probe_loc': [probe_loc],
+                  'click_loc': [click_loc]}
 
     # convert to data frame
     dfnew = pd.DataFrame(trial_dict)

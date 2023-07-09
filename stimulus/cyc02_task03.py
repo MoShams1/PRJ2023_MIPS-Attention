@@ -6,6 +6,7 @@ July 2023
 The subject's task is to localize a flashing probe in the presence of a moving
 annulus.
 
+10 repetitions
 
 
 """
@@ -39,7 +40,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 subID = 'test'
 rep_per_cnd = 10  # repetition per condition
-full_screen = False
+full_screen = True
 running_device = 'linux'  # 'linux' or 'mac'
 
 n_trials = rep_per_cnd * 5 * 5
@@ -55,7 +56,7 @@ image_folder = os.path.join('', '..', 'stimulus', 'image')
 
 save_path = \
     os.path.join(save_folder,
-                 f"{subID}_task01_{timestamp.getdate()}_"
+                 f"{subID}_task03_{timestamp.getdate()}_"
                  f"{timestamp.gettime()}.json")
 # ----------------------------------------------------------------------------
 
@@ -80,7 +81,7 @@ fixdot_dur = 1 * practical_fr  # sec x Hz = frames
 
 # /// moving object
 mov_size = 10
-mov_dur_sec = 4  # sec per revolution
+mov_dur_sec = 2  # sec per revolution
 mov_dur = mov_dur_sec * int(practical_fr / frame_repeat)  # dur in frames
 # create orientation array (row 1: w/o rev | row 2: w/ rev)
 rot_array_org = np.linspace(-90, 0, int(mov_dur / 4))
@@ -188,8 +189,7 @@ for itrial in range(n_trials):
                               color=probe_color,
                               pos=probe_loc)
             win.flip()
-    delta_t = timer.getTime()
-    print(f'\tMotion duration = {delta_t} s')
+
     # response period
     click_loc = keymouse.get_mouseclick11(win)
 

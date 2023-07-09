@@ -8,7 +8,7 @@ annulus.
 
 15 repetitions
 2 direction condisions (first half of rotatioin is considered): cw or ccw
-2 annulus conditions: with and without visual marker
+3 annulus conditions: w/ close marker, w/ remote marker, w/o marker
 2 reversal conditions: with and without reversal
 
 """
@@ -41,7 +41,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 subID = 'test'
 rep_per_cnd = 15  # repetition per condition
-full_screen = False
+full_screen = True
 running_device = 'linux'  # 'linux' or 'mac'
 
 n_trials = rep_per_cnd * 3 * 2 * 2

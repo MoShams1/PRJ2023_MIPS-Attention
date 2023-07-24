@@ -66,7 +66,7 @@ def addprobe(win, radius, color, pos):
 
 
 def addprobe2(win, radius, color, pos):
-    probe_ring = visual.Circle(win, radius=radius*1.2, fillColor='black',
+    probe_ring = visual.Circle(win, radius=radius * 1.2, fillColor='black',
                                pos=pos)
     probe = visual.Circle(win, radius=radius, fillColor=color, pos=pos)
     probe_ring.draw()
@@ -249,6 +249,29 @@ def run_pause_screen(win, current_block, cmd, nblocks, cnd=None,
     if cmd['quit_key'] in pressed_key:
         core.quit()
     elif cmd['response_key'] in pressed_key:
+        pass
+
+
+def run_pause_screen2(win):
+    msg = f"Ready to continue?"
+    message = visual.TextStim(win,
+                              text=msg, color='white', height=.5,
+                              alignText='center')
+    message.pos = (0, 1)
+    message.draw()
+
+    commands = '[Escape]: Quit\t[Space]: Continue'
+    cmnd_text = visual.TextStim(win,
+                                text=commands, color='white', height=.5,
+                                alignText='center')
+    cmnd_text.pos = (0, -2)
+    cmnd_text.draw()
+
+    win.flip()
+    pressed_key = event.waitKeys(keyList=['escape', 'space'])
+    if 'escape' in pressed_key:
+        core.quit()
+    elif 'space' in pressed_key:
         pass
 
 

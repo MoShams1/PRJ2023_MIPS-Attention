@@ -38,7 +38,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # /// GENERAL SETTINGS ///
 
-subID = '2002'
+subID = 'test'
 rep_per_cnd = 10  # repetition per condition
 full_screen = True
 running_device = 'linux'  # 'linux' or 'mac'
@@ -128,6 +128,9 @@ timer = core.Clock()
 # /// START TRIAL ///
 
 for itrial in range(n_trials):
+
+    if itrial == 2:
+        cvis.run_pause_screen2(win)
     
     rot_offset = rot_array_org[probe2rev_arr_ind[itrial]]
     rot_array_tow = rot_array_org - rot_offset

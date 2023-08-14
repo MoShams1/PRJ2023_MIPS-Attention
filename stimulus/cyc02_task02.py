@@ -6,7 +6,7 @@ June 2023
 The subject's task is to localize a flashing probe in the presence of a moving
 annulus.
 
-20 repetitions
+12 repetitions
 5 spatio-temporal conditions
 
 """
@@ -147,6 +147,9 @@ offset_array_deg = np.tile(
 # /// START TRIAL ///
 
 for itrial in range(n_trials):
+
+    if itrial == int(n_trials/2):
+        cvis.run_pause_screen2(win)
 
     # -------------------------------
 

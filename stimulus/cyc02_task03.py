@@ -6,8 +6,9 @@ July 2023
 The subject's task is to localize a flashing probe in the presence of a moving
 annulus.
 
-10 repetitions
-
+5 repetitions
+5 flash to reversal times
+5 flash to marker times
 
 """
 
@@ -39,7 +40,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # /// GENERAL SETTINGS ///
 
 subID = 'test'
-rep_per_cnd = 10  # repetition per condition
+rep_per_cnd = 5  # repetition per condition
 full_screen = True
 running_device = 'linux'  # 'linux' or 'mac'
 
@@ -129,7 +130,7 @@ timer = core.Clock()
 
 for itrial in range(n_trials):
 
-    if itrial == 2:
+    if itrial == int(n_trials/2):
         cvis.run_pause_screen2(win)
     
     rot_offset = rot_array_org[probe2rev_arr_ind[itrial]]

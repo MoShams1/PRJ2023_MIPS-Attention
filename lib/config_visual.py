@@ -255,14 +255,14 @@ def run_pause_screen(win, current_block, cmd, nblocks, cnd=None,
 def run_pause_screen2(win):
     msg = f"Ready to continue?"
     message = visual.TextStim(win,
-                              text=msg, color='white', height=.5,
+                              text=msg, color='black', height=.5,
                               alignText='center')
     message.pos = (0, 1)
     message.draw()
 
-    commands = '[Escape]: Quit\t[Space]: Continue'
+    commands = '[Escape]: Quit\t\t[Space]: Continue'
     cmnd_text = visual.TextStim(win,
-                                text=commands, color='white', height=.5,
+                                text=commands, color='black', height=.5,
                                 alignText='center')
     cmnd_text.pos = (0, -2)
     cmnd_text.draw()

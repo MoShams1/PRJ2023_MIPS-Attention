@@ -6,7 +6,7 @@ June 2023
 The subject's task is to localize a flashing probe in the presence of a moving
 annulus.
 
-15 repetitions
+9 repetitions
 2 direction condisions (first half of rotatioin is considered): cw or ccw
 3 annulus conditions: w/ close marker, w/ remote marker, w/o marker
 2 reversal conditions: with and without reversal
@@ -39,8 +39,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # /// GENERAL SETTINGS ///
 
-subID = 'Shaya'
-rep_per_cnd = 7  # repetition per condition
+subID = 'Jasman'
+rep_per_cnd = 9  # repetition per condition
 full_screen = True
 running_device = 'linux'  # 'linux' or 'mac'
 

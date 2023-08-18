@@ -39,7 +39,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # /// GENERAL SETTINGS ///
 
-subID = '2033'
+subID = '0012'
 rep_per_cnd = 5  # repetition per condition
 full_screen = True
 running_device = 'linux'  # 'linux' or 'mac'

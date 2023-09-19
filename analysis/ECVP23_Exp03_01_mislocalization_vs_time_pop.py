@@ -1,5 +1,5 @@
 """
-Project MIPS-SProf
+Project MIPS-Attention
 Mo Shams <MShamsCBR@gmail.com>
 Initiated on: June 05, 2023
 ---

@@ -1,5 +1,5 @@
 """
-***** Project MIPS-SProf
+***** Project MIPS-Attention
 ***** Analysis of experiment 06
 
         Mo Shams <MShamsCBR@gmail.com>

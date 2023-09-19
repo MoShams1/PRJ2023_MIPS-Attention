@@ -12,7 +12,7 @@ def angular(theta1, dur, rotdir='ccw'):
         theta2 = theta1 + 360
     else:
         theta2 = theta1 - 360
-    paththeta = np.linspace(theta1, theta2, dur)
+    paththeta = np.linspace(theta1, theta2, dur+1)
     return paththeta
 
 

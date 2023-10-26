@@ -6,8 +6,8 @@
 
 Task Procedure:
     A '|__' like shape moves from bottom toward center, a probe flashes,
-    then the shape continues to move either horizontally (50%) or vertically
-    (50%).
+    then the shape continues to move either horizontally (80%) or vertically
+    (20%).
 
 There are two pre-flash direction conditions:
     dir1 = +1: rightward and upward motion
@@ -58,10 +58,10 @@ pd.options.mode.chained_assignment = None  # default='warn'
 
 subID = 'test'
 nrep = 10
-nstm = 2
-ndir = 2
-ntrs = nrep * nstm * ndir
-nblocks = 2
+ndir1 = 2
+ndir2 = 5
+ntrs = nrep * ndir1 * ndir2
+nblocks = 4
 
 if subID == 'test':
     full_screen = False
@@ -126,9 +126,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # /// CONDITIONS ///
 
 # create an equal number of trials per condition (contrast/direction)
-dir2_array = np.repeat(['h', 'v'], ntrs / 2)
+dir2_array = np.repeat(['h', 'h', 'h', 'h', 'v'], ntrs / 5)
 assert (dir2_array.size == ntrs)
-dir1_array = np.tile(np.repeat([-1, 1], int(ntrs / 4)), 2)
+dir1_array = np.tile(np.repeat([-1, 1], int(ntrs / 10)), 5)
 assert (dir1_array.size == ntrs)
 
 # randomize the order of each condition array
@@ -259,6 +259,12 @@ for itrial in range(ntrs):
 
         if hline.pos[0] == 0 and vline.pos[1] == voffset:
             probe.draw()
+
+            # for ii in range(120):
+            #     probe.draw()
+            #     vline.draw()
+            #     hline.draw()
+            #     win.flip()
 
         win.flip()
 

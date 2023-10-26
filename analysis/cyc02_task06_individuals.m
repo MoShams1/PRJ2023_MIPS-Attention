@@ -1,10 +1,10 @@
 clc
 clear
-close all
+% close all
 
 % Specify the path to the JSON file
 
-jsonFilePath = '../data/cyc02/MS01_task06_20231026_141402.json';
+jsonFilePath = '../data/cyc02/MS01_task06_20231026_153748.json';
 
 
 % Open the JSON file and read its content
@@ -18,49 +18,72 @@ jsonData = jsondecode(jsonContent);
 % convert structure to arrays
 dir1 = cell2mat(struct2cell(jsonData.preflash_dir));
 dir2 = struct2cell(jsonData.postflash_dir);
-pos = cell2mat(struct2cell(jsonData.probe_pos));
-clk = cell2mat(struct2cell(jsonData.click_pos));
-errx(:,1) = clk(1:40)-0;
-erry(:,1) = clk(41:80)-1;
+clk_xerr = cell2mat(struct2cell(jsonData.click_xerr));
+clk_yerr = cell2mat(struct2cell(jsonData.click_yerr));
 
 % create data cell
 ind_v = strcmp(dir2, 'v');
 ind_h = strcmp(dir2, 'h');
-err_cell{1} = errx(ind_v & dir1>0);
-err_cell{2} = errx(ind_h & dir1>0);
-err_cell{3} = errx(ind_v & dir1<0);
-err_cell{4} = errx(ind_h & dir1<0);
-err_cell{5} = erry(ind_v & dir1>0);
-err_cell{6} = erry(ind_h & dir1>0);
-err_cell{7} = erry(ind_v & dir1<0);
-err_cell{8} = erry(ind_h & dir1<0);
+err_cell{1} = clk_xerr(ind_v & dir1>0);
+err_cell{2} = clk_xerr(ind_h & dir1>0);
+err_cell{3} = clk_xerr(ind_v & dir1<0);
+err_cell{4} = clk_xerr(ind_h & dir1<0);
+err_cell{5} = clk_yerr(ind_v & dir1>0);
+err_cell{6} = clk_yerr(ind_h & dir1>0);
+err_cell{7} = clk_yerr(ind_v & dir1<0);
+err_cell{8} = clk_yerr(ind_h & dir1<0);
 
 err_mat = cell2mat(err_cell);
 
-%% plot
+labels = {'RU','RR','LU','LL'};
+ntypes = numel(labels);
 
-figure('units','normalized','outerposition',[.2 .3 .25 .5])
+%% 2D plot
+figure('units','normalized','outerposition',[.1 .3 .3 .5])
 hold on
 
-% typ_list = {'FG', 'FG-Edge', 'BB-LE', 'WB-RE', 'FE-LE', 'FE-RE'};
+alpha = .5;
+
+h1 = scatter(err_mat(:,1),err_mat(:,5),'b','o','fill','markerfacealpha',alpha);
+h2 = scatter(err_mat(:,2),err_mat(:,6),'b','o');
+h3 = scatter(err_mat(:,3),err_mat(:,7),'r','o','fill','markerfacealpha',alpha);
+h4 = scatter(err_mat(:,4),err_mat(:,8),'r','o');
+
+xline(0)
+xlim([-1 1] * 1.2)
+xticks(-1:.25:1)
+xlabel 'Horizontal click error (dva)'
+
+yline(0)
+ylim([-1 1] * 1.2)
+yticks(-1:.25:1)
+ylabel 'Vertical click error (dva)'
+
+legend([h1 h2 h3 h4],labels)
+
+cleanplot
+
+%% scatterbar plot
+figure('units','normalized','outerposition',[.4 .3 .25 .5])
+hold on
 
 scatterbar(err_cell([1,2,5,6]), 30, 'b');
 scatterbar(err_cell([3,4,7,8]), 30, 'r');
 
-% xticklabels(typ_list)
-% xlim([.5 ntypes+.5])
-% xticks(1:ntypes)
-% xlabel 'Annulus types'
-% 
-% ylim([-1.1 1.1] * 1.2)
-% yticks(-1:.25:1)
+xlim([.5 ntypes+.5])
+xticks(1:ntypes)
+xticklabels({'Vx','Hx','Vy','Hy'})
+xlabel 'Direction conditions'
+
+ylim([-1 1] * 1.2)
+yticks(-1:.25:1)
 yline(0)
-% ylabel 'Point of subjective equality'
-% 
-% title 'Raw data'
-% 
-% text(1,1.2,'Post-Flash Rightward Motion','color','b')
-% text(1,1.1,'Post-Flash Leftward Motion','color','r')
+ylabel 'Click error (dva)'
+
+title 'Raw data'
+
+text(1,1.2,'Pre-Flash Rightward Motion','color','b')
+text(1,1.1,'Pre-Flash Leftward Motion','color','r')
 cleanplot
 
 %%

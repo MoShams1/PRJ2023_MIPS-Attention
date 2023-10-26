@@ -36,20 +36,20 @@ def config_mon_dell():
     return monitor
 
 
-def config_win(mon, fullscr, screen=0):
+def config_win(mon, fullscr, screen=0, color=(0, 0, 0)):
     if fullscr:
         win = visual.Window(monitor=mon,
                             screen=screen,
                             units='deg',
                             pos=[0, 0],
                             fullscr=fullscr,
-                            color=[0, 0, 0])
+                            color=color)
     else:
         win = visual.Window(monitor=mon,
                             units='deg',
                             size=[1920, 700],
                             pos=[0, 0],
-                            color=[0, 0, 0])
+                            color=color)
     win.mouseVisible = False
     return win
 
@@ -119,6 +119,35 @@ def block_msg(win, iblock, nblocks, command_keys):
         win.flip()
 
 
+def block_msg2(win, iblock, nblocks):
+    msg = f"<<< Block {iblock} / {nblocks} >>>" \
+          f"\n\nReady to go?"
+    message = visual.TextStim(win,
+                              text=msg,
+                              color='black',
+                              height=.5,
+                              alignText='center',
+                              pos=(0, 0))
+
+    commands = '\n\n[Escape]: Quit\t\t[Spacebar]: Go'
+    cmnd_text = visual.TextStim(win,
+                                text=commands,
+                                color='black',
+                                height=.5,
+                                alignText='center',
+                                pos=(0, -2))
+
+    message.draw()
+    cmnd_text.draw()
+    win.flip()
+
+    pressed_key = event.waitKeys(keyList=['escape', 'space'])
+    if pressed_key[0] == 'escape':
+        core.quit()
+    if pressed_key[0] == 'space':
+        pass
+
+
 def decide_on_show(iframe, nframes):
     # iframe: current frame number
     # nframes: number of frames as the image interval
@@ -147,3 +176,16 @@ def gen_image_pairs(nexmp, ntrials):
     np.random.shuffle(allpairs)
     pairs = allpairs[:ntrials]
     return pairs
+
+
+def end_screen(win):
+    msg = 'Experiment finished successfully.\n Thank you!'
+    message = visual.TextStim(win,
+                              text=msg,
+                              color='black',
+                              height=.65,
+                              alignText='center',
+                              pos=(0, 0))
+    for i in range(3 * 60):
+        message.draw()
+        win.flip()

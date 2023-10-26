@@ -23,18 +23,41 @@ import pandas as pd
 from lib import stim_flow_control as sfc
 from psychopy import event, visual, core
 
+
+def get_mouseclick(win, ms_corrcoef=1):
+    ms_posx = random.choice(range(-3, 3 + 1))
+    ms_posy = random.choice(range(-3, 3 + 1))
+    mouse = event.Mouse(win=win, visible=True,
+                        newPos=[ms_posx * ms_corrcoef,
+                                ms_posy * ms_corrcoef])
+    while not mouse.getPressed()[0]:
+        escape_session()  # force exit with 'escape' button
+        win.flip()
+    while mouse.getPressed()[0]:
+        pass
+    click_loc = mouse.getPos() / ms_corrcoef
+    click_loc = [round(item, 2) for item in click_loc]
+    return click_loc
+
+
+def escape_session():
+    exit_key = event.getKeys(keyList=['escape'])
+    if 'escape' in exit_key:
+        core.quit()
+
+
 # disable Panda's false warning message
 pd.options.mode.chained_assignment = None  # default='warn'
 
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'
+subID = 'MS01'
 nrep = 10
-nstm = 2  # number of stimuli (FG, FG_edge, BB, WB, FE1, FE2)
-ndir = 2  # number of direction of motions (flash-left, flash-right)
+nstm = 2
+ndir = 2
 ntrs = nrep * nstm * ndir
-nblocks = 4
+nblocks = 2
 
 if subID == 'test':
     full_screen = False
@@ -67,7 +90,8 @@ sfc.test_refresh_rate(win, REF_RATE)
 # fixation mark
 fixdot_radius = .15
 FIX_X = 0
-FIX_Y = 0
+FIX_Y = -2
+fixdot_color = 'black'
 
 INSTRUCT_DUR = REF_RATE  # duration of the instruction period [frames]
 
@@ -75,16 +99,15 @@ INSTRUCT_DUR = REF_RATE  # duration of the instruction period [frames]
 line_width = 0.12
 line_length = 2
 line_color = 'black'
-
-# probe
-probe_rad = .25
-probe_color = 'red'
+voffset = 1
 
 motion_cycle_dur = REF_RATE  # [frames]
 leg_dist = 8  # dva
+npos = int(REF_RATE / frame_repeat / 2)
 
-# # mouse position downsample factor
-# mouse_dsf = 20
+# probe
+probe_rad = .25
+probe_color = 'tomato'
 
 # potential gap durations (0.5 to 1 sec)
 gap_dur_list = range(int(REF_RATE / 2), int(REF_RATE / 1) + 1, 1)
@@ -117,12 +140,18 @@ pause_array = pause_array[:-1]
 # ----------------------------------------------------------------------------
 # /// TRIAL BEGINS ///
 
-for itrial in range(5):
+for itrial in range(ntrs):
     # --------------------------------
     # /// resets
 
+    motionx1_array = None
+    motionx2_array = None
+    motiony1_array = None
+    motiony2_array = None
+
     # reset mouse position
     mouse.setPos((0, 0))
+    mouse.setVisible(False)
 
     # reset pse response
     hline_x = np.nan
@@ -136,10 +165,6 @@ for itrial in range(5):
     # randomly decide on inter-trial interval
     iti = random.choice(gap_dur_list)
 
-    # # add random offset to hline's horizontal onset position
-    # hline_x_offset = np.random.choice(np.arange(-hline_size / 2,
-    #                                             hline_size / 2, 0.1))
-
     # --------------------------------
     print('---------------------------')
     print(f'trl: {itrial + 1}')
@@ -152,20 +177,20 @@ for itrial in range(5):
     # lines
     vline = visual.Rect(win=win,
                         size=(line_width, line_length),
-                        fillColor='black')
+                        fillColor=line_color)
     hline = visual.Rect(win=win,
                         size=(line_length, line_width),
-                        fillColor='black')
+                        fillColor=line_color)
     # probe
     probe = visual.Circle(win,
                           radius=probe_rad,
-                          pos=(0, 0),
-                          fillColor='black')
+                          pos=(0, voffset),
+                          fillColor=probe_color)
     # fixation dot
     fixdot1 = visual.Circle(win,
                             radius=fixdot_radius,
                             pos=(FIX_X, FIX_Y),
-                            fillColor='black')
+                            fillColor=fixdot_color)
     fixdot2 = visual.Circle(win,
                             radius=fixdot_radius * .7,
                             pos=(FIX_X, FIX_Y),
@@ -174,7 +199,6 @@ for itrial in range(5):
     # --------------------------------
     # /// create motion arrays
 
-    npos = int(REF_RATE / frame_repeat / 2)
     if dir1_array[itrial] == 1:
         motionx1_array = np.linspace(-leg_dist, 0, num=npos) / np.sqrt(2)
         motiony1_array = np.linspace(-leg_dist, 0, num=npos) / np.sqrt(2)
@@ -198,73 +222,69 @@ for itrial in range(5):
     motiony_array = np.concatenate((motiony1_array, motiony2_array))
 
     motionx_array = np.repeat(motionx_array, frame_repeat)
-    motiony_array = np.repeat(motiony_array, frame_repeat)
+    motiony_array = np.repeat(motiony_array, frame_repeat) + voffset
 
     # --------------------------------
     # /// run the stimulus
 
-    # if itrial in pause_array:
-    #     sfc.block_msg(win, np.where(pause_array == itrial)[0][0] + 1, nblocks)
+    if itrial in pause_array:
+        sfc.block_msg2(win, np.where(pause_array == itrial)[0][0] + 1, nblocks)
 
     # gap period
     for igap in range(iti):
         win.flip()
 
-    # motion period
-    # loop_flag = True
-    # while loop_flag:
-    # loop_cntr += 1
-    # for imotion in motion_array:
-
-    # # get mouse x-position
-    # hline_x = mouse.getPos()[0] / mouse_dsf + hline_x_offset
-
-    for i in range(npos * frame_repeat * 2):
-        # draw fixation mark
+    # fixation period
+    for ifix in range(REF_RATE):
         fixdot1.draw()
         fixdot2.draw()
-        vline.pos = (motionx_array[i]/np.sqrt(2), motiony_array[i]/np.sqrt(2))
-        hline.pos = (0, 0)
+        win.flip()
+
+    # gap period
+    for ifix in range(
+            int(np.random.choice(np.arange(REF_RATE / 2, REF_RATE)))):
+        win.flip()
+
+    for i in range(npos * frame_repeat * 2):
+        vline.pos = (motionx_array[i] - dir1_array[itrial] * line_length / 2,
+                     motiony_array[i])
+        hline.pos = (motionx_array[i],
+                     motiony_array[i] - line_length / 2)
         vline.draw()
         hline.draw()
-        # if imotion == motion_pos1 and loop_cntr > 1:
-        #     hline.pos = hline_x, hline_y
-        #     box.draw()
-        #     vline.draw()
-        #     hline.draw()
+
+        if hline.pos[0] == 0 and vline.pos[1] == voffset:
+            probe.draw()
 
         win.flip()
 
-    #     # exit loop upon proper response
-    #     pressed_key = event.getKeys(keyList=['space', 'escape'])
-    #     if 'escape' in pressed_key:
-    #         core.quit()
-    #     if 'space' in pressed_key:
-    #         loop_flag = False
-    #         break
-    #
-    # print(f'PSE: {np.round(hline_x / norm_factor, 2)}')
+    click_pos = get_mouseclick(win)
+    click_err = click_pos - probe.pos
+    print(f'probe pos: {probe.pos}')
+    print(f'click pos: {click_pos}')
+    print(f'click xerr: {click_err[0]}')
+    print(f'click yerr: {click_err[1]}')
 
-    # # --------------------------------
-    # # /// prepare data for saving
-    #
-    # # create a dictionary of variables to be saved
-    # trial_dict = {'trial_num': itrial + 1,
-    #               'stimulus_type': stm_array[itrial],
-    #               'postflash_dir': dir_array[itrial],
-    #               'pse_x': [np.round(hline_x / norm_factor, 2)],
-    #               'loop_count': loop_cntr}
-    #
-    # # convert to data frame
-    # dfnew = pd.DataFrame(trial_dict)
-    # # if not first trial, load the existing data frame and concatenate
-    # if itrial > 0:
-    #     df = pd.read_json(save_path)
-    #     dfnew = pd.concat([df, dfnew], ignore_index=True)
-    # # save the dataframe
-    # dfnew.to_json(save_path)
+    # --------------------------------
+    # /// prepare data for saving
 
-    # if itrial == ntrs - 1:
-    #     sfc.end_screen(win)
+    # create a dictionary of variables to be saved
+    trial_dict = {'trial_num': itrial + 1,
+                  'preflash_dir': dir1_array[itrial],
+                  'postflash_dir': dir2_array[itrial],
+                  'probe_pos': [[probe.pos]],
+                  'click_pos': [click_pos]}
+
+    # convert to data frame
+    dfnew = pd.DataFrame(trial_dict)
+    # if not first trial, load the existing data frame and concatenate
+    if itrial > 0:
+        df = pd.read_json(save_path)
+        dfnew = pd.concat([df, dfnew], ignore_index=True)
+    # save the dataframe
+    dfnew.to_json(save_path)
+
+    if itrial == ntrs - 1:
+        sfc.end_screen(win)
 # --------------------------------
 win.close()

@@ -1,6 +1,7 @@
 *.ai
 *.pdf
 *.eps
+*.asv
 result
 .idea/
 .DS_Store

@@ -68,7 +68,7 @@ else:
 # create file nameTrue
 date = sfc.get_date()
 time = sfc.get_time()
-output_name = f"{subID}_task06_v2_{date}_{time}.json"
+output_name = f"{subID}_task06_v2_right_{date}_{time}.json"
 # set data directory
 save_path = os.path.join("..", "data", "cyc02", output_name)
 
@@ -99,10 +99,11 @@ vline_length = 1.2
 line_color = 'black'
 line_offset = 0
 
-motion_cycle_dur = REF_RATE/2  # [frames]
-preflash_dist = 8  # dva
-postflash_dist = 8  # dva
+motion_cycle_dur = REF_RATE  # [frames]
+preflash_dist = 5  # dva
+postflash_dist = 5  # dva
 npos = int(motion_cycle_dur / frame_repeat / 2)
+bias_factor = .2
 
 # probe
 probe_rad = .15
@@ -122,7 +123,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # /// CONDITIONS ///
 
 # create an equal number of trials per condition (contrast/direction)
-dir_array = np.repeat([-1, 1], int(ntrs / 2))
+dir_array = np.repeat([-1, 1], [int(round(ntrs * bias_factor)),
+                                int(round(ntrs * (1 - bias_factor)))])
+
 assert (dir_array.size == ntrs)
 
 # randomize the order of each condition array

@@ -99,10 +99,10 @@ vline_length = 1.2
 line_color = 'black'
 line_offset = 0
 
-motion_cycle_dur = REF_RATE  # [frames]
-preflash_dist = 5  # dva
-postflash_dist = 5  # dva
-npos = int(REF_RATE / frame_repeat / 2)
+motion_cycle_dur = REF_RATE/2  # [frames]
+preflash_dist = 8  # dva
+postflash_dist = 8  # dva
+npos = int(motion_cycle_dur / frame_repeat / 2)
 
 # probe
 probe_rad = .15

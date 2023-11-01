@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'AB01'
+subID = 'MM01'
 nrep = 50
 ndir = 2
 ntrs = nrep * ndir
@@ -69,7 +69,7 @@ else:
 # create file nameTrue
 date = sfc.get_date()
 time = sfc.get_time()
-output_name = f"{subID}_task06_v2_left_{date}_{time}.json"
+output_name = f"{subID}_task06_v2_fair_{date}_{time}.json"
 # set data directory
 save_path = os.path.join("..", "data", "cyc02", output_name)
 

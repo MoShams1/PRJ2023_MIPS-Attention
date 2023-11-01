@@ -1,6 +1,6 @@
 clc
 clear
-% close all
+close all
 
 % Specify the path to the JSON file
 
@@ -11,6 +11,13 @@ clear
 % jsonFilePath = '../data/cyc02/HA01_task06_v2_fair_20231031_111134.json';  % fair
 
 % jsonFilePath = '../data/cyc02/AS01_task06_v2_fair_20231031_113747.json';  % fair
+
+% jsonFilePath = '../data/cyc02/AB01_task06_v2_fair_20231101_133455.json';  % fair
+jsonFilePath = '../data/cyc02/AB01_task06_v2_right_20231101_144331.json';  % right
+
+% jsonFilePath = '../data/cyc02/MM01_task06_v2_fair_20231101_141135.json';  % fair
+% jsonFilePath = '../data/cyc02/MM01_task06_v2_fair_20231101_142041.json';  % fair
+
 
 
 % Open the JSON file and read its content

@@ -6,8 +6,9 @@
 
 Task Procedure:
     A '|""|' like shape moves downward toward center, a probe flashes,
-    then the shape continues to move either rightward (50%) or leftward
-    (50%).
+    then the shape continues to move either rightward or leftward. The
+    probability of leftward motion trials (bias_factor) can be set for
+    each session.
 
 There are two post-flash direction conditions:
     dir = 'l': leftward motion

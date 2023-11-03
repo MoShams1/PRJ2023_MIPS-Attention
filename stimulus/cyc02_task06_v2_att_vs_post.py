@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'
+subID = 'AS01'
 nrep = 50
 ndir = 2
 ntrs = nrep * ndir
@@ -104,7 +104,7 @@ motion_cycle_dur = REF_RATE  # [frames]
 preflash_dist = 5  # dva
 postflash_dist = 5  # dva
 npos = int(motion_cycle_dur / frame_repeat / 2)
-bias_factor = 0.5  # probability of leftward post-flash motion
+bias_factor = 0.2  # probability of leftward post-flash motion
 
 # probe
 probe_rad = .15
@@ -233,8 +233,6 @@ for itrial in range(ntrs):
             int(np.random.choice(np.arange(REF_RATE / 2, REF_RATE)))):
         win.flip()
 
-    flash_flag = False
-
     for i in range(npos * frame_repeat * 2):
         vlineL.pos = (motionx_array[i] - hline_length / 2,
                       motiony_array[i])
@@ -249,16 +247,8 @@ for itrial in range(ntrs):
         # fixdot1.draw()
         # fixdot2.draw()
 
-        if not flash_flag and hline.pos[0] == probe_pos[0] and vlineL.pos[1] \
-                == probe_pos[1]:
+        if hline.pos[0] == probe_pos[0] and vlineL.pos[1] == probe_pos[1]:
             probe.draw()
-            if not flash_flag:
-                for idelay in range(15):
-                    vlineL.draw()
-                    vlineR.draw()
-                    hline.draw()
-                    win.flip()
-                    flash_flag = True
 
         win.flip()
 

@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'NP01'
+subID = 'NN01'
 nrep = 50
 ndir = 2
 ntrs = nrep * ndir
@@ -69,7 +69,7 @@ else:
 # create file nameTrue
 date = sfc.get_date()
 time = sfc.get_time()
-output_name = f"{subID}_task06_v2_right_{date}_{time}.json"
+output_name = f"{subID}_task06_v2_fair_{date}_{time}.json"
 # set data directory
 save_path = os.path.join("..", "data", "cyc02", output_name)
 
@@ -104,7 +104,7 @@ motion_cycle_dur = REF_RATE  # [frames]
 preflash_dist = 5  # dva
 postflash_dist = 5  # dva
 npos = int(motion_cycle_dur / frame_repeat / 2)
-bias_factor = 0.2  # probability of leftward post-flash motion
+bias_factor = 0.5  # probability of leftward post-flash motion
 
 # probe
 probe_rad = .15

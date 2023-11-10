@@ -4,23 +4,40 @@ close all
 
 % Specify the path to the JSON file
 
-% jsonFilePath = '../data/cyc02/MS01_task06_v2_fair_20231030_135025.json';  % fair
-% jsonFilePath = '../data/cyc02/MS01_task06_v2_right_20231030_153745.json';  % right biased
-% jsonFilePath = '../data/cyc02/MS01_task06_v2_left_20231030_154843.json';  % left biased
+% jsonFilePath = '../data/cyc02/MS01_task06_v2_fair_20231030_135025.json';
+% jsonFilePath = '../data/cyc02/MS01_task06_v2_right_20231030_153745.json';
+% jsonFilePath = '../data/cyc02/MS01_task06_v2_left_20231030_154843.json';
 
-% jsonFilePath = '../data/cyc02/HA01_task06_v2_fair_20231031_111134.json';  % fair
+% jsonFilePath = '../data/cyc02/HA01_task06_v2_fair_20231031_111134.json';
+% jsonFilePath = '../data/cyc02/HA01_task06_v2_left_20231106_122752.json';
 
-% jsonFilePath = '../data/cyc02/AS01_task06_v2_fair_20231031_113747.json';  % fair
+% jsonFilePath = '../data/cyc02/AS01_task06_v2_fair_20231031_113747.json';
+% jsonFilePath = '../data/cyc02/AS01_task06_v2_right_20231103_131414.json';
+% jsonFilePath = '../data/cyc02/AS01_task06_v2_left_20231110_113546.json';
 
-% jsonFilePath = '../data/cyc02/AB01_task06_v2_fair_20231101_133455.json';  % fair
-jsonFilePath = '../data/cyc02/AB01_task06_v2_right_20231101_144331.json';  % right
+% jsonFilePath = '../data/cyc02/AB01_task06_v2_fair_20231101_133455.json';
+% jsonFilePath = '../data/cyc02/AB01_task06_v2_right_20231101_144331.json';
+% jsonFilePath = '../data/cyc02/AB01_task06_v2_left_20231110_121914.json';
 
-% jsonFilePath = '../data/cyc02/MM01_task06_v2_fair_20231101_141135.json';  % fair1
-% jsonFilePath = '../data/cyc02/MM01_task06_v2_fair_20231101_142041.json';  % fair
+% jsonFilePath = '../data/cyc02/MM01_task06_v2_fair_20231101_142041.json';
+% jsonFilePath = '../data/cyc02/MM01_task06_v2_left_20231106_135802.json';
 
-% jsonFilePath = '../data/cyc02/AD01_task06_v2_fair_20231103_110225.json';  % fair
+% jsonFilePath = '../data/cyc02/AD01_task06_v2_fair_20231103_110225.json';
 
-% jsonFilePath = '../data/cyc02/RP01_task06_v2_fair_20231103_113807.json';  % fair
+% jsonFilePath = '../data/cyc02/RP01_task06_v2_fair_20231103_113807.json';
+% jsonFilePath = '../data/cyc02/RP01_task06_v2_left_20231103_120242.json';
+% jsonFilePath = '../data/cyc02/RP01_task06_v2_right_20231110_120848.json';
+
+% jsonFilePath = '../data/cyc02/NP01_task06_v2_fair_20231106_124744.json';
+% jsonFilePath = '../data/cyc02/NP01_task06_v2_right_20231108_162439.json';
+% jsonFilePath = '../data/cyc02/NP01_task06_v2_left_20231110_141401.json';
+
+% jsonFilePath = '../data/cyc02/NG01_task06_v2_fair_20231108_141326.json';
+
+% jsonFilePath = '../data/cyc02/NM01_task06_v2_fair_20231110_124127.json';
+
+% jsonFilePath = '../data/cyc02/JK01_task06_v2_fair_20231110_115458.json';
+
 
 % Open the JSON file and read its content
 fileID = fopen(jsonFilePath);
@@ -64,8 +81,9 @@ yline(0)
 yticks(-5:.2:5)
 ylabel 'Vertical click error (dva)'
 
-legend([h1 h2 h3 h4],[labels, {'avg Left','avg Right'}])
+legend([h1 h2 h3 h4],[labels, {'avg Left','avg Right'}],'location','best')
 
 grid on
 cleanplot
+legend boxon
 

@@ -21,8 +21,10 @@ close all
 
 % jsonFilePath = '../data/cyc02/MM01_task06_v2_fair_20231101_142041.json';
 % jsonFilePath = '../data/cyc02/MM01_task06_v2_left_20231106_135802.json';
+% jsonFilePath = '../data/cyc02/MM01_task06_v2_right_20231114_181817.json';
 
 % jsonFilePath = '../data/cyc02/AD01_task06_v2_fair_20231103_110225.json';
+% jsonFilePath = '../data/cyc02/AD01_task06_v2_left_20231113_115612.json';
 
 % jsonFilePath = '../data/cyc02/RP01_task06_v2_fair_20231103_113807.json';
 % jsonFilePath = '../data/cyc02/RP01_task06_v2_left_20231103_120242.json';
@@ -33,11 +35,19 @@ close all
 % jsonFilePath = '../data/cyc02/NP01_task06_v2_left_20231110_141401.json';
 
 % jsonFilePath = '../data/cyc02/NG01_task06_v2_fair_20231108_141326.json';
+% jsonFilePath = '../data/cyc02/NG01_task06_v2_right_20231113_145026.json';
 
 % jsonFilePath = '../data/cyc02/NM01_task06_v2_fair_20231110_124127.json';
 
 % jsonFilePath = '../data/cyc02/JK01_task06_v2_fair_20231110_115458.json';
 
+% jsonFilePath = '../data/cyc02/EF01_task06_v2_fair_20231110_152506.json';
+% jsonFilePath = '../data/cyc02/EF01_task06_v2_left_20231113_142654.json';
+% jsonFilePath = '../data/cyc02/EF01_task06_v2_right_20231114_140427.json';
+
+% jsonFilePath = '../data/cyc02/FM01_task06_v2_right_20231113_131845.json';
+
+jsonFilePath = '../data/cyc02/OS01_task06_v2_fair_20231114_180802.json';
 
 % Open the JSON file and read its content
 fileID = fopen(jsonFilePath);

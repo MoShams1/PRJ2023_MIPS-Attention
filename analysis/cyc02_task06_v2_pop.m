@@ -124,7 +124,7 @@ for icat = 1:ncat
     x = randn(n,1)*stdx + icat;
 
     scatter(x,A{icat},marksz,color,'o','fill','markerfacealpha',alpha);
-    line([icat-linelm icat+linelm],[nanmean(A{icat}) nanmean(A{icat})],...
+    line([icat-linelm icat+linelm],[nanmedian(A{icat}) nanmedian(A{icat})],...
         'color',color,'linewidth',2);
 end
 

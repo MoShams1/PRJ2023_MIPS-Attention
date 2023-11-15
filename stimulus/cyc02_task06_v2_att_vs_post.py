@@ -53,7 +53,8 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'MM01'
+subID = 'NG01'
+cnd = 'left'
 nrep = 50
 ndir = 2
 ntrs = nrep * ndir
@@ -69,7 +70,14 @@ else:
 # create file nameTrue
 date = sfc.get_date()
 time = sfc.get_time()
-output_name = f"{subID}_task06_v2_right_{date}_{time}.json"
+output_name = []
+if cnd == 'left':
+    output_name = f"{subID}_task06_v2_left_{date}_{time}.json"
+if cnd == 'right':
+    output_name = f"{subID}_task06_v2_right_{date}_{time}.json"
+if cnd == 'fair':
+    output_name = f"{subID}_task06_v2_fair_{date}_{time}.json"
+
 # set data directory
 save_path = os.path.join("..", "data", "cyc02", output_name)
 
@@ -104,7 +112,13 @@ motion_cycle_dur = REF_RATE  # [frames]
 preflash_dist = 5  # dva
 postflash_dist = 5  # dva
 npos = int(motion_cycle_dur / frame_repeat / 2)
-bias_factor = 0.2  # probability of leftward post-flash motion
+
+if cnd == 'left':
+    bias_factor = 0.8  # probability of leftward post-flash motion
+if cnd == 'right':
+    bias_factor = 0.2  # probability of leftward post-flash motion
+if cnd == 'fair':
+    bias_factor = 0.5  # probability of leftward post-flash motion
 
 # probe
 probe_rad = .15
@@ -164,7 +178,7 @@ for itrial in range(ntrs):
     # --------------------------------
     print('---------------------------')
     print(f'trl: {itrial + 1}')
-    print(f'stm: {dir_array[itrial]}')
+    print(f'dir: {dir_array[itrial]}')
 
     # --------------------------------
     # /// create visual objects

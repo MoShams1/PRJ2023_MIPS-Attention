@@ -28,10 +28,17 @@ for ifile = 1:3
         dir = cell2mat(struct2cell(jsonData.postflash_dir));
         clk_xerr = cell2mat(struct2cell(jsonData.click_xerr));
         clk_yerr = cell2mat(struct2cell(jsonData.click_yerr));       
-
+        
+        % crop trials
+        ntrials = length(dir);
+        trials = (1:ntrials)';
+        k1 = 0;
+        k2 = 1;
+        ind_trials = (trials >= (k1 * ntrials)) & (trials <= (k2 * ntrials));
+        
         % create data cell
-        errx_lM(isub, ifile) = median(clk_xerr(dir<0));
-        errx_rM(isub, ifile) = median(clk_xerr(dir>0));        
+        errx_lM(isub, ifile) = median(clk_xerr((dir<0) & ind_trials));
+        errx_rM(isub, ifile) = median(clk_xerr((dir>0) & ind_trials));        
 
     end
 end
@@ -72,12 +79,27 @@ xticks(1:3)
 xticklabels({'Fair','Biased-UnlikelyDir','Biased-LikelyDir'})
 
 ylabel 'Click error (dva)'
-
+yticks(-1:.1:1)
 yline(0)
+
+text(1,.65,['N = ',num2str(size(full_mat,1))],'color','k')
 
 cleanplot
 
 friedman(full_mat)
+
+% post-hoc comparison
+m_full_mat = median(full_mat);
+inc_pchange = (m_full_mat(2)-m_full_mat(1))/m_full_mat(1) * 100;
+inc_pval = signrank(full_mat(:,1),full_mat(:,2));
+cng_pchange = (m_full_mat(3)-m_full_mat(1))/m_full_mat(1) * 100;
+cng_pval = signrank(full_mat(:,1),full_mat(:,3));
+cmp_pchange = (m_full_mat(3)-m_full_mat(2))/m_full_mat(2) * 100;
+cmp_pval = signrank(full_mat(:,2),full_mat(:,3));
+
+fprintf('Unlikely vs Fair: Change= %6.2f%%  | p-val= %5.2f\n', inc_pchange, inc_pval)
+fprintf('Likely vs Fair  : Change= %6.2f%%  | p-val= %5.2f\n', cng_pchange, cng_pval)
+fprintf('Unlik. vs Lik.  : Change= %6.2f%%  | p-val= %5.2f\n', cmp_pchange, cmp_pval)
 
 %%
 function scatterbar(A,marksz,color)

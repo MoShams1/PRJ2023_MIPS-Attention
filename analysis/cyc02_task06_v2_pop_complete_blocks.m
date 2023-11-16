@@ -10,10 +10,9 @@ file_dir{3} = dir('../data/cyc02/complete/*right*');
 k1_list = [0, .5];
 k2_list = [.5, 1];
 
-figure
-hold on
 c_all = lines(7);
 c_map = [c_all(5,:); c_all(2,:)];
+color_map = [1, 0, 0; 0, 0, 1];
 
 label_list = {'first half', 'second half'};
 
@@ -69,7 +68,9 @@ for ik = 1:2
     biased_inc = mean([rM_lB, -lM_rB], 2);
 
     full_mat = [fair, biased_inc, biased_cng];
-
+    
+    figure(1)
+    hold on
     errorbar(1:3,median(full_mat),SE(full_mat),'linewidth',2,'Color',c_map(ik,:),...
         'markersize',7,'marker','o','MarkerEdgeColor','none','MarkerFaceColor',c_map(ik,:))
 
@@ -92,10 +93,43 @@ for ik = 1:2
     fprintf('Unlikely vs Fair: Change= %5.2f dva | p-val= %5.2f\n', inc_abschange, inc_pval)
     fprintf('Likely vs Fair  : Change= %5.2f dva | p-val= %5.2f\n', cng_abschange, cng_pval)
     fprintf('Unlik. vs Lik.  : Change= %5.2f dva | p-val= %5.2f\n', cmp_abschange, cmp_pval)
-    disp('====')
+    disp('---')
+
+    % scatterbar of the differences
+    figure(2)
+    subplot(1,2,ik)
+    hold on
+
+    Dif_mat(:,1) = full_mat(:,2)-full_mat(:,1);
+    Dif_mat(:,2) = full_mat(:,3)-full_mat(:,1);
+
+    scatterbar(Dif_mat, 20, color_map)
+    
+    xlim([.5 2.5])
+    xticks(1:2)
+    xticklabels({'Unlikely dir.','Likely dir.'})
+    
+    ylabel 'Click error difference rel. fair condition (dva)'
+    ylim([-1, 1])
+    yticks(-1:.2:1)
+    yline(0)
+    
+    pbaspect([.5, 1, 1])
+    
+    cleanplot
+
+    diff_unlikely = median(Dif_mat(:,1));
+    pval_unlikely = signrank(Dif_mat(:,1));
+    diff_likely = median(Dif_mat(:,2));
+    pval_likely = signrank(Dif_mat(:,2));
+    fprintf('Unlikely: median= %5.2f dva | p-val= %5.2f\n', diff_unlikely, pval_unlikely)
+    fprintf('Likely  : median= %5.2f dva | p-val= %5.2f\n', diff_likely, pval_likely)
+    disp('===')
 
 end
 
+%%
+figure(1)
 xlim([.5 3.5])
 xticks(1:3)
 xticklabels({'Fair','Biased-UnlikelyDir','Biased-LikelyDir'})
@@ -109,34 +143,6 @@ text(1,.335,'First half','color',c_map(1,:))
 text(1,.3,['N = ',num2str(size(full_mat,1))],'color','k')
 
 cleanplot
-
-%% scatterbar of the differences
-Dif_mat(:,1) = full_mat(:,2)-full_mat(:,1);
-Dif_mat(:,2) = full_mat(:,3)-full_mat(:,1);
-
-color_map = [1, 0, 0; 0, 0, 1];
-
-figure
-scatterbar(Dif_mat, 20, color_map)
-
-xlim([.5 2.5])
-xticks(1:2)
-xticklabels({'Unlikely dir.','Likely dir.'})
-
-ylabel 'Click error difference rel. fair condition (dva)'
-yticks(-1:.1:1)
-yline(0)
-
-pbaspect([.5, 1, 1])
-
-cleanplot
-
-diff_unlikely = median(Dif_mat(:,1));
-pval_unlikely = signrank(Dif_mat(:,1));
-diff_likely = median(Dif_mat(:,2));
-pval_likely = signrank(Dif_mat(:,2));
-fprintf('Unlikely: median= %5.2f dva | p-val= %5.2f\n', diff_unlikely, pval_unlikely)
-fprintf('Likely  : median= %5.2f dva | p-val= %5.2f\n', diff_likely, pval_likely)
 
 %%
 function scatterbar(A,marksz,color)

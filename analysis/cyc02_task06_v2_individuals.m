@@ -4,7 +4,7 @@ close all
 
 % Specify the path to the JSON file
 
-% jsonFilePath = '../data/cyc02/MS01_task06_v2_fair_20231030_135025.json';
+jsonFilePath = '../data/cyc02/MS01_task06_v2_fair_20231030_135025.json';
 % jsonFilePath = '../data/cyc02/MS01_task06_v2_right_20231030_153745.json';
 % jsonFilePath = '../data/cyc02/MS01_task06_v2_left_20231030_154843.json';
 
@@ -47,7 +47,7 @@ close all
 
 % jsonFilePath = '../data/cyc02/FM01_task06_v2_right_20231113_131845.json';
 
-jsonFilePath = '../data/cyc02/OS01_task06_v2_fair_20231114_180802.json';
+% jsonFilePath = '../data/cyc02/OS01_task06_v2_fair_20231114_180802.json';
 
 % Open the JSON file and read its content
 fileID = fopen(jsonFilePath);

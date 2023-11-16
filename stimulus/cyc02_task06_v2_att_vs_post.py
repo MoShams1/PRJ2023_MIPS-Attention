@@ -53,8 +53,8 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'
-cnd = 'fair'
+subID = 'FM01'
+cnd = 'left'
 nrep = 50
 ndir = 2
 ntrs = nrep * ndir
@@ -113,6 +113,7 @@ preflash_dist = 5  # dva
 postflash_dist = 5  # dva
 npos = int(motion_cycle_dur / frame_repeat / 2)
 
+bias_factor = np.nan
 if cnd == 'left':
     bias_factor = 0.8  # probability of leftward post-flash motion
 if cnd == 'right':

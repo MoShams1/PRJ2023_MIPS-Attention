@@ -67,7 +67,7 @@ for ik = 1:2
     biased_cng = mean([rM_rB, -lM_lB], 2);
     biased_inc = mean([rM_lB, -lM_rB], 2);
 
-    full_mat = [fair, biased_inc, biased_cng];
+    full_mat = [biased_inc, fair, biased_cng];
     
     figure(1)
     hold on
@@ -79,20 +79,20 @@ for ik = 1:2
     % post-hoc comparison
     m_full_mat = median(full_mat);
 
-    inc_abschange = median(full_mat(:,2)-full_mat(:,1));
-    inc_pval = median(signrank(full_mat(:,2),full_mat(:,1)));
+    inc_abschange = m_full_mat(1)-m_full_mat(2);
+    inc_pval = signrank(full_mat(:,1),full_mat(:,2));
     
-    cng_abschange = median(full_mat(:,3)-full_mat(:,1));
-    cng_pval = signrank(full_mat(:,3),full_mat(:,1));
-
-    cmp_abschange = median(full_mat(:,3)-full_mat(:,2));
-    cmp_pval = signrank(full_mat(:,3),full_mat(:,2));    
+    cng_abschange = m_full_mat(3)-m_full_mat(2);
+    cng_pval = signrank(full_mat(:,2),full_mat(:,3));
+    
+    cmp_abschange = m_full_mat(3)-m_full_mat(1);
+    cmp_pval = signrank(full_mat(:,1),full_mat(:,3));  
 
     disp(['<<< ',label_list{ik},' >>>'])
     fprintf('Friedman''s Test p-val: %6.2f\n', f_test)
-    fprintf('Unlikely vs Fair: Change= %5.2f dva | p-val= %5.2f\n', inc_abschange, inc_pval)
-    fprintf('Likely vs Fair  : Change= %5.2f dva | p-val= %5.2f\n', cng_abschange, cng_pval)
-    fprintf('Unlik. vs Lik.  : Change= %5.2f dva | p-val= %5.2f\n', cmp_abschange, cmp_pval)
+    fprintf('20%% vs 50%%: Change= %5.2f dva | p-val= %5.2f\n', inc_abschange, inc_pval)
+    fprintf('80%% vs 50%%: Change= %5.2f dva | p-val= %5.2f\n', cng_abschange, cng_pval)
+    fprintf('80%% vs 20%%: Change= %5.2f dva | p-val= %5.2f\n', cmp_abschange, cmp_pval)
     disp('---')
 
     % scatterbar of the differences
@@ -107,7 +107,7 @@ for ik = 1:2
     
     xlim([.5 2.5])
     xticks(1:2)
-    xticklabels({'Unlikely dir.','Likely dir.'})
+    xticklabels({'20%','80%'})
     
     ylabel 'Click error difference rel. fair condition (dva)'
     ylim([-1, 1])
@@ -122,8 +122,8 @@ for ik = 1:2
     pval_unlikely = signrank(Dif_mat(:,1));
     diff_likely = median(Dif_mat(:,2));
     pval_likely = signrank(Dif_mat(:,2));
-    fprintf('Unlikely: median= %5.2f dva | p-val= %5.2f\n', diff_unlikely, pval_unlikely)
-    fprintf('Likely  : median= %5.2f dva | p-val= %5.2f\n', diff_likely, pval_likely)
+    fprintf('20%: median= %5.2f dva | p-val= %5.2f\n', diff_unlikely, pval_unlikely)
+    fprintf('80%: median= %5.2f dva | p-val= %5.2f\n', diff_likely, pval_likely)
     disp('===')
 
 end
@@ -132,7 +132,8 @@ end
 figure(1)
 xlim([.5 3.5])
 xticks(1:3)
-xticklabels({'Fair','Biased-UnlikelyDir','Biased-LikelyDir'})
+xticklabels({'0.2','0.5','0.8'})
+xlabel 'Motion direction probability'
 
 ylabel 'Click error (dva)'
 yticks(0:.1:1)

@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'AD01'
+subID = 'ZA01'
 cnd = 'right'
 nrep = 50
 ndir = 2

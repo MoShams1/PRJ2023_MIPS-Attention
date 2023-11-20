@@ -102,7 +102,7 @@ cmp_pchange = (m_full_mat(3)-m_full_mat(1))/m_full_mat(1) * 100;
 cmp_pval = signrank(full_mat(:,1),full_mat(:,3));
 
 fprintf('Friedman''s Test p-val: %6.2f\n', f_test)
-fprintf('20%% vs 50%%  : Change= %6.2f%%  | p-val= %5.2f\n', inc_pchange, inc_pval)
-fprintf('80%% vs 50%%  : Change= %6.2f%%  | p-val= %5.2f\n', cng_pchange, cng_pval)
-fprintf('80%% vs 20%%  : Change= %6.2f%%  | p-val= %5.2f\n', cmp_pchange, cmp_pval)
+fprintf('20%% vs 50%%  : Change= %6.2f%%  | p-val= %5.3f\n', inc_pchange, inc_pval)
+fprintf('80%% vs 50%%  : Change= %6.2f%%  | p-val= %5.3f\n', cng_pchange, cng_pval)
+fprintf('80%% vs 20%%  : Change= %6.2f%%  | p-val= %5.3f\n', cmp_pchange, cmp_pval)
 

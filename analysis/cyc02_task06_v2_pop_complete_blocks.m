@@ -7,14 +7,15 @@ file_dir{1} = dir('../data/cyc02/complete/*left*');
 file_dir{2} = dir('../data/cyc02/complete/*fair*');
 file_dir{3} = dir('../data/cyc02/complete/*right*');
 
-k1_list = [0, .7];
-k2_list = [.3, 1];
+k1_list = [0, .5];
+k2_list = [.5, 1];
 
 c_all = lines(7);
 c_map = [c_all(5,:); c_all(2,:)];
 color_map = [1, 0, 0; 0, 0, 1];
+offset = [-.05, .05];
 
-label_list = {'First third', 'Last third'};
+label_list = {'First half', 'Second half'};
 
 for ik = 1:2
     for ifile = 1:3
@@ -71,7 +72,8 @@ for ik = 1:2
     
     figure(1)
     hold on
-    errorbar(1:3,median(full_mat),SE(full_mat),'linewidth',2,'Color',c_map(ik,:),...
+    errorbar((1:3)+offset(ik),median(full_mat),SE(full_mat),...
+        'linewidth',2,'Color',c_map(ik,:),'linestyle',':',...
         'markersize',7,'marker','o','MarkerEdgeColor','none','MarkerFaceColor',c_map(ik,:))
 
     f_test = friedman(full_mat,1,"off");
@@ -138,12 +140,12 @@ xticklabels({'0.2','0.5','0.8'})
 xlabel 'Motion direction probability'
 
 ylabel 'Click error in the direction of motion (dva)'
-yticks(0:.1:1)
+yticks(-1:.1:1)
 yline(0)
 ylim([-.1, .4])
 
-text(1,.32,'Last third','color',c_map(2,:))
-text(1,.335,'First third','color',c_map(1,:))
+text(1,.32,label_list{2},'color',c_map(2,:))
+text(1,.335,label_list{1},'color',c_map(1,:))
 text(1,.3,['N = ',num2str(size(full_mat,1))],'color','k')
 
 cleanplot

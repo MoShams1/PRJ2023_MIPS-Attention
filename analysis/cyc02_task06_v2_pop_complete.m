@@ -66,7 +66,7 @@ biased_inc = mean([rM_lB, -lM_rB], 2);
 % biased_cng = mean([-lM_lB], 2);
 % biased_inc = mean([-lM_rB], 2);
 
-full_mat = [fair, biased_inc, biased_cng];
+full_mat = [biased_inc, fair, biased_cng];
 figure
 hold on
 plot(full_mat','-o','color',gray,'markerfaceColor',gray,...
@@ -76,7 +76,8 @@ errorbar(1:3,median(full_mat),SE(full_mat),'linewidth',2,'Color','k','markersize
 
 xlim([.5 3.5])
 xticks(1:3)
-xticklabels({'Fair','Biased-UnlikelyDir','Biased-LikelyDir'})
+xticklabels({'0.2','0.5','0.8'})
+xlabel 'Motion direction probability'
 
 ylabel 'Click error (dva)'
 yticks(-1:.1:1)
@@ -86,42 +87,22 @@ text(1,.65,['N = ',num2str(size(full_mat,1))],'color','k')
 
 cleanplot
 
-friedman(full_mat)
+f_test = friedman(full_mat,1,"off");
 
 % post-hoc comparison
 m_full_mat = median(full_mat);
-inc_pchange = (m_full_mat(2)-m_full_mat(1))/m_full_mat(1) * 100;
+
+inc_pchange = (m_full_mat(1)-m_full_mat(2))/m_full_mat(2) * 100;
 inc_pval = signrank(full_mat(:,1),full_mat(:,2));
-cng_pchange = (m_full_mat(3)-m_full_mat(1))/m_full_mat(1) * 100;
-cng_pval = signrank(full_mat(:,1),full_mat(:,3));
-cmp_pchange = (m_full_mat(3)-m_full_mat(2))/m_full_mat(2) * 100;
-cmp_pval = signrank(full_mat(:,2),full_mat(:,3));
 
-fprintf('Unlikely vs Fair: Change= %6.2f%%  | p-val= %5.2f\n', inc_pchange, inc_pval)
-fprintf('Likely vs Fair  : Change= %6.2f%%  | p-val= %5.2f\n', cng_pchange, cng_pval)
-fprintf('Unlik. vs Lik.  : Change= %6.2f%%  | p-val= %5.2f\n', cmp_pchange, cmp_pval)
+cng_pchange = (m_full_mat(3)-m_full_mat(2))/m_full_mat(2) * 100;
+cng_pval = signrank(full_mat(:,2),full_mat(:,3));
 
-%%
-function scatterbar(A,marksz,color)
-if ~iscell(A)
-    A = mat2cell(A,size(A,1),ones(1,size(A,2)));
-end
-ncat    = numel(A); % number of categories
-stdx    = .05; % standard deviation of scatters in each category
-linelm  = .3; % line length for median
-alpha   = .3;
+cmp_pchange = (m_full_mat(3)-m_full_mat(1))/m_full_mat(1) * 100;
+cmp_pval = signrank(full_mat(:,1),full_mat(:,3));
 
-hold on
-for icat = 1:ncat
-    rng default
-    n = numel(A{icat});
-    x = randn(n,1)*stdx + icat;
+fprintf('Friedman''s Test p-val: %6.2f\n', f_test)
+fprintf('20%% vs 50%%  : Change= %6.2f%%  | p-val= %5.2f\n', inc_pchange, inc_pval)
+fprintf('80%% vs 50%%  : Change= %6.2f%%  | p-val= %5.2f\n', cng_pchange, cng_pval)
+fprintf('80%% vs 20%%  : Change= %6.2f%%  | p-val= %5.2f\n', cmp_pchange, cmp_pval)
 
-    scatter(x,A{icat},marksz,color,'o','fill','markerfacealpha',alpha);
-    line([icat-linelm icat+linelm],[nanmedian(A{icat}) nanmedian(A{icat})],...
-        'color',color,'linewidth',2);
-end
-
-xlim([0 ncat+1])
-set(gca,'xtick',1:ncat)
-end

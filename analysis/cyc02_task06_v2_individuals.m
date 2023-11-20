@@ -8,8 +8,9 @@ jsonFilePath = '../data/cyc02/MS01_task06_v2_fair_20231030_135025.json';
 % jsonFilePath = '../data/cyc02/MS01_task06_v2_right_20231030_153745.json';
 % jsonFilePath = '../data/cyc02/MS01_task06_v2_left_20231030_154843.json';
 
-% jsonFilePath = '../data/cyc02/HA01_task06_v2_fair_20231031_111134.json';
+jsonFilePath = '../data/cyc02/HA01_task06_v2_fair_20231031_111134.json';
 % jsonFilePath = '../data/cyc02/HA01_task06_v2_left_20231106_122752.json';
+% jsonFilePath = '../data/cyc02/HA01_task06_v2_right_20231114_124643.json';
 
 % jsonFilePath = '../data/cyc02/AS01_task06_v2_fair_20231031_113747.json';
 % jsonFilePath = '../data/cyc02/AS01_task06_v2_right_20231103_131414.json';

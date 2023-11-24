@@ -5,9 +5,9 @@ close all
 normalize = 0;
 
 % Specify the path to the JSON file
-file_dir{1} = dir('../data/cyc02/*left*');
-file_dir{2} = dir('../data/cyc02/*fair*');
-file_dir{3} = dir('../data/cyc02/*right*');
+file_dir{1} = dir('../data/cyc02/complete/*left*');
+file_dir{2} = dir('../data/cyc02/complete/*fair*');
+file_dir{3} = dir('../data/cyc02/complete/*right*');
 
 
 for ifile = [2,1,3]

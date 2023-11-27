@@ -72,9 +72,9 @@ for ik = 1:2
     
     % remove outliers
     full_mat_org = full_mat;
-    [~,lower_bound,upper_bound] = isoutlier(full_mat_org,'ThresholdFactor',3);
-    full_mat(6,:) = [];
-
+    [outlier_logic_mat,lower_bound,upper_bound] = isoutlier(full_mat_org,'ThresholdFactor',3);
+    outlier_ind = any(outlier_logic_mat,2);
+    full_mat(outlier_ind,:) = [];
 
     figure(1)
     hold on

@@ -4,7 +4,7 @@ close all
 
 % Specify the path to the JSON file
 
-jsonFilePath = '../data/cyc02/YG01_task06_v2_fair_20231116_132330.json';
+jsonFilePath = '../data/cyc02/complete/JK01_task06_v2_fair_20231110_115458.json';
 
 % Open the JSON file and read its content
 fileID = fopen(jsonFilePath);

@@ -68,9 +68,17 @@ outlier_ind = any(outlier_logic_mat,2);
 full_mat(outlier_ind,:) = [];
 outlier_mat = full_mat_org(outlier_ind,:);
 
+for icol = 1:3
+    pval(icol) = signrank(full_mat(:,icol));
+end
+
 disp('Unlikely   Equally likely   Likely')
+disp('median')
 disp(round(median(full_mat),2))
+disp('std')
 disp(round(std(full_mat),3))
+disp('pvals')
+disp(round(pval,3))
 
 subplot(1,3,1)
 hold on

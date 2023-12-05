@@ -7,11 +7,11 @@ file_dir{1} = dir('../data/cyc02/complete/*left*');
 file_dir{2} = dir('../data/cyc02/complete/*fair*');
 file_dir{3} = dir('../data/cyc02/complete/*right*');
 
-figure('units','normalized','outerposition',[.2 .2 .2 .35])
+figure('units','pixels','outerposition',[700 500 300 300])
 hold on
 
 c = lines(7);
-cmap = [zeros(1,3); c(5,:); c(3,:)];
+cmap = [zeros(1,3); c(5,:); c(3,:)*.9];
 
 for inbefore = 1:3
 
@@ -97,13 +97,14 @@ xlabel 'Motion direction likelihood condition'
 
 ylabel 'Click error in direction of motion (dva)'
 yticks(-1:.1:1)
+ylim([0 .3])
 yline(0)
 
 text(2.7,.03,['N = ',num2str(size(full_mat,1))],'color','k')
 
 text(.6,.295,'All trials','color',cmap(1,:))
 text(.6,.28, 'No same-dir. prec. trials','color',cmap(2,:))
-text(.6,.265,'>1 same-dir. prec. trials','color',cmap(3,:)*.9)
+text(.6,.265,'>1 same-dir. prec. trials','color',cmap(3,:))
 
 pbaspect([1,1,1])
 cleanplot
@@ -125,5 +126,11 @@ for itrial = 1:length(dir)
         end
     end
     n_vec(itrial,1) = nbefore;
+end
+end
+
+function p_same = cal_p_before(dir)
+for i = 11:length(dir)
+    p_same(i,1) = sum((dir(i-10:i-1) - dir(i)) == 0) * 10;
 end
 end

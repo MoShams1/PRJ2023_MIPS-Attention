@@ -10,3 +10,5 @@ ax = gca;
 if ~isempty(ax.Legend)
     legend boxoff
 end
+
+fontsize(gcf, 8, 'points')

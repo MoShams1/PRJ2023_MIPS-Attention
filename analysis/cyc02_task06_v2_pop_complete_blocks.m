@@ -12,7 +12,7 @@ k2_list = [.5, 1];
 
 c_all = lines(7);
 c_map = [c_all(5,:); c_all(2,:)];
-color_map = [1, 0, 0; 0, 0, 1];
+color_map = [1, 0, 0; 0, 0, 1; 0, 0, 0];
 offset = [-.05, .05];
 
 label_list = {'First half', 'Second half'};
@@ -70,6 +70,12 @@ for ik = 1:2
 
     full_mat = [biased_inc, fair, biased_cng];
     
+    % remove outliers
+    full_mat_org = full_mat;
+    [outlier_logic_mat,lower_bound,upper_bound] = isoutlier(full_mat_org,'ThresholdFactor',3);
+    outlier_ind = any(outlier_logic_mat,2);
+    full_mat(outlier_ind,:) = [];
+
     figure(1)
     hold on
     errorbar((1:3)+offset(ik),median(full_mat),SE(full_mat),...
@@ -91,11 +97,11 @@ for ik = 1:2
     cmp_pval = signrank(full_mat(:,1),full_mat(:,3));  
 
     disp(['<<< ',label_list{ik},' >>>'])
-    fprintf('Friedman''s Test p-val: %6.2f\n', f_test)
-    fprintf('20%% vs 50%%: Change= %5.2f dva | p-val= %5.2f\n', inc_abschange, inc_pval)
-    fprintf('80%% vs 50%%: Change= %5.2f dva | p-val= %5.2f\n', cng_abschange, cng_pval)
-    fprintf('80%% vs 20%%: Change= %5.2f dva | p-val= %5.2f\n', cmp_abschange, cmp_pval)
-    disp('---')
+    fprintf('Friedman''s Test p-val: %6.3f\n', f_test)
+%     fprintf('20%% vs 50%%: Change= %5.2f dva | p-val= %5.2f\n', inc_abschange, inc_pval)
+%     fprintf('80%% vs 50%%: Change= %5.2f dva | p-val= %5.2f\n', cng_abschange, cng_pval)
+%     fprintf('80%% vs 20%%: Change= %5.2f dva | p-val= %5.2f\n', cmp_abschange, cmp_pval)
+%     disp('---')
 
     % scatterbar of the differences
     figure(2)
@@ -103,17 +109,18 @@ for ik = 1:2
     hold on
 
     Dif_mat(:,1) = full_mat(:,2)-full_mat(:,1);
-    Dif_mat(:,2) = full_mat(:,3)-full_mat(:,1);
+    Dif_mat(:,2) = full_mat(:,3)-full_mat(:,2);
+    Dif_mat(:,3) = full_mat(:,3)-full_mat(:,1);
 
     scatterbar(Dif_mat, 20, color_map)
     
     title(label_list{(ik)})
-    xlim([.5 2.5])
-    xticks(1:2)
-    xticklabels({'0.2','0.8'})
-    xlabel 'Motion direction probability'
+    xlim([.5 3.5])
+    xticks(1:3)
+    xticklabels({'0.5-0.2','0.8-0.5','0.8-0.2'})
+    xlabel 'Subtracted conditions'
     
-    ylabel({'Click error difference (dva)','[biased - unbiased]'})
+    ylabel('Click error difference (dva)')
     ylim([-1, 1])
     yticks(-1:.2:1)
     yline(0)
@@ -122,12 +129,15 @@ for ik = 1:2
     
     cleanplot
 
-    diff_unlikely = median(Dif_mat(:,1));
-    pval_unlikely = signrank(Dif_mat(:,1));
-    diff_likely = median(Dif_mat(:,2));
-    pval_likely = signrank(Dif_mat(:,2));
-    fprintf('20%%: median= %5.2f dva | p-val= %5.2f\n', diff_unlikely, pval_unlikely)
-    fprintf('80%%: median= %5.2f dva | p-val= %5.2f\n', diff_likely, pval_likely)
+    diff_52 = median(Dif_mat(:,1));
+    pval_52 = signrank(Dif_mat(:,1));
+    diff_85 = median(Dif_mat(:,2));
+    pval_85 = signrank(Dif_mat(:,2));
+    diff_82 = median(Dif_mat(:,3));
+    pval_82 = signrank(Dif_mat(:,3));
+    fprintf('50%%-20%%: median= %5.2f dva | p-val= %5.3f\n', diff_52, pval_52)
+    fprintf('80%%-50%%: median= %5.2f dva | p-val= %5.3f\n', diff_85, pval_85)
+    fprintf('80%%-20%%: median= %5.2f dva | p-val= %5.3f\n', diff_82, pval_82)
     disp('===')
 
 end

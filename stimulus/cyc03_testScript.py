@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '1124'
+subID = '0001'
 cnd = 'right'
 nrep = 50
 ndir = 2
@@ -79,7 +79,7 @@ if cnd == 'fair':
     output_name = f"{subID}_task06_v2_fair_{date}_{time}.json"
 
 # set data directory
-save_path = os.path.join("..", "data", "cyc02", output_name)
+save_path = os.path.join("..", "data", "cyc03", output_name)
 
 # --------------------------------
 # /// set stimulus parameters

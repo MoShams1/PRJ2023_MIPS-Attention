@@ -101,14 +101,13 @@ fixdot_color = 'black'
 
 # lines
 line_width = 0.12
-hline_length = 2
-vline_length = 1.2
+vline_length = 2
 line_color = 'black'
 
-line_start_pos = (0, 1)
+line_start_pos = (0, 4)  # dva
+line_end_offset = 8  # dva
 
 motion_cycle_dur = REF_RATE  # [frames]
-postflash_dist = 5  # dva
 npos = int(motion_cycle_dur / frame_repeat / 2)
 
 bias_factor = np.nan
@@ -118,10 +117,10 @@ if cnd_dir == 'right':
     bias_factor = 0.2  # probability of leftward post-flash motion
 
 # probe
-probe_rad = .15
+probe_rad = .25
 probe_color = 'red'
 probe_xoffset = 2
-probe_yoffset = 5
+probe_yoffset = line_start_pos[1]
 
 # potential gap durations (0.5 to 1 sec)
 gap_dur_list = range(int(REF_RATE / 2), int(REF_RATE / 1) + 1, 1)
@@ -135,16 +134,23 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
+# calculate number of leftward and rightward motion trials
+nleft = int(round(ntrs * bias_factor))
+nright = int(round(ntrs * (1 - bias_factor)))
 # create an equal number of trials per condition (contrast/direction)
-dir_array = np.repeat([-1, 1], [int(round(ntrs * bias_factor)),
-                                int(round(ntrs * (1 - bias_factor)))])
+dir_array = np.repeat([-1, 1], [nleft, nright])
+# create an equal number of probe positions for each direction
+probe_array1 = np.repeat([-probe_xoffset, probe_xoffset], [nleft/2, nleft/2])
+probe_array2 = np.repeat([-probe_xoffset, probe_xoffset], [nright/2, nright/2])
+probe_array = np.concatenate((probe_array1, probe_array2))
 
-assert (dir_array.size == ntrs)
+assert((dir_array.size == ntrs) and (probe_array.size == ntrs))
 
 # randomize the order of each condition array
 ind_shuffle = np.arange(ntrs)
 np.random.shuffle(ind_shuffle)
 dir_array = dir_array[ind_shuffle]
+probe_array = probe_array[ind_shuffle]
 
 # pause trials
 pause_array = np.linspace(0, ntrs, nblocks + 1)
@@ -154,6 +160,10 @@ pause_array = pause_array[:-1]
 # /// TRIAL BEGINS ///
 
 for itrial in range(ntrs):
+
+    dir_array[0] = -1
+    probe_array[0] = -1
+
     # --------------------------------
     # /// resets
 
@@ -189,6 +199,7 @@ for itrial in range(ntrs):
     # probe
     probe = visual.Circle(win,
                           radius=probe_rad,
+                          pos=(probe_array[itrial], probe_yoffset),
                           fillColor=probe_color)
 
     # fixation dot
@@ -202,10 +213,10 @@ for itrial in range(ntrs):
                             fillColor='gray')
 
     # --------------------------------
-    # /// create motion arrays
+    # /// create motion trajectory array
 
     motionx_array = np.linspace(line_start_pos[0],
-                                dir_array[itrial] * postflash_dist,
+                                dir_array[itrial] * line_end_offset,
                                 num=npos)
     motiony_array = np.linspace(line_start_pos[1],
                                 line_start_pos[1],
@@ -215,12 +226,12 @@ for itrial in range(ntrs):
     motiony_array = np.repeat(motiony_array, frame_repeat)
 
     # --------------------------------
-    # /// run the stimulus
+    # /// run stimulus
 
     if itrial in pause_array:
         sfc.block_msg2(win, np.where(pause_array == itrial)[0][0] + 1, nblocks)
 
-    # gap period
+    # gap period (pre-fixation))
     for igap in range(iti):
         win.flip()
 
@@ -230,22 +241,25 @@ for itrial in range(ntrs):
         fixdot2.draw()
         win.flip()
 
-    # gap period
+    # gap period (post-fixation)
     for ifix in range(
             int(np.random.choice(np.arange(REF_RATE / 2, REF_RATE)))):
         win.flip()
 
-    for i in range(npos * frame_repeat * 2):
-        vline.pos = (motionx_array[i], motiony_array[i])
-        vline.draw()
+    # move the vertical bar
+    motion_dur = npos * frame_repeat
+    for i, icount in enumerate(range(motion_dur)):
+        for islow in range(2):
+            vline.pos = (motionx_array[i], motiony_array[i])
+            vline.draw()
 
-        # fixdot1.draw()
-        # fixdot2.draw()
+            # fixdot1.draw()
+            # fixdot2.draw()
 
-        # if hline.pos[0] == probe_pos[0] and vlineL.pos[1] == probe_pos[1]:
-        #     probe.draw()
+            if icount == 0:
+                probe.draw()
 
-        win.flip()
+            win.flip()
 
     click_pos = get_mouseclick(win)
     click_err = click_pos - probe.pos

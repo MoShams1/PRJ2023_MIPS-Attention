@@ -56,12 +56,12 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '9999'
-cnd_dir = 'right'
-nrep = 50
-ndir = 2
-ntrs = nrep * ndir
-nblocks = 4
+subID = '9999'  # subject ID (put 'test' for a test run)
+ntrs = 300  # number of all trials
+nblocks = 4  # number of blocks
+bias_coeff = .8  # probability of more likely direction
+
+slow_coeff = 2  # on dell:1 | on mac:2
 
 if subID == 'test':
     full_screen = False
@@ -74,7 +74,7 @@ else:
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc04_task01_{date}_{time}_{subID}_{cnd_dir}.json"
+output_name = f"cyc04_task01_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc04", output_name)
@@ -110,11 +110,13 @@ line_end_offset = 10  # dva
 motion_dur = REF_RATE  # [frames]
 npos = int(motion_dur / frame_repeat)
 
-bias_factor = np.nan
-if cnd_dir == 'left':
-    bias_factor = 0.8  # probability of leftward post-flash motion
-if cnd_dir == 'right':
-    bias_factor = 0.2  # probability of leftward post-flash motion
+# randomly decide on the more likely direction
+left_bias_coeff = np.nan
+likely_dir = np.random.choice(['left', 'right'])
+if likely_dir == 'left':
+    left_bias_coeff = 0.8  # probability of leftward motion
+if likely_dir == 'right':
+    left_bias_coeff = 0.2  # probability of leftward motion
 
 # probe
 probe_rad = .25
@@ -138,8 +140,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # /// CONDITIONS ///
 
 # calculate number of leftward and rightward motion trials
-nleft = int(round(ntrs * bias_factor))
-nright = int(round(ntrs * (1 - bias_factor)))
+nleft = int(round(ntrs * left_bias_coeff))
+nright = int(round(ntrs * (1 - left_bias_coeff)))
 # create an equal number of trials per condition (contrast/direction)
 dir_array = np.repeat([-1, 1], [nleft, nright])
 # create an equal number of probe positions for each direction
@@ -176,12 +178,6 @@ for itrial in range(ntrs):
     mouse.setPos((0, 0))
     mouse.setVisible(False)
 
-    # reset pse response
-    # hline_x = np.nan
-
-    # reset loop counter
-    loop_cntr = 0
-
     # --------------------------------
     # /// set up the stimulus behavior in current trial
 
@@ -191,8 +187,9 @@ for itrial in range(ntrs):
 
     # --------------------------------
     print('---------------------------')
-    print(f'trl: {itrial + 1}')
-    print(f'dir: {dir_array[itrial]}')
+    print(f'trial number    : {itrial + 1}')
+    print(f'likely direction: {likely_dir}')
+    print(f'motion direction: {dir_array[itrial]}')
 
     # --------------------------------
     # /// create visual objects
@@ -234,8 +231,9 @@ for itrial in range(ntrs):
     # --------------------------------
     # /// run stimulus
 
-    # if itrial in pause_array:
-    #     sfc.block_msg2(win, np.where(pause_array == itrial)[0][0] + 1, nblocks)
+    # show the block screeen
+    if itrial in pause_array:
+        sfc.block_msg2(win, np.where(pause_array == itrial)[0][0] + 1, nblocks)
 
     # inter-trial interval gap period
     for igap in range(iti):
@@ -252,10 +250,11 @@ for itrial in range(ntrs):
         win.flip()
 
     my_clock.reset()
-    # move the vertical bar
     motion_dur = npos * frame_repeat
+
+    # move the vertical bar & flash the probe
     for i, icount in enumerate(range(motion_dur)):
-        for islow in range(2):
+        for islow in range(slow_coeff):
             vline.pos = (motionx_array[i], motiony_array[i])
             vline.draw()
 
@@ -266,19 +265,21 @@ for itrial in range(ntrs):
             win.flip()
 
     motion_dur_measured = round(my_clock.getTime(), 2)
-    print(f'Measured motion duration: {motion_dur_measured} s')
-    click_pos = get_mouseclick(win)
-    click_err = click_pos - probe.pos
-    print(f'probe pos: {probe.pos}')
-    print(f'click pos: {click_pos}')
-    print(f'click err: {click_err}')
+    print(f'Motion duration : {motion_dur_measured} s')
+
+    click_pos = np.round(get_mouseclick(win), 2)
+    click_err = np.round(click_pos - probe.pos, 2)
+    print(f'probe position  : {probe.pos} dva')
+    print(f'click position  : {click_pos} dva')
+    print(f'click error     : {click_err} dva')
 
     # --------------------------------
     # /// prepare data for saving
 
     # create a dictionary of variables to be saved
     trial_dict = {'trial_num': itrial + 1,
-                  'postflash_dir': dir_array[itrial],
+                  'likely_dir': likely_dir,
+                  'bar_dir': dir_array[itrial],
                   'probe_pos': [probe.pos],
                   'click_pos': [click_pos],
                   'click_err': [click_err],

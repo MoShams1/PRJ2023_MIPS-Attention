@@ -56,7 +56,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'
+subID = '9999'
 cnd_dir = 'right'
 nrep = 50
 ndir = 2
@@ -100,15 +100,15 @@ FIX_Y = -2
 fixdot_color = 'black'
 
 # lines
-line_width = 0.12
+line_width = 0.2
 vline_length = 2
 line_color = 'black'
 
 line_start_pos = (0, 4)  # dva
-line_end_offset = 8  # dva
+line_end_offset = 10  # dva
 
-motion_cycle_dur = REF_RATE  # [frames]
-npos = int(motion_cycle_dur / frame_repeat / 2)
+motion_dur = REF_RATE  # [frames]
+npos = int(motion_dur / frame_repeat)
 
 bias_factor = np.nan
 if cnd_dir == 'left':
@@ -118,15 +118,18 @@ if cnd_dir == 'right':
 
 # probe
 probe_rad = .25
-probe_color = 'red'
-probe_xoffset = 2
+probe_color = 'darkred'
+probe_xoffset = 2.5
 probe_yoffset = line_start_pos[1]
 
-# potential gap durations (0.5 to 1 sec)
-gap_dur_list = range(int(REF_RATE / 2), int(REF_RATE / 1) + 1, 1)
+# potential gap durations (0.75 - 1.25 sec)
+gap_dur_list = range(int(REF_RATE * .75), int(REF_RATE * 1.25) + 1, 1)
 
 # initialize mouse
 mouse = event.Mouse(win=win, visible=False)
+
+# initialize clock
+my_clock = core.Clock()
 
 # turn off Numpy's FutureWarning
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -140,11 +143,13 @@ nright = int(round(ntrs * (1 - bias_factor)))
 # create an equal number of trials per condition (contrast/direction)
 dir_array = np.repeat([-1, 1], [nleft, nright])
 # create an equal number of probe positions for each direction
-probe_array1 = np.repeat([-probe_xoffset, probe_xoffset], [nleft/2, nleft/2])
-probe_array2 = np.repeat([-probe_xoffset, probe_xoffset], [nright/2, nright/2])
+probe_array1 = np.repeat([-probe_xoffset, probe_xoffset],
+                         [nleft / 2, nleft / 2])
+probe_array2 = np.repeat([-probe_xoffset, probe_xoffset],
+                         [nright / 2, nright / 2])
 probe_array = np.concatenate((probe_array1, probe_array2))
 
-assert((dir_array.size == ntrs) and (probe_array.size == ntrs))
+assert ((dir_array.size == ntrs) and (probe_array.size == ntrs))
 
 # randomize the order of each condition array
 ind_shuffle = np.arange(ntrs)
@@ -182,6 +187,7 @@ for itrial in range(ntrs):
 
     # randomly decide on inter-trial interval
     iti = random.choice(gap_dur_list)
+    postFixGap = random.choice(gap_dur_list)
 
     # --------------------------------
     print('---------------------------')
@@ -228,10 +234,10 @@ for itrial in range(ntrs):
     # --------------------------------
     # /// run stimulus
 
-    if itrial in pause_array:
-        sfc.block_msg2(win, np.where(pause_array == itrial)[0][0] + 1, nblocks)
+    # if itrial in pause_array:
+    #     sfc.block_msg2(win, np.where(pause_array == itrial)[0][0] + 1, nblocks)
 
-    # gap period (pre-fixation))
+    # inter-trial interval gap period
     for igap in range(iti):
         win.flip()
 
@@ -241,11 +247,11 @@ for itrial in range(ntrs):
         fixdot2.draw()
         win.flip()
 
-    # gap period (post-fixation)
-    for ifix in range(
-            int(np.random.choice(np.arange(REF_RATE / 2, REF_RATE)))):
+    # post-fixation gap period
+    for ifix in range(postFixGap):
         win.flip()
 
+    my_clock.reset()
     # move the vertical bar
     motion_dur = npos * frame_repeat
     for i, icount in enumerate(range(motion_dur)):
@@ -253,14 +259,14 @@ for itrial in range(ntrs):
             vline.pos = (motionx_array[i], motiony_array[i])
             vline.draw()
 
-            # fixdot1.draw()
-            # fixdot2.draw()
-
+            # flash the probe
             if icount == 0:
                 probe.draw()
 
             win.flip()
 
+    motion_dur_measured = round(my_clock.getTime(), 2)
+    print(f'Measured motion duration: {motion_dur_measured} s')
     click_pos = get_mouseclick(win)
     click_err = click_pos - probe.pos
     print(f'probe pos: {probe.pos}')

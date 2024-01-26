@@ -56,7 +56,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '9999'  # subject ID (put 'test' for a test run)
+subID = 'AM01'  # subject ID (put 'test' for a test run)
 ntrs = 300  # number of all trials
 nblocks = 4  # number of blocks
 bias_coeff = .8  # probability of more likely direction
@@ -89,20 +89,21 @@ REF_RATE = 60
 frame_repeat = 2
 
 # configure the monitor and the stimulus window
+bg_color = [-.8, -.8, -.8]
 mon = sfc.config_mon_dell()
-win = sfc.config_win(mon=mon, fullscr=full_screen)
+win = sfc.config_win(mon=mon, fullscr=full_screen, color=bg_color)
 sfc.test_refresh_rate(win, REF_RATE)
 
 # fixation mark
 fixdot_radius = .16
 FIX_X = 0
 FIX_Y = -2
-fixdot_color = 'black'
+fixdot_color = 'white'
 
 # lines
 line_width = 0.2
 vline_length = 2
-line_color = 'black'
+line_color = 'white'
 
 line_start_pos = (0, 4)  # dva
 line_end_offset = 10  # dva
@@ -120,7 +121,7 @@ if likely_dir == 'right':
 
 # probe
 probe_rad = .25
-probe_color = 'darkred'
+probe_color = 'red'
 probe_xoffset = 2.5
 probe_yoffset = line_start_pos[1]
 
@@ -213,7 +214,7 @@ for itrial in range(ntrs):
     fixdot2 = visual.Circle(win,
                             radius=fixdot_radius * .7,
                             pos=(FIX_X, FIX_Y),
-                            fillColor='gray')
+                            fillColor=bg_color)
 
     # --------------------------------
     # /// create motion trajectory array
@@ -233,7 +234,8 @@ for itrial in range(ntrs):
 
     # show the block screeen
     if itrial in pause_array:
-        sfc.block_msg2(win, np.where(pause_array == itrial)[0][0] + 1, nblocks)
+        sfc.block_msg2(win, np.where(pause_array == itrial)[0][0] + 1,
+                       nblocks, color='white')
 
     # inter-trial interval gap period
     for igap in range(iti):

@@ -119,12 +119,12 @@ def block_msg(win, iblock, nblocks, command_keys):
         win.flip()
 
 
-def block_msg2(win, iblock, nblocks):
+def block_msg2(win, iblock, nblocks, color='black'):
     msg = f"<<< Block {iblock} / {nblocks} >>>" \
           f"\n\nReady to go?"
     message = visual.TextStim(win,
                               text=msg,
-                              color='black',
+                              color=color,
                               height=.5,
                               alignText='center',
                               pos=(0, 0))
@@ -132,7 +132,7 @@ def block_msg2(win, iblock, nblocks):
     commands = '\n\n[Escape]: Quit\t\t[Spacebar]: Go'
     cmnd_text = visual.TextStim(win,
                                 text=commands,
-                                color='black',
+                                color=color,
                                 height=.5,
                                 alignText='center',
                                 pos=(0, -2))

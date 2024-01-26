@@ -61,7 +61,7 @@ ntrs = 300  # number of all trials
 nblocks = 4  # number of blocks
 bias_coeff = .8  # probability of more likely direction
 
-slow_coeff = 2  # on dell:1 | on mac:2
+slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
     full_screen = False

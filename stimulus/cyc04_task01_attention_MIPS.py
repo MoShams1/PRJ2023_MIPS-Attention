@@ -169,9 +169,6 @@ pause_array = pause_array[:-1]
 
 for itrial in range(ntrs):
 
-    dir_array[0] = -1
-    probe_array[0] = -1
-
     # --------------------------------
     # /// resets
 

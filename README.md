@@ -1,5 +1,5 @@
-# Project MIPS-SProf
-Mo Shams <MShamsCBR.gmail.com>  
+# Project MIPS-Attention
+Mo Shams <m.shams.ahmar.gmail.com>  
 Jan 03, 2023    
 
 To investigate the anisotropic nature of the mislocalization of a flashed

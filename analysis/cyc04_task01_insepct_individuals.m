@@ -1,13 +1,13 @@
 clc
 clear
-close all
+% close all
 
 % Specify the path to the JSON files
 
 file_dir = dir('../data/cyc04/*Task01*');
 nsub = numel(file_dir);
 
-isub = 1;
+isub = 2;
 
 % Specify the path to the JSON file
 jsonFilePath = fullfile(file_dir(isub).folder,file_dir(isub).name);
@@ -56,24 +56,25 @@ e_ld_lp = SE(click_xerr(ind));
 figure('units','inches','outerposition',[7, 4, 9, 4])
 
 %%% figure 01-A
-subplot(1,2,1)
+subplot(1,3,1)
 hold on
 
-legend_vec = {'ExpDir-LeadPrb', 'UnexpDir-LeadPrb', 'UnexpDir-TrlPrb', 'ExpDir-TrlPrb'};
+legend_vec = {'LeftD-LeftP', 'LeftD-RightP', 'RightD-LeftP', 'RightD-RightP'};
 
 click_sz = 20;
 probe_sz = 50;
 colors = lines(7);
-cmap = [colors(1,:);colors(6,:); colors(2,:); colors(7,:)];
+cmap = [colors(7,:);colors(2,:); colors(6,:); colors(1,:)];
+alpha = .6;
 
-ind = right_dir & right_probe;
-scatter(click_pos(ind,1),click_pos(ind,2),click_sz,cmap(1,:),'>')
-ind = right_dir & left_probe;
-scatter(click_pos(ind,1),click_pos(ind,2),click_sz,cmap(2,:),'>')
-ind = left_dir & right_probe;
-scatter(click_pos(ind,1),click_pos(ind,2),click_sz,cmap(3,:),'<')
 ind = left_dir & left_probe;
-scatter(click_pos(ind,1),click_pos(ind,2),click_sz,cmap(4,:),'<')
+scatter(click_pos(ind,1),click_pos(ind,2),click_sz,cmap(1,:),'<','filled','markerfacealpha',alpha)
+ind = left_dir & right_probe;
+scatter(click_pos(ind,1),click_pos(ind,2),click_sz,cmap(2,:),'<','filled','markerfacealpha',alpha)
+ind = right_dir & left_probe;
+scatter(click_pos(ind,1),click_pos(ind,2),click_sz,cmap(3,:),'>','filled','markerfacealpha',alpha)
+ind = right_dir & right_probe;
+scatter(click_pos(ind,1),click_pos(ind,2),click_sz,cmap(4,:),'>','filled','markerfacealpha',alpha)
 
 scatter(0, -2, probe_sz, '+k')
 scatter(-2.5, 4, probe_sz, 'ok', 'fill')
@@ -93,7 +94,7 @@ text(-9, -1.4, legend_vec(4), 'color',cmap(4,:))
 cleanplot
 
 %%% figure 01-B
-subplot(1,2,2)
+subplot(1,3,2)
 hold on
 
 cerr = 'k';
@@ -103,15 +104,11 @@ xticks_vec = 1:4;
 xticklabels_vec = legend_vec;
 yticks_vec = 0:3;
 
-title(['Likely direction: ',likely_dir])
-
 x = 1:4;
-y = [m_rd_rp, m_ld_lp, m_ld_rp m_rd_lp];
-err = [e_rd_rp, e_ld_lp, e_ld_rp e_rd_lp];
+y = [m_ld_lp, m_ld_rp, m_rd_lp, m_rd_rp];
+err = [e_ld_lp, e_ld_rp, e_rd_lp, e_rd_rp];
 
-bar(x,y, ...
-    'facecolor',cbar, ...
-    'edgecolor','none')
+barplot_colored(x,y,cmap,.35)
 errorbar(...
     x,y,err,...
     'o', ...
@@ -128,3 +125,48 @@ yticks(yticks_vec)
 ylim([0 3])
 
 cleanplot
+
+
+%%% figure 01-C
+subplot(1,3,3)
+hold on
+
+legend_vec = {'LikelyD-LeadP', 'UnlikelyD-LeadP', 'UnlikelyD-TrailP', 'LikelyD-TrailP'};
+
+cerr = 'k';
+cbar = .6 * ones(1,3);
+lw = 1.5;
+xticks_vec = 1:4;
+xticklabels_vec = legend_vec;
+yticks_vec = 0:3;
+cmap_relative = .5*ones(4,3);
+
+x = 1:4;
+
+if strcmp(likely_dir, 'left')
+    y = [m_ld_lp, m_rd_rp, m_rd_lp, m_ld_rp];
+    err = [e_ld_lp, e_rd_rp, e_rd_lp, e_ld_rp];
+else
+    y = [m_rd_rp, m_ld_lp, m_ld_rp, m_rd_lp];
+    err = [e_rd_rp, e_ld_lp, e_ld_rp, e_rd_lp];
+end
+
+barplot_colored(x,y,cmap_relative,.35)
+errorbar(...
+    x,y,err,...
+    'o', ...
+    'marker','none', ...    
+    'color',cerr, ...
+    'linewidth',lw)
+
+xticks(xticks_vec)
+xticklabels(xticklabels_vec)
+xlim([xticks_vec(1)-.5,xticks_vec(end)+.5])
+
+ylabel 'Absolute perceived shift (dva)'
+yticks(yticks_vec)
+ylim([0 3])
+
+cleanplot
+
+sgtitle(['Likely direction: ',likely_dir], 'fontsize',11)

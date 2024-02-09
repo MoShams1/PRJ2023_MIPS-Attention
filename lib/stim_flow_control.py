@@ -178,11 +178,11 @@ def gen_image_pairs(nexmp, ntrials):
     return pairs
 
 
-def end_screen(win):
+def end_screen(win, color='black'):
     msg = 'Experiment finished successfully.\n Thank you!'
     message = visual.TextStim(win,
                               text=msg,
-                              color='black',
+                              color=color,
                               height=.65,
                               alignText='center',
                               pos=(0, 0))

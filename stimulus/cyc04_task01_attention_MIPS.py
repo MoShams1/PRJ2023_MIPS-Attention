@@ -295,6 +295,6 @@ for itrial in range(ntrs):
     dfnew.to_json(save_path)
 
     if itrial == ntrs - 1:
-        sfc.end_screen(win)
+        sfc.end_screen(win, color='white')
 # --------------------------------
 win.close()

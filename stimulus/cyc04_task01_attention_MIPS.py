@@ -56,7 +56,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'AM01'  # subject ID (put 'test' for a test run)
+subID = 'MS01'  # subject ID (put 'test' for a test run)
 ntrs = 300  # number of all trials
 nblocks = 4  # number of blocks
 bias_coeff = .8  # probability of more likely direction
@@ -295,6 +295,6 @@ for itrial in range(ntrs):
     dfnew.to_json(save_path)
 
     if itrial == ntrs - 1:
-        sfc.end_screen(win)
+        sfc.end_screen(win, color='white')
 # --------------------------------
 win.close()

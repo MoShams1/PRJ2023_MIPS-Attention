@@ -1,8 +1,8 @@
 """
-***** project: MIPS-Attention
+***** project: MIPS-Attention (TRAINING)
 
     Mohammad Shams <m.shams.ahmar@gmail.com>
-    Jan 2023
+    March 2023
 
 Task Procedure:
     A vertical bar starts at the center and above the fixation dot and moves

@@ -56,10 +56,10 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # subject ID (put 'test' for a test run)
+subID = 'training'  # subject ID (put 'test' for a test run)
 ntrs = 300  # number of all trials
 nblocks = 4  # number of blocks
-bias_coeff = .8  # probability of more likely direction
+bias_coeff = .5  # probability of more likely direction
 
 slow_coeff = 1  # on dell:1 | on mac:2
 
@@ -273,26 +273,6 @@ for itrial in range(ntrs):
     print(f'click error     : {click_err} dva')
 
     # --------------------------------
-    # /// prepare data for saving
-
-    # create a dictionary of variables to be saved
-    trial_dict = {'trial_num': itrial + 1,
-                  'likely_dir': likely_dir,
-                  'bar_dir': dir_array[itrial],
-                  'probe_pos': [probe.pos],
-                  'click_pos': [click_pos],
-                  'click_err': [click_err],
-                  'click_xerr': [click_err[0]],
-                  'click_yerr': [click_err[1]]}
-
-    # convert to data frame
-    dfnew = pd.DataFrame(trial_dict)
-    # if not first trial, load the existing data frame and concatenate
-    if itrial > 0:
-        df = pd.read_json(save_path)
-        dfnew = pd.concat([df, dfnew], ignore_index=True)
-    # save the dataframe
-    dfnew.to_json(save_path)
 
     if itrial == ntrs - 1:
         sfc.end_screen(win, color='white')

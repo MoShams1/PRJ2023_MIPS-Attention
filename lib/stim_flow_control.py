@@ -121,7 +121,7 @@ def block_msg(win, iblock, nblocks, command_keys):
 
 def block_msg2(win, iblock, nblocks, color='black'):
     msg = f"<<< Block {iblock} / {nblocks} >>>" \
-          f"\n\nReady to go?"
+          f"\n\nPlease inform the experimenter before you continue..."
     message = visual.TextStim(win,
                               text=msg,
                               color=color,
@@ -129,7 +129,7 @@ def block_msg2(win, iblock, nblocks, color='black'):
                               alignText='center',
                               pos=(0, 0))
 
-    commands = '\n\n[Escape]: Quit\t\t[Spacebar]: Go'
+    commands = '\n\n[Escape]: Quit\t\t[Spacebar]: Continue'
     cmnd_text = visual.TextStim(win,
                                 text=commands,
                                 color=color,

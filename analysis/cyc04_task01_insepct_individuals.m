@@ -1,13 +1,13 @@
 clc
 clear
-% close all
+close all
 
 % Specify the path to the JSON files
 
 file_dir = dir('../data/cyc04/*Task01*');
 nsub = numel(file_dir);
 
-isub = 2;
+isub = 3;
 
 % Specify the path to the JSON file
 jsonFilePath = fullfile(file_dir(isub).folder,file_dir(isub).name);

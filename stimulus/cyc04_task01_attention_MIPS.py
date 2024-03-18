@@ -98,6 +98,7 @@ sfc.test_refresh_rate(win, REF_RATE)
 fixdot_radius = .16
 FIX_X = 0
 FIX_Y = -2
+
 fixdot_color = 'white'
 
 # lines

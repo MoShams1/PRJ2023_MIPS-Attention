@@ -56,7 +56,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'IB19'  # subject ID (put 'test' for a test run)
+subID = 'KA20'  # subject ID (put 'test' for a test run)
 ntrs = 300  # number of all trials
 nblocks = 4  # number of blocks
 bias_coeff = .8  # probability of more likely direction

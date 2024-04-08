@@ -12,8 +12,9 @@ linelm  = .3; % line length for median
 if nargin < 2
     marksz  = 50; % marker size
 end
-
-c = [lines(7); lines(7)];
+alpha = .4;
+cmap = lines(7);
+c = [cmap(1,:);cmap(6,:);cmap(7,:);cmap(3,:)];
 
 hold on
 for icat = 1:ncat    
@@ -21,7 +22,9 @@ for icat = 1:ncat
     n = numel(A{icat});
     x = randn(n,1)*stdx + icat;
     
-    scatter(x,A{icat},marksz,c(icat,:),'.');
+    scatter(x,A{icat},marksz,c(icat,:), ...
+        'o','markerfacecolor',c(icat,:), ...
+        'markeredgecolor','none','markerfacealpha',alpha);
     line([icat-linelm icat+linelm],[nanmedian(A{icat}) nanmedian(A{icat})],...
         'color',c(icat,:),'linewidth',1);
 end

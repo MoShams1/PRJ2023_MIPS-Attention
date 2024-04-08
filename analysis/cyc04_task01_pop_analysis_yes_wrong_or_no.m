@@ -1,10 +1,11 @@
-clc
-clear
-close all
+% clc
+% clear
+% close all
 
 % Specify the path to the JSON files
 
-file_dir = dir('../data/cyc04/*Task01*');
+file_dir = dir('../data/cyc04/yes_wrong_or_no/*task01*');
+
 nsub = numel(file_dir);
 
 for isub = 1:nsub
@@ -63,7 +64,7 @@ for isub = 1:nsub
 end
 
 %%%%% plot figures
-figure('units','inches','outerposition',[7, 4, 4, 4])
+% figure('units','inches','outerposition',[7, 4, 4, 4])
 
 hold on
 
@@ -74,7 +75,7 @@ cbar = .6 * ones(1,3);
 lw = 1.5;
 xticks_vec = 1:4;
 xticklabels_vec = legend_vec;
-yticks_vec = 0:2;
+yticks_vec = 0:3;
 cmap_relative = .5*ones(4,3);
 
 x = 1:4;
@@ -93,7 +94,9 @@ xlim([xticks_vec(1)-.5,xticks_vec(end)+.5])
 
 ylabel 'Absolute perceived shift (dva)'
 yticks(yticks_vec)
-ylim([-.5 2])
+ylim([-.5 3])
+
+title 'Biased not (correctly) perceived'
 
 text(4, -.25, ['N = ', num2str(nsub)])
 

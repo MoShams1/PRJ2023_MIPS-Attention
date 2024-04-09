@@ -14,7 +14,11 @@ if nargin < 2
 end
 alpha = .4;
 cmap = lines(7);
-c = [cmap(1,:);cmap(6,:);cmap(7,:);cmap(3,:)];
+c = [
+    cmap(1,:);
+    cmap(6,:);
+    cmap(7,:);
+    cmap(7,:).*[1.5 1.5 1.5]];
 
 hold on
 for icat = 1:ncat    

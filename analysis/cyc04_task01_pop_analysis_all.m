@@ -133,3 +133,6 @@ text(2, 6.1, '**','HorizontalAlignment','center','FontSize',14)
 
 line([2 4],[6.5 6.5],'linewidth',lw,'color','k')
 text(3, 6.6, '**','HorizontalAlignment','center','FontSize',14)
+
+%% save figure
+saveas(gcf, '../result/cyc04_task01_pop24.png')

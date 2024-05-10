@@ -78,7 +78,7 @@ legend_vec = {'LikelyDir', 'UnlikelyDir', 'LikelyDir', 'UnlikelyDir'};
 
 xticks_vec = 1:4;
 xticklabels_vec = legend_vec;
-yticks_vec = -2:6;
+yticks_vec = -2:5;
 
 x = 1:4;
 
@@ -90,7 +90,7 @@ xlim([xticks_vec(1)-.5,xticks_vec(end)+.5])
 
 ylabel({'Click offset (dva)', '(in direction of motion)'})
 yticks(yticks_vec)
-ylim([-2 6.5])
+ylim([-2 7])
 yline(0,'--')
 
 % title 'All'
@@ -119,6 +119,10 @@ delta,W,z,p,r)
 fprintf('<Trailing Probe; Likely vs Unlikely> md = %4.1f dva, W = %5d, z = %5.2f, p = %5.3f, r = %4.2f \n', ...
 delta,W,z,p,r)
 
+[delta, p, W, z, r] = signrank_full(y(:,2),y(:,3));
+fprintf('<Motion driven att. vs Pre-allocated att.> md = %4.1f dva, W = %5d, z = %5.2f, p = %5.3f, r = %4.2f \n', ...
+delta,W,z,p,r)
+
 %% add stats to figure
 lw = 2;
 
@@ -133,6 +137,9 @@ text(2, 6.1, '**','HorizontalAlignment','center','FontSize',14)
 
 line([2 4],[6.5 6.5],'linewidth',lw,'color','k')
 text(3, 6.6, '**','HorizontalAlignment','center','FontSize',14)
+
+line([2 3],[7 7],'linewidth',lw,'color','k')
+text(2.5, 7.2, '\it n.s.','HorizontalAlignment','center')
 
 %% save figure
 saveas(gcf, '../result/cyc04_task01_pop24.png')

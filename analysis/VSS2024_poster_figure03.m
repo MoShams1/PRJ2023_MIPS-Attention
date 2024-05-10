@@ -5,9 +5,13 @@ close all
 % Specify the path to the JSON file
 file_dir = dir('../data/cyc02/complete/*MS01*');
 
-figure('units','inches','outerposition',[1 1 10 20])
+figure('units','inches','outerposition',[1 1 10 25])
 
 titles = {'Equally likely', 'Left more likely', 'Right more likely'};
+
+cmap = lines(7);
+c_right = cmap(1,:);
+c_left = cmap(7,:);
 
 for ifile = 1:3
 
@@ -41,16 +45,17 @@ for ifile = 1:3
     hold on
 
     alpha = .25;
+    msz_click = 100;
     msz_mean = 150;
     msz_mean_edge = msz_mean * 1.5;
 
-    h1 = scatter(errx_lM,erry_lM,'r','<','fill','markerfacealpha',alpha);
-    h2 = scatter(errx_rM,erry_rM,'b','>','fill','markerfacealpha',alpha);
+    h1 = scatter(errx_lM,erry_lM,msz_click,c_left,'<','fill','markerfacealpha',alpha);
+    h2 = scatter(errx_rM,erry_rM,msz_click,c_right,'>','fill','markerfacealpha',alpha);
 
     scatter(mean(errx_lM),mean(erry_lM),msz_mean_edge,'k','o','fill');
     scatter(mean(errx_rM),mean(erry_rM),msz_mean_edge,'k','o','fill');
-    h3 = scatter(mean(errx_lM),mean(erry_lM),msz_mean,'r','o','fill');
-    h4 = scatter(mean(errx_rM),mean(erry_rM),msz_mean,'b','o','fill');
+    h3 = scatter(mean(errx_lM),mean(erry_lM),msz_mean,c_left,'o','fill');
+    h4 = scatter(mean(errx_rM),mean(erry_rM),msz_mean,c_right,'o','fill');
 
     xline(0)
     xticks(-5:1:5)
@@ -79,7 +84,7 @@ end
 linkaxes(ax,'xy')
 fontsize(gcf,30,'points')
 
-saveas(gcf,'../result/VSS2024_abstract_figure02.pdf')
+saveas(gcf,'../result/VSS2024_poster_figure03.pdf')
 
 function cleanplot
 set(gca,'tickdir','out','color','none')

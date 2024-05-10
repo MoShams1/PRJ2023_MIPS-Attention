@@ -83,12 +83,30 @@ ylabel({'Position offset (dva)', 'in direction of motion'})
 yticks(-1:.1:1)
 yline(0)
 
-text(1,.25,['N = ',num2str(size(full_mat,1))],'color','k')
+text(2.5,.05,['N = ',num2str(size(full_mat,1))],'color','k')
 
 cleanplot
-fontsize(gcf,30,"points")
-saveas(gcf,'../result/VSS2024_poster_figure04.pdf')
 
 %% statistics
 [pval, stats] = friedman(full_mat,1,"off");
 fprintf('<Friedman test> Chi-sq(%d, %d)=%6.3f, p=%5.3f \n', stats{2,3}, nsub, stats{2,5}, stats{2,6})
+
+[med, p21, W, z, r] = signrank_full(full_mat(:,2), full_mat(:,1));
+[med, p32, W, z, r] = signrank_full(full_mat(:,3), full_mat(:,2));
+[med, p31, W, z, r] = signrank_full(full_mat(:,3), full_mat(:,1));
+p_list = [p21, p32, p31];
+[sig, alpha_hat, p_adjusted] = BH_correct(p_list, .05, 2);
+
+%% add stats to figure
+
+line([1 3], [.3 .3], 'color', 'k', 'linewidth', 3)
+text(2, .305, '***', 'horizontalalignment','center')
+
+line([2 3], [.285 .285], 'color', 'k', 'linewidth', 3)
+text(2.5, .29, '*', 'horizontalalignment','center')
+
+line([1 2], [.27 .27], 'color', 'k', 'linewidth', 3)
+text(1.5, .28, '\itn.s.', 'horizontalalignment','center')
+
+fontsize(gcf,30,"points")
+saveas(gcf,'../result/VSS2024_poster_figure04.pdf')

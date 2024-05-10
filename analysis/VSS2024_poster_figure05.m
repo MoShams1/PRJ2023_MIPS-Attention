@@ -12,7 +12,7 @@ win = .5;
 k_list = 0:stp:1-win;
 
 c_all = lines(7);
-c_map = [c_all(5,:); c_all(2,:)];
+c_map = [c_all(4,:); c_all(5,:)];
 color_map = [1, 0, 0; 0, 0, 1; 0, 0, 0];
 offset = [-.05, .05];
 
@@ -102,25 +102,25 @@ yticks([.001, .01, .05, 1])
 ylabel({'Friedman test', 'p-value'})
 
 cleanplot
-pbaspect([3 1 1])
+pbaspect([2 1 1])
 
 % ------------------------
 subplot(2,1,1)
 hold on
-errorbar(median(diff_mat_2050),SE(diff_mat_2050),'color',c(6,:),'linewidth',3)
-errorbar(median(diff_mat_8050),SE(diff_mat_8050),'color',c(2,:),'linewidth',3)
+errorbar(median(diff_mat_2050),SE(diff_mat_2050),'color',c_map(1,:),'linewidth',3)
+errorbar(median(diff_mat_8050),SE(diff_mat_8050),'color',c_map(2,:),'linewidth',3)
 
 xlim([.5 length(f_test)+.5])
 xticks(1:length(x))
 xticklabels(x)
 % xlabel 'Session progress (%)'
 
-ylabel({'Position offset from equal likelihod (dva)','in direction of motion'})
+ylabel({'Position offset from equal likelihood (dva)','in direction of motion'})
 yline(0)
 ylim([-.15 .15])
 
-text(1,.14,'Likely direction','color',c(2,:))
-text(1,-.13,'Unlikely direction','color',c(6,:))
+text(1,.15,'Likely direction','color',c_map(2,:))
+text(1,-.13,'Unlikely direction','color',c_map(1,:))
 
 
 cleanplot

@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc04/*Task01*');
 nsub = numel(file_dir);
 
-isub = 2;
+isub = 1;
 
 % Specify the path to the JSON file
 jsonFilePath = fullfile(file_dir(isub).folder,file_dir(isub).name);
@@ -53,7 +53,7 @@ m_ld_lp = abs(median(click_xerr(ind)));
 e_ld_lp = SE(click_xerr(ind));
 
 %%%%% plot figures
-figure('units','inches','outerposition',[7, 4, 9, 4])
+figure('units','inches','outerposition',[1, 1, 30, 10])
 
 %%% figure 01-A
 subplot(1,3,1)
@@ -61,11 +61,11 @@ hold on
 
 legend_vec = {'LeftD-LeftP', 'LeftD-RightP', 'RightD-LeftP', 'RightD-RightP'};
 
-click_sz = 20;
-probe_sz = 50;
+click_sz = 150;
+probe_sz = 150;
 colors = lines(7);
 cmap = [colors(7,:);colors(2,:); colors(6,:); colors(1,:)];
-alpha = .6;
+alpha = .25;
 
 ind = left_dir & left_probe;
 scatter(click_pos(ind,1),click_pos(ind,2),click_sz,cmap(1,:),'<','filled','markerfacealpha',alpha)
@@ -84,12 +84,12 @@ xlabel 'Horizontal distance (dva)'
 xlim([-10 10])
 
 ylabel 'Vertical distance (dva)'
-ylim([-3 8])
+ylim([0 6])
 
-text(-9, .7, legend_vec(1), 'color',cmap(1,:))
-text(-9, 0, legend_vec(2), 'color',cmap(2,:))
-text(-9, -.7, legend_vec(3), 'color',cmap(3,:))
-text(-9, -1.4, legend_vec(4), 'color',cmap(4,:))
+text(-9, 2, legend_vec(1), 'color',cmap(1,:))
+text(-9, 1.8, legend_vec(2), 'color',cmap(2,:))
+text(-9, 1.6, legend_vec(3), 'color',cmap(3,:))
+text(-9, 1.4, legend_vec(4), 'color',cmap(4,:))
 
 cleanplot
 
@@ -170,3 +170,6 @@ ylim([0 3])
 cleanplot
 
 sgtitle(['Likely direction: ',likely_dir], 'fontsize',11)
+
+fontsize(gcf,30,"points")
+saveas(gcf,'../result/VSS2024_poster_figure07_1.pdf')

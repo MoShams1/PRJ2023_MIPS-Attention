@@ -76,7 +76,7 @@ for ifile = 1:3
 %     end
 
     axis square
-    grid on
+%     grid on
     cleanplot
 
 end

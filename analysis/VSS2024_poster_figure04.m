@@ -69,10 +69,20 @@ full_mat(outlier_ind,:) = [];
 outlier_mat = full_mat_org(outlier_ind,:);
 
 %%
-figure('units','inches','outerposition',[1 1 12 12])
+figure('units','inches','outerposition',[1 1 10 12])
 hold on
-errorbar(1:3,median(full_mat),SE(full_mat),'linewidth',3,'Color','k','markersize',15,...
-    'marker','o','MarkerEdgeColor','none','MarkerFaceColor','k')  % without outliers
+% errorbar(1:3,median(full_mat),SE(full_mat),'linewidth',3,'Color','k','markersize',15,...
+%     'marker','o','MarkerEdgeColor','none','MarkerFaceColor','k')  % without outliers
+x = 1:3;
+cmap = lines(7);
+c = [cmap(4,:); .6*ones(1,3); cmap(5,:)];
+barplot_colored(x,full_mat,c,.35)
+errorbar(...
+    x,median(full_mat),SE(full_mat),...
+    'o', ...
+    'marker','none', ...    
+    'color','k', ...
+    'linewidth',3)
 
 xlim([.5 3.5])
 xticks(1:3)
@@ -83,7 +93,7 @@ ylabel({'Position offset (dva)', 'in direction of motion'})
 yticks(-1:.1:1)
 yline(0)
 
-text(2.5,.05,['N = ',num2str(size(full_mat,1))],'color','k')
+text(1,.2,['N = ',num2str(size(full_mat,1))],'color','k')
 
 cleanplot
 
@@ -102,11 +112,46 @@ p_list = [p21, p32, p31];
 line([1 3], [.3 .3], 'color', 'k', 'linewidth', 3)
 text(2, .305, '***', 'horizontalalignment','center')
 
-line([2 3], [.285 .285], 'color', 'k', 'linewidth', 3)
-text(2.5, .29, '*', 'horizontalalignment','center')
+line([2.2 3], [.285 .285], 'color', 'k', 'linewidth', 3)
+text(2.6, .29, '*', 'horizontalalignment','center')
 
-line([1 2], [.27 .27], 'color', 'k', 'linewidth', 3)
-text(1.5, .28, '\itn.s.', 'horizontalalignment','center')
+line([1 1.8], [.285 .285], 'color', 'k', 'linewidth', 3)
+text(1.4, .293, '\itn.s.', 'horizontalalignment','center')
 
 fontsize(gcf,30,"points")
 saveas(gcf,'../result/VSS2024_poster_figure04.pdf')
+
+%%
+function barplot_colored(x, A, color, bw)
+% barSEmean(A, color)
+% x: bar horizontal positions
+% A: cell or mat (repetition x category), comma separated!
+% color: color matrix (category x 3)
+% bw: bar width
+% 
+% Mo Shams <m.shams.ahmar@gmail.com>
+% Feb 2024
+%
+
+if isnumeric(A)
+    for icol = 1:size(A,2)
+        A_cell{icol} = A(:,icol);
+    end
+    A = A_cell;
+end
+
+ncat = numel(A); % number of categories
+
+for i = x
+    fill( ...
+        [i-bw,i+bw,i+bw,i-bw], ...
+        [0 0 nanmedian(A{i}) nanmedian(A{i})], ...
+        color(i,:),...
+        'edgecolor','none', ...
+        'facealpha',.5);
+    hold on    
+end
+
+% add base line
+line([0 ncat+1],[0 0], 'color','k')
+end

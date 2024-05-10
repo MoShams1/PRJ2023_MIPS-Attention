@@ -12,6 +12,8 @@
 %
 % ===== OUTPUT =====
 % sig: a logical vector indicating significant pvalues after correction
+% alpha_hat: adjusted alpha values
+% pval_adjusted: adjusted p-values
 
 function [sig, alpha_hat, pval_adjusted] = BH_correct(pval,alpha,side)
 

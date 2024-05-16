@@ -1,5 +1,5 @@
 """
-Project MIPS-Attention (Exploration 11)
+Project PRJ2023_MIPS-Attention (Exploration 11)
 Mo Shams <MShamsCBR@gmail.com>
 Initiated on: Feb 20, 2023
 ---

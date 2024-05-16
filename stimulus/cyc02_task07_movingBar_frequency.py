@@ -1,5 +1,5 @@
 """
-***** project: MIPS-Attention
+***** project: PRJ2023_MIPS-Attention
 
     Mohammad Shams <m.shams.ahmar@gmail.com>
     Oct 2023

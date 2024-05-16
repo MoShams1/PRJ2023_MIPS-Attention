@@ -1,5 +1,5 @@
 """
-***** Project MIPS-Attention
+***** Project PRJ2023_MIPS-Attention
 ***** Experiment 03
 
         Mo Shams <MShamsCBR@gmail.com>

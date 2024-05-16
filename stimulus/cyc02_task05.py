@@ -1,5 +1,5 @@
 """
-***** Project MIPS-Attention *****
+***** Project PRJ2023_MIPS-Attention *****
 
     Mo Shams <MShamsCBR@gmail.com>
     Initiated: Feb 27, 2023

@@ -1,5 +1,5 @@
 """
-***** project: MIPS-Attention (TRAINING)
+***** project: PRJ2023_MIPS-Attention (TRAINING)
 
     Mohammad Shams <m.shams.ahmar@gmail.com>
     March 2023

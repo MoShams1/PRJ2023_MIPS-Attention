@@ -53,10 +53,10 @@ m_ld_lp = abs(median(click_xerr(ind)));
 e_ld_lp = SE(click_xerr(ind));
 
 %%%%% plot figures
-figure('units','inches','outerposition',[1, 1, 30, 10])
+figure('units','inches','outerposition',[1, 1, 10, 10])
 
 %%% figure 01-A
-subplot(1,3,1)
+% subplot(1,3,1)
 hold on
 
 legend_vec = {'LeftD-LeftP', 'LeftD-RightP', 'RightD-LeftP', 'RightD-RightP'};
@@ -64,7 +64,7 @@ legend_vec = {'LeftD-LeftP', 'LeftD-RightP', 'RightD-LeftP', 'RightD-RightP'};
 click_sz = 150;
 probe_sz = 150;
 colors = lines(7);
-cmap = [colors(7,:);colors(2,:); colors(6,:); colors(1,:)];
+cmap = [colors(5,:).*1.2;colors(5,:).*.6; colors(4,:).*.6; colors(4,:).*1.2];
 alpha = .25;
 
 ind = left_dir & left_probe;
@@ -81,95 +81,98 @@ scatter(-2.5, 4, probe_sz, 'ok', 'fill')
 scatter(2.5, 4, probe_sz, 'ok', 'fill')
 
 xlabel 'Horizontal distance (dva)'
-xlim([-10 10])
+xticks(-9:3:9)
 
 ylabel 'Vertical distance (dva)'
-ylim([0 6])
+yticks(-9:3:9)
 
-text(-9, 2, legend_vec(1), 'color',cmap(1,:))
-text(-9, 1.8, legend_vec(2), 'color',cmap(2,:))
-text(-9, 1.6, legend_vec(3), 'color',cmap(3,:))
-text(-9, 1.4, legend_vec(4), 'color',cmap(4,:))
+% text(-9, 2, legend_vec(1), 'color',cmap(1,:))
+% text(-9, 1.8, legend_vec(2), 'color',cmap(2,:))
+% text(-9, 1.6, legend_vec(3), 'color',cmap(3,:))
+% text(-9, 1.4, legend_vec(4), 'color',cmap(4,:))
 
+axis equal
+xlim([-8 8])
+ylim([-2 8])
 cleanplot
 
-%%% figure 01-B
-subplot(1,3,2)
-hold on
-
-cerr = 'k';
-cbar = .6 * ones(1,3);
-lw = 1.5;
-xticks_vec = 1:4;
-xticklabels_vec = legend_vec;
-yticks_vec = 0:3;
-
-x = 1:4;
-y = [m_ld_lp, m_ld_rp, m_rd_lp, m_rd_rp];
-err = [e_ld_lp, e_ld_rp, e_rd_lp, e_rd_rp];
-
-barplot_colored(x,y,cmap,.35)
-errorbar(...
-    x,y,err,...
-    'o', ...
-    'marker','none', ...    
-    'color',cerr, ...
-    'linewidth',lw)
-
-xticks(xticks_vec)
-xticklabels(xticklabels_vec)
-xlim([xticks_vec(1)-.5,xticks_vec(end)+.5])
-
-ylabel 'Absolute perceived shift (dva)'
-yticks(yticks_vec)
-ylim([0 3])
-
-cleanplot
-
-
-%%% figure 01-C
-subplot(1,3,3)
-hold on
-
-legend_vec = {'LikelyD-LeadP', 'UnlikelyD-LeadP', 'UnlikelyD-TrailP', 'LikelyD-TrailP'};
-
-cerr = 'k';
-cbar = .6 * ones(1,3);
-lw = 1.5;
-xticks_vec = 1:4;
-xticklabels_vec = legend_vec;
-yticks_vec = 0:3;
-cmap_relative = .5*ones(4,3);
-
-x = 1:4;
-
-if strcmp(likely_dir, 'left')
-    y = [m_ld_lp, m_rd_rp, m_rd_lp, m_ld_rp];
-    err = [e_ld_lp, e_rd_rp, e_rd_lp, e_ld_rp];
-else
-    y = [m_rd_rp, m_ld_lp, m_ld_rp, m_rd_lp];
-    err = [e_rd_rp, e_ld_lp, e_ld_rp, e_rd_lp];
-end
-
-barplot_colored(x,y,cmap_relative,.35)
-errorbar(...
-    x,y,err,...
-    'o', ...
-    'marker','none', ...    
-    'color',cerr, ...
-    'linewidth',lw)
-
-xticks(xticks_vec)
-xticklabels(xticklabels_vec)
-xlim([xticks_vec(1)-.5,xticks_vec(end)+.5])
-
-ylabel 'Absolute perceived shift (dva)'
-yticks(yticks_vec)
-ylim([0 3])
-
-cleanplot
-
-sgtitle(['Likely direction: ',likely_dir], 'fontsize',11)
+% %%% figure 01-B
+% subplot(1,3,2)
+% hold on
+% 
+% cerr = 'k';
+% cbar = .6 * ones(1,3);
+% lw = 1.5;
+% xticks_vec = 1:4;
+% xticklabels_vec = legend_vec;
+% yticks_vec = 0:3;
+% 
+% x = 1:4;
+% y = [m_ld_lp, m_ld_rp, m_rd_lp, m_rd_rp];
+% err = [e_ld_lp, e_ld_rp, e_rd_lp, e_rd_rp];
+% 
+% barplot_colored(x,y,cmap,.35)
+% errorbar(...
+%     x,y,err,...
+%     'o', ...
+%     'marker','none', ...    
+%     'color',cerr, ...
+%     'linewidth',lw)
+% 
+% xticks(xticks_vec)
+% xticklabels(xticklabels_vec)
+% xlim([xticks_vec(1)-.5,xticks_vec(end)+.5])
+% 
+% ylabel 'Absolute perceived shift (dva)'
+% yticks(yticks_vec)
+% ylim([0 3])
+% 
+% cleanplot
+% 
+% 
+% %%% figure 01-C
+% subplot(1,3,3)
+% hold on
+% 
+% legend_vec = {'LikelyD-LeadP', 'UnlikelyD-LeadP', 'UnlikelyD-TrailP', 'LikelyD-TrailP'};
+% 
+% cerr = 'k';
+% cbar = .6 * ones(1,3);
+% lw = 1.5;
+% xticks_vec = 1:4;
+% xticklabels_vec = legend_vec;
+% yticks_vec = 0:3;
+% cmap_relative = .5*ones(4,3);
+% 
+% x = 1:4;
+% 
+% if strcmp(likely_dir, 'left')
+%     y = [m_ld_lp, m_rd_rp, m_rd_lp, m_ld_rp];
+%     err = [e_ld_lp, e_rd_rp, e_rd_lp, e_ld_rp];
+% else
+%     y = [m_rd_rp, m_ld_lp, m_ld_rp, m_rd_lp];
+%     err = [e_rd_rp, e_ld_lp, e_ld_rp, e_rd_lp];
+% end
+% 
+% barplot_colored(x,y,cmap_relative,.35)
+% errorbar(...
+%     x,y,err,...
+%     'o', ...
+%     'marker','none', ...    
+%     'color',cerr, ...
+%     'linewidth',lw)
+% 
+% xticks(xticks_vec)
+% xticklabels(xticklabels_vec)
+% xlim([xticks_vec(1)-.5,xticks_vec(end)+.5])
+% 
+% ylabel 'Absolute perceived shift (dva)'
+% yticks(yticks_vec)
+% ylim([0 3])
+% 
+% cleanplot
+% 
+% sgtitle(['Likely direction: ',likely_dir], 'fontsize',11)
 
 fontsize(gcf,30,"points")
 saveas(gcf,'../result/VSS2024_poster_figure08.pdf')

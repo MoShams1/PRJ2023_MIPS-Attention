@@ -10,8 +10,9 @@ figure('units','inches','outerposition',[1 1 10 25])
 titles = {'Equally likely', 'Left more likely', 'Right more likely'};
 
 cmap = lines(7);
-c_right = cmap(1,:);
-c_left = cmap(7,:);
+c_likely = cmap(5,:);
+c_unlikely = cmap(4,:);
+c_equal = .5 .* ones(1,3);
 
 for ifile = 1:3
 
@@ -48,6 +49,19 @@ for ifile = 1:3
     msz_click = 100;
     msz_mean = 150;
     msz_mean_edge = msz_mean * 1.5;
+    
+    if ifile == 1
+        c_left = c_equal .* 1.2;
+        c_right = c_equal .* .6;
+    end
+    if ifile == 2
+        c_left = c_likely;
+        c_right = c_unlikely;
+    end
+    if ifile == 3
+        c_left = c_unlikely;
+        c_right = c_likely;
+    end
 
     h1 = scatter(errx_lM,erry_lM,msz_click,c_left,'<','fill','markerfacealpha',alpha);
     h2 = scatter(errx_rM,erry_rM,msz_click,c_right,'>','fill','markerfacealpha',alpha);
@@ -58,13 +72,13 @@ for ifile = 1:3
     h4 = scatter(mean(errx_rM),mean(erry_rM),msz_mean,c_right,'o','fill');
 
     xline(0)
-    xticks(-5:1:5)
+    xticks(-5:2:5)
     if ifile == 3
         xlabel 'Horizontal position offset (dva)'
     end
 
     yline(0)
-    yticks(-5:1:5)
+    yticks(-5:2:5)
     if ifile == 2
         ylabel 'Vertical position offset (dva)'
     end
@@ -76,6 +90,7 @@ for ifile = 1:3
 %     end
 
     axis square
+    axis(1.5.*[-1 1 -1 1])
 %     grid on
     cleanplot
 

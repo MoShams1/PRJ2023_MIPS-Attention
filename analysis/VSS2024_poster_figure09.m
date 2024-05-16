@@ -4,9 +4,9 @@ close all
 
 % Specify the path to the JSON files
 
-% file_dir = dir('../data/cyc04/*task01*');
+file_dir = dir('../data/cyc04/*task01*');
 % file_dir = dir('../data/cyc04/yes_correct/*task01*');
-file_dir = dir('../data/cyc04/yes_wrong_or_no/*task01*');
+% file_dir = dir('../data/cyc04/yes_wrong_or_no/*task01*');
 
 nsub = numel(file_dir);
 
@@ -83,7 +83,7 @@ yticks_vec = -2:6;
 x = 1:4;
 
 cmap = lines(7);
-c = [cmap(5,:); cmap(4,:); cmap(5,:); cmap(4,:);];
+c = [cmap(5,:).*1.2; cmap(4,:).*1.2; cmap(5,:).*.6; cmap(4,:).*.6;];
 barplot_colored(x,y,c,.35)
 errorbar(...
     x,median(y),SE(y),...
@@ -91,7 +91,7 @@ errorbar(...
     'marker','none', ...    
     'color','k', ...
     'linewidth',3)
-scatterbar(mat2cell(y,size(y,1),ones(1,4)))
+scatterbar(mat2cell(y,size(y,1),ones(1,4)),200,c)
 
 xticks(xticks_vec)
 xticklabels(xticklabels_vec)
@@ -148,6 +148,15 @@ delta,W,z,p4,r)
 p_list = [p1 p2 p3 p4];
 [sig,alpha_hat,adjusted_p] = BH_correct(p_list, .05);
 
+[delta, p1, W, z, r] = signrank_full(y(:,1),y(:,2));
+fprintf('<Att + Mot vs. Mot>   md = %4.1f dva, W = %5d, z = %5.2f, p = %5.3f, r = %4.2f \n', ...
+delta,W,z,p1,r)
+
+[delta, p1, W, z, r] = signrank_full(y(:,1),y(:,4));
+fprintf('<Att + Mot vs. Att>   md = %4.1f dva, W = %5d, z = %5.2f, p = %5.3f, r = %4.2f \n', ...
+delta,W,z,p1,r)
+
+
 %% add stats to figure
 lw = 2;
 
@@ -167,7 +176,7 @@ text(3.5, 3.9, '\it n.s.','HorizontalAlignment','center')
 fontsize(gcf,30,"points")
 saveas(gcf, '../result/VSS2024_poster_figure09.pdf')
 
-function scatterbar(A,marksz)
+function scatterbar(A,marksz,c)
 % A: a cell of cetegories
 
 ncat    = numel(A); % number of categories
@@ -177,8 +186,6 @@ if nargin < 2
     marksz  = 200; % marker size
 end
 alpha = .25;
-cmap = lines(7);
-c = [cmap(5,:); cmap(4,:); cmap(5,:); cmap(4,:);];
 
 hold on
 for icat = 1:ncat    
@@ -223,7 +230,7 @@ for i = x
         [0 0 nanmedian(A{i}) nanmedian(A{i})], ...
         color(i,:),...
         'edgecolor','none', ...
-        'facealpha',.5);
+        'facealpha',.7);
     hold on    
 end
 

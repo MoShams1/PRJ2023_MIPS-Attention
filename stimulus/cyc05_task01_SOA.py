@@ -51,12 +51,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # /// INSERT SESSION'S META DATA ///
 
 subID = 'test'  # subject ID (put 'test' for a test run)
-soa_arr_base_ms = np.arange(-700, -500, 50)
-trials_per_cnd = 5  # todo: update this
-ntrials = len(soa_arr_base_ms) * trials_per_cnd
-nblocks = 3  # number of blocks #todo: update this
-
-slow_coeff = 1  # on dell:1 | on mac:2
+slow_coeff = 2  # on dell:1 | on mac:2
 
 if subID == 'test':
     full_screen = False
@@ -93,18 +88,13 @@ sfc.test_refresh_rate(win, REF_RATE)
 fixdot_radius = .16
 FIX_X = 0
 FIX_Y = -2
-
 fixdot_color = 'white'
 
 # probe
 probe_rad = .25
 probe_color = 'red'
-probe2bar_ms = 500  # todo: vary this pseudo-randomly [-250, 250, 500]
-# todo: vary the variable below pseudo-randomly [-1.5, 0, 1.5]
-# There will be (15 SOA) x (3 probe2bar) x (3 probe_x) = 135
-# (135 cnd) x (2 rep) = 270 trials
-# (270 trials) x (5 sec) = 1350 sec = 22.5 min
-probe_xoffset_base = np.arange(-1.5, 1.5+.1, .1)
+probe2bar_base_ms = [-250, 250, 500]
+probe_xoffset_base_dva = [-1, 0, 1]
 probe_yoffset = 4
 
 # lines
@@ -112,56 +102,34 @@ line_width = 0.2
 vline_length = 2
 line_color = 'white'
 line_vel = 10  # dva/s
-
 line_start_ypos = 4  # dva
 line_end_ypos = 4  # dva
-
 postFlashMotion_ms = 500
 postFlashMotion_frame = int(postFlashMotion_ms / 1000 * REF_RATE)
 
-# npos = int(motion_dur / frame_repeat)
-
-# randomly decide on the more likely direction
-# left_bias_coeff = np.nan
-# likely_dir = np.random.choice(['left', 'right'])
-# if likely_dir == 'left':
-#     left_bias_coeff = bias_coeff  # probability of leftward motion
-# if likely_dir == 'right':
-#     left_bias_coeff = 1-bias_coeff  # probability of leftward motion
+# probe-line relation
+soa_arr_ms_base = np.arange(0, 700+1, 50)
 
 # potential gap durations (0.75 - 1.25 sec)
 gap_durations_base = range(int(REF_RATE * .75), int(REF_RATE * 1.25) + 1, 1)
 
-# pause trials
-pause_array = np.linspace(0, ntrials, nblocks + 1)
-pause_array = pause_array[:-1]
-
-# initialize mouse
-mouse = event.Mouse(win=win, visible=False)
-
-# initialize clock
-my_clock = core.Clock()
-
-# turn off Numpy's FutureWarning
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
-soa_array_ms = np.repeat([soa_arr_base_ms], trials_per_cnd)
-np.random.shuffle(soa_array_ms)
+ntrials = 15 * 3 * 3  # SOA x probe2bar x probeX
+soa_array_ms = np.repeat(soa_arr_ms_base, 3 * 3)
+probe2bar_array_ms = np.tile(np.repeat(probe2bar_base_ms, 3), 15)
+probe_xoffset_array_dva = np.tile(probe_xoffset_base_dva, 3 * 15)
 
-# soa_arr_base_frame = soa_arr_base_ms / 1000 * REF_RATE
-# soa_array_frame = np.repeat([soa_arr_base_frame], trials_per_cnd)
-# np.random.shuffle(soa_array_frame)
+ind_shuffle = np.arange(ntrials)
+np.random.shuffle(ind_shuffle)
+soa_array_ms = soa_array_ms[ind_shuffle]
+probe2bar_array_ms = probe2bar_array_ms[ind_shuffle]
+probe_xoffset_array_dva = probe_xoffset_array_dva[ind_shuffle]
 
-# assert ((dir_array.size == ntrials) and (probe_array.size == ntrials))
-
-# randomize the order of each condition array
-# ind_shuffle = np.arange(ntrials)
-# np.random.shuffle(ind_shuffle)
-# dir_array = dir_array[ind_shuffle]
-# probe_array = probe_array[ind_shuffle]
+assert(soa_array_ms.size == ntrials)
+assert(probe2bar_array_ms.size == ntrials)
+assert(probe_xoffset_array_dva.size == ntrials)
 
 # ----------------------------------------------------------------------------
 # /// CREATE VISUAL OBJECTS ///
@@ -188,6 +156,23 @@ fixdot2 = visual.Circle(win,
                         fillColor=bg_color)
 
 # ----------------------------------------------------------------------------
+# /// OTHER SETTINGS ///
+
+# pause trials
+nblocks = 3  # number of blocks
+pause_array = np.linspace(0, ntrials, nblocks + 1)
+pause_array = pause_array[:-1]
+
+# initialize mouse
+mouse = event.Mouse(win=win, visible=False)
+
+# initialize clock
+my_clock = core.Clock()
+
+# turn off Numpy's FutureWarning
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+# ----------------------------------------------------------------------------
 # /// TRIAL BEGINS ///
 
 for itrial in range(ntrials):
@@ -210,11 +195,11 @@ for itrial in range(ntrials):
     motion_dur_frames = soa_frame + postFlashMotion_frame
     motion_dir = np.random.choice([-1, 1])
     xshift_steps = line_vel / REF_RATE * frame_repeat
-    probe_xoffset = np.random.choice(probe_xoffset_base)
+    probe2bar_ms = probe2bar_array_ms[itrial]
+    probe_xoffset = probe_xoffset_array_dva[itrial]
     line_start_xpos = probe_xoffset - (line_vel * probe2bar_ms / 1000) - \
                       (line_vel * soa_ms / 1000)
 
-    # --------------------------------
     print('---------------------------')
     print(f'trial number    : {itrial + 1}')
     print(f'motion direction: {motion_dir}')
@@ -258,11 +243,8 @@ for itrial in range(ntrials):
         win.flip()
 
     # post-fixation gap period
-    # for ifix in range(postFixGap):
-    #     win.flip()
-
-    # my_clock.reset()
-    # motion_dur = npos * frame_repeat
+    for ifix in range(postFixGap):
+        win.flip()
 
     # move the vertical bar & flash the probe
     my_clock.reset()
@@ -270,8 +252,6 @@ for itrial in range(ntrials):
         for islow in range(slow_coeff):
             vline.pos = (motionX_array[i], motionY_array[i])
             vline.draw()
-            # fixdot1.draw()
-            # fixdot2.draw()
 
             # flash the probe
             if icount == soa_frame:
@@ -293,7 +273,6 @@ for itrial in range(ntrials):
     print(f'line start: {motionX_array[0]} dva')
     print(f'line end: {motionX_array[-1]} dva')
     print(f'probe_x: {probe_xoffset}')
-
 
     click_pos = np.round(get_mouseclick(win), 2)
     # click_err = np.round(click_pos - probe.pos, 2)

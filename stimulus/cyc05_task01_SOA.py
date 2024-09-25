@@ -2,7 +2,7 @@
 ***** project: PRJ2023_MIPS-Attention
 
     Mohammad Shams <m.shams.ahmar@gmail.com>
-    Jan 2023
+    Sep 2024
 
 Task Procedure:
     A vertical bar starts at the center and above the fixation dot and moves
@@ -51,12 +51,12 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # /// INSERT SESSION'S META DATA ///
 
 subID = 'test'  # subject ID (put 'test' for a test run)
-soa_arr_base_ms = np.arange(0, 750, 50)
-trials_per_cnd = 5
+soa_arr_base_ms = np.arange(-700, -500, 50)
+trials_per_cnd = 5  # todo: update this
 ntrials = len(soa_arr_base_ms) * trials_per_cnd
-nblocks = 3  # number of blocks
+nblocks = 3  # number of blocks #todo: update this
 
-slow_coeff = 2  # on dell:1 | on mac:2
+slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
     full_screen = False
@@ -96,19 +96,28 @@ FIX_Y = -2
 
 fixdot_color = 'white'
 
+# probe
+probe_rad = .25
+probe_color = 'red'
+probe2bar_ms = 500  # todo: vary this pseudo-randomly [-250, 250, 500]
+# todo: vary the variable below pseudo-randomly [-1.5, 0, 1.5]
+# There will be (15 SOA) x (3 probe2bar) x (3 probe_x) = 135
+# (135 cnd) x (2 rep) = 270 trials
+# (270 trials) x (5 sec) = 1350 sec = 22.5 min
+probe_xoffset_base = np.arange(-1.5, 1.5+.1, .1)
+probe_yoffset = 4
+
 # lines
 line_width = 0.2
 vline_length = 2
 line_color = 'white'
+line_vel = 10  # dva/s
 
-line_start_xpos = np.arange(-1, 1.1, .1)
 line_start_ypos = 4  # dva
 line_end_ypos = 4  # dva
 
 postFlashMotion_ms = 500
 postFlashMotion_frame = int(postFlashMotion_ms / 1000 * REF_RATE)
-
-motion_speed = 10  # dva/s
 
 # npos = int(motion_dur / frame_repeat)
 
@@ -119,12 +128,6 @@ motion_speed = 10  # dva/s
 #     left_bias_coeff = bias_coeff  # probability of leftward motion
 # if likely_dir == 'right':
 #     left_bias_coeff = 1-bias_coeff  # probability of leftward motion
-
-# probe
-probe_rad = .25
-probe_color = 'red'
-probe_xoffset = 2.5
-probe_yoffset = 4
 
 # potential gap durations (0.75 - 1.25 sec)
 gap_durations_base = range(int(REF_RATE * .75), int(REF_RATE * 1.25) + 1, 1)
@@ -145,8 +148,12 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
-soa_arr_base_frame = soa_arr_base_ms / 1000 * REF_RATE
-soa_array_frame = np.repeat([soa_arr_base_frame], trials_per_cnd)
+soa_array_ms = np.repeat([soa_arr_base_ms], trials_per_cnd)
+np.random.shuffle(soa_array_ms)
+
+# soa_arr_base_frame = soa_arr_base_ms / 1000 * REF_RATE
+# soa_array_frame = np.repeat([soa_arr_base_frame], trials_per_cnd)
+# np.random.shuffle(soa_array_frame)
 
 # assert ((dir_array.size == ntrials) and (probe_array.size == ntrials))
 
@@ -165,10 +172,10 @@ vline = visual.Rect(win=win,
                     fillColor=line_color)
 
 # probe
-# probe = visual.Circle(win,
-#                       radius=probe_rad,
-#                       pos=(probe_array[itrial], probe_yoffset),
-#                       fillColor=probe_color)
+probe = visual.Circle(win,
+                      radius=probe_rad,
+                      pos=[0, 0],
+                      fillColor=probe_color)
 
 # fixation dot
 fixdot1 = visual.Circle(win,
@@ -197,31 +204,40 @@ for itrial in range(ntrials):
 
     iti = np.random.choice(gap_durations_base)
     postFixGap = np.random.choice(gap_durations_base)
-    soa = int(soa_array_frame[itrial])
-    motion_dur_frames = soa + postFlashMotion_frame
+    soa_ms = int(soa_array_ms[itrial])
+    soa_frame = soa_ms / 1000 * REF_RATE
+    soa_dva = soa_ms / 1000 * line_vel
+    motion_dur_frames = soa_frame + postFlashMotion_frame
     motion_dir = np.random.choice([-1, 1])
-    xshift_steps = motion_speed / REF_RATE * frame_repeat
+    xshift_steps = line_vel / REF_RATE * frame_repeat
+    probe_xoffset = np.random.choice(probe_xoffset_base)
+    line_start_xpos = probe_xoffset - (line_vel * probe2bar_ms / 1000) - \
+                      (line_vel * soa_ms / 1000)
 
     # --------------------------------
-    # print('---------------------------')
-    # print(f'trial number    : {itrial + 1}')
-    # print(f'likely direction: {likely_dir}')
-    # print(f'motion direction: {dir_array[itrial]}')
+    print('---------------------------')
+    print(f'trial number    : {itrial + 1}')
+    print(f'motion direction: {motion_dir}')
 
     # --------------------------------
     # /// create motion trajectory array
-    line_end_xpos = (motion_dur_frames * xshift_steps) + \
-                    line_start_xpos[itrial]
+    line_end_xpos = (motion_dur_frames / frame_repeat * xshift_steps) + \
+                    line_start_xpos
 
-    motionX_array = np.linspace(line_start_xpos[itrial],
-                                line_end_xpos * motion_dir,
-                                num=motion_dur_frames)
+    motionX_array = np.linspace(line_start_xpos,
+                                line_end_xpos,
+                                num=int(motion_dur_frames/frame_repeat))
+    motionX_array = motionX_array * motion_dir
+
     motionY_array = np.linspace(line_start_ypos,
                                 line_end_ypos,
-                                num=motion_dur_frames)
+                                num=int(motion_dur_frames/frame_repeat))
 
     motionX_array = np.repeat(motionX_array, frame_repeat)
     motionY_array = np.repeat(motionY_array, frame_repeat)
+
+    # /// update probe position according to motion direction
+    probe.pos = [probe_xoffset * motion_dir, probe_yoffset]
 
     # --------------------------------
     # /// run stimulus
@@ -242,33 +258,48 @@ for itrial in range(ntrials):
         win.flip()
 
     # post-fixation gap period
-    for ifix in range(postFixGap):
-        win.flip()
+    # for ifix in range(postFixGap):
+    #     win.flip()
 
     # my_clock.reset()
     # motion_dur = npos * frame_repeat
 
     # move the vertical bar & flash the probe
-    for i in range(len(motionX_array)):
+    my_clock.reset()
+    for i, icount in enumerate(range(len(motionX_array))):
         for islow in range(slow_coeff):
             vline.pos = (motionX_array[i], motionY_array[i])
             vline.draw()
+            # fixdot1.draw()
+            # fixdot2.draw()
 
             # flash the probe
-            # if icount == 0:
-            #     probe.draw()
+            if icount == soa_frame:
+                probe.draw()
 
             win.flip()
 
-    motion_dur_measured = round(my_clock.getTime(), 2)
-    # print(f'Motion duration : {motion_dur_measured} s')
-    #
+    motion_dur_measured = my_clock.getTime()
+    # motion_dur_measured = round(my_clock.getTime(), 2)
+    print(f'Motion duration: {motion_dur_measured} s')
+    # print(f'Motion_dur_frames: {motion_dur_frames} frames')
+    print(f'motion array length: {len(motionX_array)} frames')
+    print(f'SOA: {soa_frame} frames')
+    print(f'postFlashMotion: {postFlashMotion_frame} frames')
+    print(f'Motion length: {abs(motionX_array[-1] - motionX_array[0])} dva')
+    print(f'Motion velocity:'
+          f'{abs(motionX_array[-1] - motionX_array[0]) / motion_dur_measured} '
+          f'dva/s')
+    print(f'line start: {motionX_array[0]} dva')
+    print(f'line end: {motionX_array[-1]} dva')
+    print(f'probe_x: {probe_xoffset}')
+
+
     click_pos = np.round(get_mouseclick(win), 2)
     # click_err = np.round(click_pos - probe.pos, 2)
     # print(f'probe position  : {probe.pos} dva')
     # print(f'click position  : {click_pos} dva')
     # print(f'click error     : {click_err} dva')
-    print(f'motion duration " {motion_dur_measured} ms')
 
     # --------------------------------
     # /// prepare data for saving

@@ -22,18 +22,18 @@ from lib import stim_flow_control as sfc
 from psychopy import event, visual, core
 
 
-def get_mouseclick(win, ms_corrcoef=1):
+def get_mouseclick(win, mouse_correctionFactor=1):
     ms_posx = random.choice(range(-2, 2 + 1))
     ms_posy = random.choice(range(-2, 2 + 1))
     mouse = event.Mouse(win=win, visible=True,
-                        newPos=[ms_posx * ms_corrcoef,
-                                ms_posy * ms_corrcoef])
+                        newPos=[ms_posx * mouse_correctionFactor,
+                                ms_posy * mouse_correctionFactor])
     while not mouse.getPressed()[0]:
         escape_session()  # force exit with 'escape' button
         win.flip()
     while mouse.getPressed()[0]:
         pass
-    click_loc = mouse.getPos() / ms_corrcoef
+    click_loc = mouse.getPos() / mouse_correctionFactor
     click_loc = [round(item, 2) for item in click_loc]
     return click_loc
 
@@ -50,8 +50,9 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # subject ID (put 'test' for a test run)
-slow_coeff = 2  # on dell:1 | on mac:2
+subID = 'MS01'  # subject ID (put 'test' for a test run)
+
+slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
     full_screen = False
@@ -80,7 +81,7 @@ frame_repeat = 2
 
 # configure the monitor and the stimulus window
 bg_color = [-.8, -.8, -.8]
-mon = sfc.config_mon_macair()
+mon = sfc.config_mon_dell()
 win = sfc.config_win(mon=mon, fullscr=full_screen, color=bg_color)
 sfc.test_refresh_rate(win, REF_RATE)
 
@@ -108,7 +109,7 @@ postFlashMotion_ms = 500
 postFlashMotion_frame = int(postFlashMotion_ms / 1000 * REF_RATE)
 
 # probe-line relation
-soa_arr_ms_base = np.arange(0, 700+1, 50)
+soa_arr_ms_base = np.arange(0, 700 + 1, 50)
 
 # potential gap durations (0.75 - 1.25 sec)
 gap_durations_base = range(int(REF_RATE * .75), int(REF_RATE * 1.25) + 1, 1)
@@ -127,9 +128,9 @@ soa_array_ms = soa_array_ms[ind_shuffle]
 probe2bar_array_ms = probe2bar_array_ms[ind_shuffle]
 probe_xoffset_array_dva = probe_xoffset_array_dva[ind_shuffle]
 
-assert(soa_array_ms.size == ntrials)
-assert(probe2bar_array_ms.size == ntrials)
-assert(probe_xoffset_array_dva.size == ntrials)
+assert (soa_array_ms.size == ntrials)
+assert (probe2bar_array_ms.size == ntrials)
+assert (probe_xoffset_array_dva.size == ntrials)
 
 # ----------------------------------------------------------------------------
 # /// CREATE VISUAL OBJECTS ///
@@ -211,12 +212,12 @@ for itrial in range(ntrials):
 
     motionX_array = np.linspace(line_start_xpos,
                                 line_end_xpos,
-                                num=int(motion_dur_frames/frame_repeat))
+                                num=int(motion_dur_frames / frame_repeat))
     motionX_array = motionX_array * motion_dir
 
     motionY_array = np.linspace(line_start_ypos,
                                 line_end_ypos,
-                                num=int(motion_dur_frames/frame_repeat))
+                                num=int(motion_dur_frames / frame_repeat))
 
     motionX_array = np.repeat(motionX_array, frame_repeat)
     motionY_array = np.repeat(motionY_array, frame_repeat)
@@ -241,6 +242,7 @@ for itrial in range(ntrials):
         fixdot1.draw()
         fixdot2.draw()
         win.flip()
+        escape_session()
 
     # post-fixation gap period
     for ifix in range(postFixGap):
@@ -260,49 +262,44 @@ for itrial in range(ntrials):
             win.flip()
 
     motion_dur_measured = my_clock.getTime()
-    # motion_dur_measured = round(my_clock.getTime(), 2)
-    print(f'Motion duration: {motion_dur_measured} s')
-    # print(f'Motion_dur_frames: {motion_dur_frames} frames')
-    print(f'motion array length: {len(motionX_array)} frames')
-    print(f'SOA: {soa_frame} frames')
-    print(f'postFlashMotion: {postFlashMotion_frame} frames')
-    print(f'Motion length: {abs(motionX_array[-1] - motionX_array[0])} dva')
-    print(f'Motion velocity:'
-          f'{abs(motionX_array[-1] - motionX_array[0]) / motion_dur_measured} '
-          f'dva/s')
-    print(f'line start: {motionX_array[0]} dva')
-    print(f'line end: {motionX_array[-1]} dva')
-    print(f'probe_x: {probe_xoffset}')
+    motion_distance = abs(motionX_array[-1] - motionX_array[0])
+    motion_vel_measured = abs(motion_distance) / motion_dur_measured
+    print(f'Motion velocity: {round(motion_vel_measured, 2)} dva/s')
+    print(f'SOA: {soa_ms} ms')
+    print(f'probe hor. position  : {probe_xoffset} dva')
+    print(f'probe-bar temp. dist.: {probe2bar_ms} ms')
 
     click_pos = np.round(get_mouseclick(win), 2)
-    # click_err = np.round(click_pos - probe.pos, 2)
-    # print(f'probe position  : {probe.pos} dva')
-    # print(f'click position  : {click_pos} dva')
-    # print(f'click error     : {click_err} dva')
+    click_err = np.round(click_pos - probe.pos, 2)
+    print(f'click position  : {click_pos} dva')
+    print(f'click error     : {click_err} dva')
 
     # --------------------------------
-    # /// prepare data for saving
+    # /// save trial parameters
 
-    # # create a dictionary of variables to be saved
-    # trial_dict = {'trial_num': itrial + 1,
-    #               'likely_dir': likely_dir,
-    #               'bar_dir': dir_array[itrial],
-    #               'probe_pos': [probe.pos],
-    #               'click_pos': [click_pos],
-    #               'click_err': [click_err],
-    #               'click_xerr': [click_err[0]],
-    #               'click_yerr': [click_err[1]]}
-    #
-    # # convert to data frame
-    # dfnew = pd.DataFrame(trial_dict)
-    # # if not first trial, load the existing data frame and concatenate
-    # if itrial > 0:
-    #     df = pd.read_json(save_path)
-    #     dfnew = pd.concat([df, dfnew], ignore_index=True)
-    # # save the dataframe
-    # dfnew.to_json(save_path)
-    #
-    # if itrial == ntrials - 1:
-    #     sfc.end_screen(win, color='white')
+    trial_dict = {'trial_num': itrial + 1,
+                  'soa_ms': [soa_ms],
+                  'probe_pos': [probe.pos],
+                  'probe2bar_ms': [probe2bar_ms],
+                  'motion_dir': motion_dir,
+                  'motion_vel_measured': motion_vel_measured,
+                  'motion_xstart': motionX_array[0],
+                  'motion_xend': motionX_array[-1],
+                  'motion_ystart': line_start_ypos,
+                  'motion_yend': line_end_ypos,
+                  'click_pos': [click_pos],
+                  'click_xerr': click_err[0],
+                  'click_yerr': click_err[1]}
+
+    dfnew = pd.DataFrame(trial_dict)
+    # if not first trial, load the existing data frame and concatenate
+    if itrial > 0:
+        df = pd.read_json(save_path)
+        dfnew = pd.concat([df, dfnew], ignore_index=True)
+    dfnew.to_json(save_path)
+
+    if itrial == ntrials - 1:
+        sfc.end_screen(win, color='white')
+
 # --------------------------------
 win.close()

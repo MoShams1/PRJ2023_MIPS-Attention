@@ -7,9 +7,9 @@
 Task Procedure:
     A vertical bar starts at the center and above the fixation dot and moves
     either righward or leftward.
-    A probe flashes at a distance corresponding to ~200 ms ahead of the bar.
+    A probe flashes at 250 ms or 500 ms ahead or 250 ms behind the bar.
+    The probe flashes at xoffsets of -1, 0, and 1 dva.
     The bar-probe SOA varies from 0 to 700 ms in 50 ms steps.
-    Each SOA repeats for 5 times.
 
 """
 
@@ -65,7 +65,7 @@ else:
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc05_task01_{date}_{time}_{subID}.json"
+output_name = f"cyc05_task0_1_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc05", output_name)

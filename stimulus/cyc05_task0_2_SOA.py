@@ -4,13 +4,12 @@
     Mohammad Shams <m.shams.ahmar@gmail.com>
     Sep 2024
 
-todo: update the description below
 Task Procedure:
     A vertical bar starts at the center and above the fixation dot and moves
     either righward or leftward.
-    A probe flashes at 250 ms or 500 ms ahead or 250 ms behind the bar.
-    The probe flashes at xoffsets of -1, 0, and 1 dva.
-    The bar-probe SOA varies from 0 to 700 ms in 50 ms steps.
+    A probe flashes at 250 ms ahead of the bar.
+    The probe flashes at xoffsets of -1 and 1 dva.
+    The bar-probe SOA varies from -400 to 400 ms in 50 ms steps.
 
 """
 
@@ -51,7 +50,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # subject ID (put 'test' for a test run)
+subID = 'MM'  # subject ID (put 'test' for a test run)
 slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
@@ -65,7 +64,7 @@ else:
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc05_task01_{date}_{time}_{subID}.json"
+output_name = f"cyc05_task0_2_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc05", output_name)
@@ -94,7 +93,7 @@ fixdot_color = 'white'
 # probe
 probe_rad = .25
 probe_color = 'red'
-probe2bar_ms = 250
+probe2bar_distance_ms = 250
 probe_xoffset_base_dva = np.array([-1, 1])
 probe_yoffset = 4
 
@@ -200,14 +199,24 @@ for itrial in range(ntrials):
     iti = np.random.choice(gap_durations_base)
     postFixGap = np.random.choice(gap_durations_base)
     soa_ms = int(soa_array_ms[itrial])
-    soa_frame = soa_ms / 1000 * REF_RATE
+    soa_frame = int(abs(soa_ms) / 1000 * REF_RATE)
     soa_dva = soa_ms / 1000 * line_vel
-    motion_dur_frames = soa_frame + postFlashMotion_frame
     motion_dir = motion_dir_array[itrial]
     xshift_steps = line_vel / REF_RATE * frame_repeat
     probe_xoffset = probe_xoffset_array_dva[itrial]
-    line_start_xpos = probe_xoffset - (line_vel * probe2bar_ms / 1000) - \
+
+    if soa_ms >= 0:
+        line_start_xpos = probe_xoffset -\
+                      (line_vel * probe2bar_distance_ms / 1000) - \
                       (line_vel * soa_ms / 1000)
+    else:
+        line_start_xpos = probe_xoffset - \
+                          (line_vel * probe2bar_distance_ms / 1000)
+
+    if soa_ms >= 0:
+        motion_dur_frames = soa_frame + postFlashMotion_frame
+    else:
+        motion_dur_frames = postFlashMotion_frame
 
     print('---------------------------')
     print(f'trial number    : {itrial + 1}')
@@ -256,27 +265,42 @@ for itrial in range(ntrials):
     for ifix in range(postFixGap):
         win.flip()
 
-    # todo: update this to accomodate negative SOAs
     # move the vertical bar & flash the probe
     my_clock.reset()
+    probe_time = np.nan
+    if soa_ms < 0:
+        probe.draw()
+        probe_time = my_clock.getTime() * 1000
+        for i in range(soa_frame):
+            win.flip()
+
+    motion_start_time = my_clock.getTime() * 1000
     for i, icount in enumerate(range(len(motionX_array))):
         for islow in range(slow_coeff):
             vline.pos = (motionX_array[i], motionY_array[i])
             vline.draw()
 
             # flash the probe
-            if icount == soa_frame:
+            if (soa_ms >= 0) & (icount == soa_frame):
                 probe.draw()
+                probe_time = my_clock.getTime() * 1000
 
             win.flip()
 
-    motion_dur_measured = my_clock.getTime()
-    motion_distance = abs(motionX_array[-1] - motionX_array[0])
-    motion_vel_measured = abs(motion_distance) / motion_dur_measured
-    print(f'Motion velocity: {round(motion_vel_measured, 2)} dva/s')
+    motion_end_ms = my_clock.getTime() * 1000
+    motion_dur_measured_ms = motion_end_ms - motion_start_time
+    soa_measured_ms = probe_time - motion_start_time
+    flash2motionEnd_measured_ms = motion_end_ms - probe_time
     print(f'SOA: {soa_ms} ms')
+    print(f'SOA measured: {round(soa_measured_ms,2 )} ms')
+    print(f'Motion duration measured: {round(motion_dur_measured_ms, 2)} ms')
+    print(f'Flash-BarEnd measured:'
+          f' {round(flash2motionEnd_measured_ms,2)} ms')
+    motion_distance = abs(motionX_array[-1] - motionX_array[0])
+    motion_vel_measured = abs(motion_distance) / motion_dur_measured_ms * 1000
+    print(f'Motion velocity: {round(motion_vel_measured, 2)} dva/s')
     print(f'probe hor. position  : {probe_xoffset} dva')
-    print(f'probe-bar temp. dist.: {probe2bar_ms} ms')
+    print(f'probe-bar temp. dist.: {probe2bar_distance_ms} ms')
 
     click_pos = np.round(get_mouseclick(win), 2)
     click_err = np.round(click_pos - probe.pos, 2)
@@ -288,9 +312,12 @@ for itrial in range(ntrials):
 
     trial_dict = {'trial_num': itrial + 1,
                   'soa_ms': soa_ms,
+                  'soa_ms_measured': soa_measured_ms,
                   'probe_pos': [probe.pos],
-                  'probe2bar_ms': probe2bar_ms,
+                  'flash2barEnd_measured_ms': flash2motionEnd_measured_ms,
+                  'probe2bar_distance_ms': probe2bar_distance_ms,
                   'motion_dir': motion_dir,
+                  'motion_duration_ms_measure': motion_dur_measured_ms,
                   'motion_vel_measured': motion_vel_measured,
                   'motion_xstart': motionX_array[0],
                   'motion_xend': motionX_array[-1],

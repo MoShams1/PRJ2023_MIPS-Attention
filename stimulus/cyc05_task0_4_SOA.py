@@ -4,13 +4,15 @@
     Mohammad Shams <m.shams.ahmar@gmail.com>
     Sep 2024
 
-todo: update description
 Task Procedure:
     A vertical bar starts at the center and above the fixation dot and moves
     either righward or leftward.
-    A probe flashes at 250 ms ahead of the bar.
+    A probe flashes at 2.5 dva ahead of the bar.
     The probe flashes at xoffsets of -1 and 1 dva.
-    The bar-probe SOA varies from -700 to 700 ms in 50 ms steps.
+    The bar-probe SOA was fixed at 100 ms.
+    A second bar moved for 100 ms agains the first bar.
+    The second bar's distance to probe's location was 2.5 dva.
+    The bar1-bar2 SOA varied from -200 ms to +200 ms in 50 ms steps.
 
 """
 

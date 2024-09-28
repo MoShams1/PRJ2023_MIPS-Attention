@@ -229,7 +229,9 @@ for itrial in range(ntrials):
     # /// create motion trajectory array
     line_end_xpos = (motion_dur_frames / frame_repeat * xshift_steps) + \
                     line_start_xpos
-
+    # todo: make one array that covers the motion duration of both bars and
+    #  then indicate at what frame which bar has to be shown. This way,
+    #  you will have only one 'motion loop' to deal with.
     motionX_array = np.linspace(line_start_xpos,
                                 line_end_xpos,
                                 num=int(motion_dur_frames / frame_repeat))

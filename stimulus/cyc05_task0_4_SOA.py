@@ -51,8 +51,8 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # subject ID (put 'test' for a test run)
-slow_coeff = 2  # on dell:1 | on mac:2
+subID = 'MS'  # subject ID (put 'test' for a test run)
+slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
     full_screen = False
@@ -209,7 +209,7 @@ for itrial in range(ntrials):
     iti = np.random.choice(gap_durations_base)
     postFixGap = np.random.choice(gap_durations_base)
     bar12soa_ms = int(bar12soa_array_ms[itrial])
-    bar12soa_frame = int(bar12soa_ms / 1000 * REF_RATE)
+    bar12soa_frame = int(abs(bar12soa_ms) / 1000 * REF_RATE)
     bar1probe_soa_frame = bar1probe_soa_ms / 1000 * REF_RATE
     # soa_dva = soa_ms / 1000 * line_vel
     motion_dir = motion_dir_array[itrial]
@@ -230,9 +230,6 @@ for itrial in range(ntrials):
     # /// create motion trajectory array
     line_end_xpos = (motion_dur_frames / frame_repeat * xshift_steps) + \
                     line_start_xpos
-    # todo: make one array that covers the motion duration of both bars and
-    #  then indicate at what frame which bar has to be shown. This way,
-    #  you will have only one 'motion loop' to deal with.
     motionX_array = np.linspace(line_start_xpos,
                                 line_end_xpos,
                                 num=int(motion_dur_frames / frame_repeat))
@@ -336,27 +333,27 @@ for itrial in range(ntrials):
             else:
                 ibar1 = ifull - bar12soa_frame
                 ibar2 = ifull
-                iflash = bar1probe_soa_frame - bar12soa_frame
+                iflash = bar1probe_soa_frame + bar12soa_frame
 
-            if ibar1 == 0:
-                bar1_start_time = my_clock.getTime() * 1000
-            if ibar2 == 0:
-                line2_start_time = my_clock.getTime() * 1000
-            if ifull == iflash:
-                flash_start_time = my_clock.getTime() * 1000
-
+            # draw line1
             if ibar1 >= 0:
+                if ibar1 == 0:
+                    bar1_start_time = my_clock.getTime() * 1000
                 vline.pos = (motionX_array[ibar1], motionY_array[ibar1])
                 vline.draw()
 
             # draw line2
             if (ibar2 >= 0) & (ibar2 < 6) & (bar12soa_ms != 999):
+                if ibar2 == 0:
+                    line2_start_time = my_clock.getTime() * 1000
                 vline2.pos = [line2_motion_array[ibar2],
                               motionY_array[0]]
                 vline2.draw()
 
             # flash the probe
             if (ifull == iflash) or (ifull == iflash + 1):
+                if ifull == iflash:
+                    flash_start_time = my_clock.getTime() * 1000
                 probe.draw()
 
             win.flip()
@@ -367,32 +364,36 @@ for itrial in range(ntrials):
 
     motion_end_time = my_clock.getTime() * 1000
 
+    # print(f'motion_dir: {motion_dir}\n')
+
     # print(f'full_dur_ms: {round(full_dur_frames * 1000 / 60)} ms')
-    # motion_dur_measured = round(motion_end_time - motion_start_time)
+    motion_dur_measured = round(motion_end_time - motion_start_time)
     # print(f'motion_dur_measured: {motion_dur_measured} ms')
 
-    print(f'bar1_dur: {round(len(motionX_array) / 60 * 1000)} ms')
+    # print(f'bar1_dur: {round(len(motionX_array) / 60 * 1000)} ms')
     bar1_dur_measured = round(motion_end_time - bar1_start_time)
-    print(f'bar1_dur_measured: {bar1_dur_measured} ms')
+    # print(f'bar1_dur_measured: {bar1_dur_measured} ms')
+    # print(f'bar1probe_soa_ms: {bar1probe_soa_ms} ms')
     line2_dur_measured = round(line2_end_time - line2_start_time)
-    print(f'line2_dur_measured: {line2_dur_measured} ms')
+    # print(f'line2_dur_measured: {line2_dur_measured} ms')
+    # print(f'flash_duration_measured: 33 ms')
     flash_duration_measured = round(flash_end_time - flash_start_time)
-    print(f'flash_duration_measured: {flash_duration_measured} ms\n')
+    # print(f'flash_duration_measured: {flash_duration_measured} ms\n')
 
     # print(f'bar1probe_soa_ms: {bar1probe_soa_ms} ms')
-    # bar1probe_soa_measured = round(flash_start_time - bar1_start_time)
+    bar1probe_soa_measured = round(flash_start_time - bar1_start_time)
     # print(f'bar1probe_soa_measured: {bar1probe_soa_measured} ms\n')
-    #
-    # print(f'bar12soa_ms: {bar12soa_ms} ms')
-    # bar1bar2_soa_measured = round(line2_start_time - bar1_start_time)
-    # print(f'bar1bar2_soa_measured: {bar1bar2_soa_measured} ms\n')
-    #
-    # flash2motionEnd_measured = round(motion_end_time - probe_time)
+
+    print(f'bar12soa_ms: {bar12soa_ms} ms')
+    bar1bar2_soa_measured = round(line2_start_time - bar1_start_time)
+    print(f'bar1bar2_soa_measured: {bar1bar2_soa_measured} ms\n')
+
+    flash2motionEnd_measured = round(motion_end_time - probe_time)
     # print(f'flash2motionEnd_measured: {flash2motionEnd_measured} ms\n')
-    #
-    # motion_distance = abs(motionX_array[-1] - motionX_array[0])
-    # motion_vel_measured = abs(motion_distance) / motion_dur_measured * 1000
-    # print(f'motion_vel_measured: {round(motion_vel_measured, 2)} dva/s')
+
+    motion_distance = abs(motionX_array[-1] - motionX_array[0])
+    motion_vel_measured = abs(motion_distance) / motion_dur_measured * 1000
+    print(f'motion_vel_measured: {round(motion_vel_measured, 2)} dva/s')
 
     # print(f'SOA: {bar12soa_ms} ms')
     # print(f'SOA measured: {round(soa_measured_ms, 2)} ms')
@@ -403,43 +404,43 @@ for itrial in range(ntrials):
     # print(f'probe hor. position  : {probe_xoffset} dva')
     # print(f'probe-bar temp. dist.: {probe2bar_distance_ms} ms')
 
-    # click_pos = np.round(get_mouseclick(win), 2)
-    # click_err = np.round(click_pos - probe.pos, 2)
-    # print(f'click position  : {click_pos} dva')
-    # print(f'click error     : {click_err} dva')
+    click_pos = np.round(get_mouseclick(win), 2)
+    click_err = np.round(click_pos - probe.pos, 2)
+    print(f'click position  : {click_pos} dva')
+    print(f'click error     : {click_err} dva')
 
     # --------------------------------
     # /// save trial parameters
 
-    # trial_dict = {'trial_num': itrial + 1,
-    #               'bar1probe_soa_ms': bar1probe_soa_ms,
-    #               'bar1probe_soa_measured': bar1probe_soa_measured,
-    #               'bar12soa_ms': bar12soa_ms,
-    #               'bar1bar2_soa_measured': bar1bar2_soa_measured,
-    #               'line2_dur_measured': line2_dur_measured,
-    #               'probe_pos': [probe.pos],
-    #               'flash2barEnd_measured_ms': flash2motionEnd_measured,
-    #               'probe2bar_distance_ms': probe2bar_distance_ms,
-    #               'motion_dir': motion_dir,
-    #               'motion_duration_ms_measure': motion_dur_measured,
-    #               'motion_vel_measured': motion_vel_measured,
-    #               'motion_xstart': motionX_array[0],
-    #               'motion_xend': motionX_array[-1],
-    #               'motion_ystart': line_start_ypos,
-    #               'motion_yend': line_end_ypos,
-    #               'click_pos': [click_pos],
-    #               'click_xerr': click_err[0],
-    #               'click_yerr': click_err[1]}
-    #
-    # dfnew = pd.DataFrame(trial_dict)
-    # # if not first trial, load the existing data frame and concatenate
-    # if itrial > 0:
-    #     df = pd.read_json(save_path)
-    #     dfnew = pd.concat([df, dfnew], ignore_index=True)
-    # dfnew.to_json(save_path)
-    #
-    # if itrial == ntrials - 1:
-    #     sfc.end_screen(win, color='white')
+    trial_dict = {'trial_num': itrial + 1,
+                  'bar1probe_soa_ms': bar1probe_soa_ms,
+                  'bar1probe_soa_measured': bar1probe_soa_measured,
+                  'bar12soa_ms': bar12soa_ms,
+                  'bar1bar2_soa_measured': bar1bar2_soa_measured,
+                  'line2_dur_measured': line2_dur_measured,
+                  'probe_pos': [probe.pos],
+                  'flash2barEnd_measured_ms': flash2motionEnd_measured,
+                  'probe2bar_distance_ms': probe2bar_distance_ms,
+                  'motion_dir': motion_dir,
+                  'motion_duration_ms_measure': motion_dur_measured,
+                  'motion_vel_measured': motion_vel_measured,
+                  'motion_xstart': motionX_array[0],
+                  'motion_xend': motionX_array[-1],
+                  'motion_ystart': line_start_ypos,
+                  'motion_yend': line_end_ypos,
+                  'click_pos': [click_pos],
+                  'click_xerr': click_err[0],
+                  'click_yerr': click_err[1]}
+
+    dfnew = pd.DataFrame(trial_dict)
+    # if not first trial, load the existing data frame and concatenate
+    if itrial > 0:
+        df = pd.read_json(save_path)
+        dfnew = pd.concat([df, dfnew], ignore_index=True)
+    dfnew.to_json(save_path)
+
+    if itrial == ntrials - 1:
+        sfc.end_screen(win, color='white')
 
 # --------------------------------
 win.close()

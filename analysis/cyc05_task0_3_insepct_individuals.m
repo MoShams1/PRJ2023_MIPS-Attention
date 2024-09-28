@@ -4,7 +4,7 @@ close all
 
 % Specify the path to the JSON files
 
-file_dir = dir('../data/cyc05/*task0_2*');
+file_dir = dir('../data/cyc05/*task0_3*');
 nsub = numel(file_dir);
 
 isub = 1;
@@ -44,15 +44,23 @@ for isoa = soa_base
     err_mat(:,soa_count) = click_xerr(ind);
 end
 
-figure('units','inches','outerposition',[0, 0, 5, 5])
+figure('units','inches','outerposition',[0, 0, 7, 5])
 x = soa_base;
 y = median(err_mat);
 e = SE(err_mat);
 errorbar(x, y, e, ...
     'linewidth',2)
+
+xticks(-700:100:700)
+xlim([-800 800])
 xlabel 'Bar-Flash SOA (ms)'
+xline(0)
+
+yticks(-5:.5:5)
+ylim([-.75 1.5])
 ylabel 'Position shift in direction of motion (dva)'
 yline(0)
+
 cleanplot
 
 %% Position shift vs. SOA (inward vs outward)
@@ -73,7 +81,7 @@ for isoa = soa_base
     err_mat_out(:,soa_count) = click_xerr(ind_outward);
 end
 
-figure('units','inches','outerposition',[0, 0, 5, 5])
+figure('units','inches','outerposition',[0, 0, 7, 5])
 x = soa_base;
 
 y_out = median(err_mat_out);
@@ -88,10 +96,16 @@ e_in = SE(err_mat_in);
 errorbar(x, y_in, e_in, ...
     'linewidth',2, 'color',cmap(2,:))
 
+xticks(-700:100:700)
+xlim([-800 800])
 xlabel 'Bar-Flash SOA (ms)'
+xline(0)
+
+yticks(-5:.5:5)
+ylim([-.75 1.5])
 ylabel 'Position shift in direction of motion (dva)'
 yline(0)
-xline(0)
+
 legend({'outward', 'inward'}, 'location','northwest')
 cleanplot
 

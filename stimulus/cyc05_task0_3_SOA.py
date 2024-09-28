@@ -281,6 +281,7 @@ for itrial in range(ntrials):
             vline.draw()
 
             # flash the probe
+            # todo: the flash duration seems to be only one frame
             if (soa_ms >= 0) & (icount == soa_frame):
                 probe.draw()
                 probe_time = my_clock.getTime() * 1000

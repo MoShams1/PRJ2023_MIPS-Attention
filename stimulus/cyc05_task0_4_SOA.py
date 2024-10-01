@@ -394,7 +394,7 @@ for itrial in range(ntrials):
     # print(f'flash2motionEnd_measured: {flash2motionEnd_measured} ms\n')
 
     motion_distance = abs(motionX_array[-1] - motionX_array[0])
-    motion_vel_measured = abs(motion_distance) / motion_dur_measured * 1000
+    motion_vel_measured = abs(motion_distance) / bar1_dur_measured * 1000
     print(f'motion_vel_measured: {round(motion_vel_measured, 2)} dva/s')
 
     # print(f'SOA: {bar12soa_ms} ms')

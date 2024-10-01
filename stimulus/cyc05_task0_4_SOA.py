@@ -115,7 +115,7 @@ motion_dir_base = np.array([-1, 1])
 bar1probe_soa_ms = 100
 bar1probe_soa_frame = bar1probe_soa_ms / 1000 * REF_RATE
 
-# bar1-bar2 relation
+# bar1-bar2 relationt
 bar12soa_base_ms = np.array(range(-200, 200 + 1, 50))
 bar12soa_base_ms = np.append(bar12soa_base_ms, 999)
 

@@ -50,9 +50,13 @@ y = median(err_mat);
 e = SE(err_mat);
 errorbar(x, y, e, ...
     'linewidth',2)
+
 xlabel 'Bar-Flash SOA (ms)'
+xline(0)
+
 ylabel 'Position shift in direction of motion (dva)'
 yline(0)
+
 cleanplot
 
 %% Position shift vs. SOA (inward vs outward)

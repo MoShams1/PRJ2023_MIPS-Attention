@@ -3,8 +3,8 @@ Mo Shams <MShamsCBR@gmail.com>
 June 2023
 ---
 
-The subject's task is to localize a flashing probe in the presence of a moving
-annulus.
+The subject's task is to localize a flashing probe in the presence of a
+rotating annulus.
 
 12 repetitions
 5 spatio-temporal conditions

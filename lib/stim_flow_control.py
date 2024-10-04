@@ -148,6 +148,35 @@ def block_msg2(win, iblock, nblocks, color='black'):
         pass
 
 
+def block_msg3(win, iblock, nblocks, color='black'):
+    msg = f"<<< Block {iblock} / {nblocks} >>>" \
+          f"\n\nPlease continue when ready..."
+    message = visual.TextStim(win,
+                              text=msg,
+                              color=color,
+                              height=.5,
+                              alignText='center',
+                              pos=(0, 0))
+
+    commands = '\n\n[Escape]: Quit\t\t[Spacebar]: Continue'
+    cmnd_text = visual.TextStim(win,
+                                text=commands,
+                                color=color,
+                                height=.5,
+                                alignText='center',
+                                pos=(0, -2))
+
+    message.draw()
+    cmnd_text.draw()
+    win.flip()
+
+    pressed_key = event.waitKeys(keyList=['escape', 'space'])
+    if pressed_key[0] == 'escape':
+        core.quit()
+    if pressed_key[0] == 'space':
+        pass
+
+
 def decide_on_show(iframe, nframes):
     # iframe: current frame number
     # nframes: number of frames as the image interval

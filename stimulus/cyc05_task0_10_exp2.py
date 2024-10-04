@@ -243,7 +243,7 @@ for itrial in range(ntrials):
 
     # show the block screeen
     if itrial in pause_array:
-        sfc.block_msg2(win, np.where(pause_array == itrial)[0][0] + 1,
+        sfc.block_msg3(win, np.where(pause_array == itrial)[0][0] + 1,
                        nblocks, color='white')
 
     # inter-trial interval gap period

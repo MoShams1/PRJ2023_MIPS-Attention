@@ -63,7 +63,7 @@ else:
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc05_task0_9_exp2_{date}_{time}_{subID}.json"
+output_name = f"cyc05_task0_10_exp2_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc05", output_name)

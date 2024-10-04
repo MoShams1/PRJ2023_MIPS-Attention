@@ -9,8 +9,8 @@ Task Procedure:
     A probe flashes at 2.5 dva ahead of the bar.
     The probe flashes at xoffsets of -1 and 1 dva.
     The bar-probe SOA was fixed at 100 ms.
-    A plus sign flashed for 50 ms symmetrically on the other side of the
-    probe's location.
+    A horizontal bar moved orthogonally for 100 ms symmetrically on the
+    other side of the probe's location.
     The bar1-bar2 SOA varied from -400 ms to +400 ms in 50 ms steps.
 
 """
@@ -66,7 +66,7 @@ else:
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc05_task0_11_{date}_{time}_{subID}.json"
+output_name = f"cyc05_task0_12_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc05", output_name)
@@ -153,7 +153,8 @@ vline = visual.Rect(win=win,
 
 vline2 = visual.Rect(win=win,
                      size=(line_width, vline_length / 2),
-                     fillColor=line_color)
+                     fillColor=line_color,
+                     ori=90)
 
 # probe
 probe = visual.Circle(win,
@@ -208,6 +209,7 @@ for itrial in range(ntrials):
     bar12soa_ms = int(bar12soa_array_ms[itrial])
     bar12soa_frame = int(abs(bar12soa_ms) / 1000 * REF_RATE)
     bar1probe_soa_frame = bar1probe_soa_ms / 1000 * REF_RATE
+    # soa_dva = soa_ms / 1000 * line_vel
     motion_dir = motion_dir_array[itrial]
     xshift_steps = line_vel / REF_RATE * frame_repeat
 
@@ -218,8 +220,8 @@ for itrial in range(ntrials):
     motion_dur_frames = bar1probe_soa_frame + postFlashMotion_frame
 
     print('---------------------------')
-    print(f'trial number    : {itrial + 1}')
-    print(f'motion direction: {motion_dir}')
+    # print(f'trial number    : {itrial + 1}')
+    # print(f'motion direction: {motion_dir}')
 
     # --------------------------------
     # /// create motion trajectory array
@@ -241,9 +243,9 @@ for itrial in range(ntrials):
     line2_start_xpos = (probe_xoffset +
                         (line_vel * probe2bar_distance_ms / 1000)) * motion_dir
 
-    line2_motion_array = [line_start_ypos,
+    line2_motion_array = [line_start_ypos - xshift_steps,
                           line_start_ypos,
-                          line_start_ypos]
+                          line_start_ypos + xshift_steps]
     line2_motion_array = np.repeat(line2_motion_array, 2)
     if random.choice([0, 1]):
         line2_motion_array = np.flip(line2_motion_array)
@@ -312,14 +314,11 @@ for itrial in range(ntrials):
                 vline.draw()
 
             # draw line2
-            if (ibar2 >= 0) & (ibar2 < 3) & (bar12soa_ms != 999):
+            if (ibar2 >= 0) & (ibar2 < 6) & (bar12soa_ms != 999):
                 if ibar2 == 0:
                     line2_start_time = my_clock.getTime() * 1000
                 vline2.pos = [line2_start_xpos,
-                              line2_motion_array[0]]
-                vline2.ori = 0
-                vline2.draw()
-                vline2.ori = 90
+                              line2_motion_array[ibar2]]
                 vline2.draw()
 
             # flash the probe

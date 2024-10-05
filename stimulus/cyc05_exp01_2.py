@@ -5,7 +5,8 @@
     Oct 2024
 
 Task Procedure:
-    A vertical bar moves horizontally 10 dva/s along a path of 10 (-5 dva to +5 dva with a random offset of ±1 dva
+    A vertical bar moves horizontally 10 dva/s along a path of 5 dva (-5 dva to
+    0 dva)
     A probe flashes at -4 dva to +4 dva from the bar, at the time the bar
     reaches the midway of its path.
 
@@ -62,7 +63,7 @@ else:
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc05_exp01_{date}_{time}_{subID}.json"
+output_name = f"cyc05_exp01_2_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc05", output_name)
@@ -99,9 +100,12 @@ bar_width = 0.1
 bar_length = 2
 bar_color = 'white'
 bar_vel = 10  # dva/s
+bar_xstart = -5  # dva
+bar_xend = 0  # dva
+bar_midpath = -2.5  # dva
 bar_ystart = 4  # dva
 bar_yend = 4  # dva
-motion_dur_ms = 1000
+motion_dur_ms = 500
 motion_dur_frames = int(motion_dur_ms / 1000 * refresh_rate)
 motion_dir_base = np.array([-1, 1])
 
@@ -118,7 +122,7 @@ ncnds = 17 * 2
 probe2bar_array_dva = np.repeat(probe2bar_base_dva, 2)
 motion_dir_array = np.tile(motion_dir_base, 17)
 
-rep_per_cnd = 5
+rep_per_cnd = 3
 probe2bar_array_dva = np.repeat(probe2bar_array_dva, rep_per_cnd)
 motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)
 
@@ -191,16 +195,15 @@ for itrial in range(ntrials):
     probe2bar_dva = probe2bar_array_dva[itrial]
     motion_dir = motion_dir_array[itrial]
 
-    bar_xoffset = random.choice(np.arange(-1, 1.1, .1))
-    bar_xstart = -5 + bar_xoffset
-    bar_xend = 5 + bar_xoffset
-    probe_x = probe2bar_dva + bar_xoffset
+    probe_x = (probe2bar_dva + bar_midpath) * motion_dir
+    probe.pos = [probe_x , probe_y]
 
     # --------------------------------
     # /// create motion trajectory array
     bar_xarray = np.linspace(bar_xstart,
                              bar_xend,
                              num=int(motion_dur_frames / frame_repeat))
+    bar_xarray = bar_xarray * motion_dir
 
     bar_yarray = np.linspace(bar_ystart,
                              bar_yend,
@@ -208,10 +211,6 @@ for itrial in range(ntrials):
 
     bar_xarray = np.repeat(bar_xarray, frame_repeat)
     bar_yarray = np.repeat(bar_yarray, frame_repeat)
-
-    # /// update probe and bar horizontal locations according to motion dir
-    bar_xarray = bar_xarray * motion_dir
-    probe.pos = [probe_x * motion_dir, probe_y]
 
     # --------------------------------
     # /// run stimulus
@@ -264,7 +263,6 @@ for itrial in range(ntrials):
     probe2bar_measured_ms = probe_time - motion_start_time
     flash2motionEnd_measured_ms = motion_end_ms - probe_time
     print(f'probe2bar_dva: {probe2bar_dva} dva')
-    print(f'bar_xoffset: {bar_xoffset * motion_dir}')
     print(f'bar_xstart: {bar_xarray[0]}')
     print(f'bar_xend: {bar_xarray[-1]}')
     print(f'probe_x  : {round(probe.pos[0], 2)} dva')
@@ -288,7 +286,6 @@ for itrial in range(ntrials):
                   'motion_dir': motion_dir,
                   'motion_duration_ms_measure': motion_dur_measured_ms,
                   'motion_vel_measured': motion_vel_measured,
-                  'bar_xoffset': bar_xoffset * motion_dir,
                   'bar_xstart': bar_xarray[0],
                   'bar_xend': bar_xarray[-1],
                   'bar_ystart': bar_ystart,

@@ -50,7 +50,7 @@ end
 
 figure('units','inches','outerposition',[0, 0, 5, 5])
 x = p2b_base;
-y = median(err_mat);
+y = mean(err_mat);
 e = SE(err_mat);
 errorbar(x, y, e, ...
     'o-','linewidth',2)

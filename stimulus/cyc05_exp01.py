@@ -5,9 +5,10 @@
     Oct 2024
 
 Task Procedure:
-    A vertical bar moves vertically 10 dva/s along a fixed path.
-    A probe flashes at -4 dva to +4 dva from the bar.
-    The probe flashes at xoffsets of -1 and 1 dva.
+    A vertical bar moves horizontally 10 dva/s along path w/ random offset
+    within one dva
+    A probe flashes at -4 dva to +4 dva from the bar, at the time the bar
+    reaches the midway of its path.
 
 """
 
@@ -89,19 +90,19 @@ fixMark_y = -2
 fixdot_color = 'white'
 
 # probe
-probe_rad = .25
+probe_rad = .3
 probe_color = 'red'
 probe2bar_base_dva = np.arange(-4, 4 + .1, .5)
 probe_y = 4
 
 # lines
-bar_width = 0.2
+bar_width = 0.1
 bar_length = 2
 bar_color = 'white'
 bar_vel = 10  # dva/s
 bar_ystart = 4  # dva
 bar_yend = 4  # dva
-motion_dur_ms = 500
+motion_dur_ms = 1000
 motion_dur_frames = int(motion_dur_ms / 1000 * refresh_rate)
 motion_dir_base = np.array([-1, 1])
 

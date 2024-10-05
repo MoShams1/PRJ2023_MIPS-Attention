@@ -49,7 +49,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # subject ID (put 'test' for a test run)
+subID = '0001'  # subject ID (put 'test' for a test run)
 slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':

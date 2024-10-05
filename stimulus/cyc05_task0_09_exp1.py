@@ -48,7 +48,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '0002'  # subject ID (put 'test' for a test run)
+subID = 'test'  # subject ID (put 'test' for a test run)
 slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
@@ -193,8 +193,8 @@ for itrial in range(ntrials):
     # xshift_steps = line_vel / REF_RATE * frame_repeat
 
     line_xoffset = random.choice(np.arange(-1, 1.1, .1))
-    line_start_xpos = -5 + line_xoffset
-    line_end_xpos = line_start_xpos + 5
+    line_start_xpos = line_xoffset - 2.5
+    line_end_xpos = line_xoffset + 2.5
 
     print('---------------------------')
     print(f'trial number    : {itrial + 1}')

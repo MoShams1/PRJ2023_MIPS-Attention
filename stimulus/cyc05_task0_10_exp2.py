@@ -49,7 +49,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # subject ID (put 'test' for a test run)
+subID = '0002'  # subject ID (put 'test' for a test run)
 slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
@@ -208,11 +208,6 @@ for itrial in range(ntrials):
     else:
         line_start_xpos = probe_xoffset - \
                           (line_vel * probe2bar_distance_ms / 1000)
-
-    # if soa_ms >= 0:
-    #     motion_dur_frames = soa_frame + postFlashMotion_frame
-    # else:
-    #     motion_dur_frames = postFlashMotion_frame
 
     print('---------------------------')
     print(f'trial number    : {itrial + 1}')

@@ -52,10 +52,10 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # subject ID (put 'test' for a test run)
+subID = '0001'  # subject ID (put 'test' for a test run)
 slow_coeff = 1  # on dell:1 | on mac:2
 
-if subID == 'test':
+if subID == '0002':
     full_screen = False
 else:
     full_screen = True
@@ -66,7 +66,7 @@ else:
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc05_task0_11_{date}_{time}_{subID}.json"
+output_name = f"cyc05_task0_11_exp3_1_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc05", output_name)
@@ -115,7 +115,7 @@ bar1probe_soa_ms = 100
 bar1probe_soa_frame = bar1probe_soa_ms / 1000 * REF_RATE
 
 # bar1-bar2 relationt
-bar12soa_base_ms = np.array(range(-200, 200 + 1, 50))
+bar12soa_base_ms = np.array(range(-400, 400 + 1, 50))
 bar12soa_base_ms = np.append(bar12soa_base_ms, 999)
 
 # potential gap durations (0.75 - 1.25 sec)
@@ -124,11 +124,11 @@ gap_durations_base = range(int(REF_RATE * .75), int(REF_RATE * 1.25) + 1, 1)
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
-ncnds = 10 * 2
+ncnds = 18 * 2
 # SOA x probeX x motionDirection
 
 bar12soa_array_ms = np.repeat(bar12soa_base_ms, 2)
-motion_dir_array = np.tile(motion_dir_base, 10)
+motion_dir_array = np.tile(motion_dir_base, 18)
 
 rep_per_cnd = 4
 bar12soa_array_ms = np.repeat(bar12soa_array_ms, rep_per_cnd)

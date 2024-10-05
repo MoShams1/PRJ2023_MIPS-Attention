@@ -49,7 +49,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # subject ID (put 'test' for a test run)
+subID = '0001'  # subject ID (put 'test' for a test run)
 slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
@@ -158,7 +158,7 @@ fixdot2 = visual.Circle(win,
 # /// OTHER SETTINGS ///
 
 # pause trials
-nblocks = 4  # number of blocks
+nblocks = rep_per_cnd  # number of blocks
 pause_array = np.linspace(0, ntrials, nblocks + 1)
 pause_array = pause_array[:-1]
 

@@ -4,7 +4,7 @@ clear
 
 % Specify the path to the JSON files
 
-file_dir = dir('../data/cyc05/*exp01*');
+file_dir = dir('../data/cyc05/*exp01_3*');
 nsub = numel(file_dir);
 
 isub = 1;
@@ -28,7 +28,7 @@ ntrials = length(cell2mat(struct2cell(jsonData.probe2bar_dva)));
 bar_dir = cell2mat(struct2cell(jsonData.motion_dir));
 
 probe2bar = cell2mat(struct2cell(jsonData.probe2bar_dva));
-xoffset = cell2mat(struct2cell(jsonData.bar_xoffset));
+% xoffset = cell2mat(struct2cell(jsonData.bar_xoffset));
 probe_pos = reshape(cell2mat(struct2cell(jsonData.probe_pos)), 2, ntrials)';
 
 click_pos = reshape(cell2mat(struct2cell(jsonData.click_pos)), 2, ntrials)';
@@ -50,7 +50,7 @@ end
 
 figure('units','inches','outerposition',[0, 0, 5, 5])
 x = p2b_base;
-y = median(err_mat);
+y = mean(err_mat);
 e = SE(err_mat);
 errorbar(x, y, e, ...
     'o-','linewidth',2)
@@ -61,7 +61,7 @@ xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
 xline(0)
 
 yticks(-5:.25:5)
-ylim([-.2 1.2])
+% ylim([-.2 1.2])
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 

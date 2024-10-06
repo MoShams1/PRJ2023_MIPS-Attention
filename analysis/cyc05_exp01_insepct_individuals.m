@@ -102,3 +102,27 @@ ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 
 cleanplot
+
+%% Position shift vs. Probe2gaze distance
+
+figure('units','inches','outerposition',[0, 0, 7, 5])
+hold on
+offset = [-2.5, 0, 2.5];
+for icurve = 1:3
+    y = mean(err_mat(:,:,icurve));
+    e = SE(err_mat(:,:,icurve));
+    errorbar(x+offset(icurve), y, e, ...
+        'o-','linewidth',2,'color',cmap(icurve,:))
+end
+
+xticks(-7:1:7)
+xlim([-7 7])
+xlabel({'Probe-Gaze distance (dva)', '(in direction of motion)'})
+xline(0)
+
+yticks(-5:.25:5)
+ylim([-.75 1.5])
+ylabel({'Position shift (dva)', '(in direction of motion)'})
+yline(0)
+
+cleanplot

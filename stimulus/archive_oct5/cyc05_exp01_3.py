@@ -5,8 +5,8 @@
     Oct 2024
 
 Task Procedure:
-    A vertical bar moves horizontally 10 dva/s along a path of 5 dva (-2.5
-    dva to +2.5 dva)
+    A vertical bar moves horizontally 10 dva/s along a path of 5 dva (0 dva to
+    +5 dva)
     A probe flashes at -4 dva to +4 dva from the bar, at the time the bar
     reaches the midway of its path.
 
@@ -63,10 +63,10 @@ else:
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc05_exp01_4_{date}_{time}_{subID}.json"
+output_name = f"cyc05_exp01_3_{date}_{time}_{subID}.json"
 
 # set data directory
-save_path = os.path.join("..", "data", "cyc05", output_name)
+save_path = os.path.join("../..", "data", "cyc05", output_name)
 
 # --------------------------------
 # /// set stimulus parameters
@@ -100,9 +100,9 @@ bar_width = 0.1
 bar_length = 2
 bar_color = 'white'
 bar_vel = 10  # dva/s
-bar_xstart = -2.5  # dva
-bar_xend = 2.5  # dva
-bar_midpath = 0  # dva
+bar_xstart = 0  # dva
+bar_xend = 5  # dva
+bar_midpath = 2.5  # dva
 bar_ystart = 4  # dva
 bar_yend = 4  # dva
 motion_dur_ms = 500

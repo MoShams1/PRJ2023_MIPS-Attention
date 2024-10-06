@@ -5,8 +5,8 @@
     Oct 2024
 
 Task Procedure:
-    A vertical bar moves horizontally 10 dva/s along a path of 5 dva (-5 dva to
-    0 dva)
+    A vertical bar moves horizontally 10 dva/s along a path of 5 dva (-2.5
+    dva to +2.5 dva)
     A probe flashes at -4 dva to +4 dva from the bar, at the time the bar
     reaches the midway of its path.
 
@@ -49,7 +49,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '0001'  # subject ID (put 'test' for a test run)
+subID = 'test'  # subject ID (put 'test' for a test run)
 slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
@@ -63,10 +63,10 @@ else:
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc05_exp01_2_{date}_{time}_{subID}.json"
+output_name = f"cyc05_exp01_1_{date}_{time}_{subID}.json"
 
 # set data directory
-save_path = os.path.join("..", "data", "cyc05", output_name)
+save_path = os.path.join("../..", "data", "cyc05", output_name)
 
 # --------------------------------
 # /// set stimulus parameters
@@ -92,7 +92,8 @@ fixdot_color = 'white'
 # probe
 probe_rad = .3
 probe_color = 'red'
-probe2bar_base_dva = np.arange(-4, 4 + .1, .5)
+# probe2bar_base_dva = np.arange(-4, 4 + .1, .5)
+probe2bar_base_dva = np.repeat([4], 17)
 probe_y = 4
 
 # lines
@@ -100,9 +101,9 @@ bar_width = 0.1
 bar_length = 2
 bar_color = 'white'
 bar_vel = 10  # dva/s
-bar_xstart = -5  # dva
-bar_xend = 0  # dva
-bar_midpath = -2.5  # dva
+bar_xstart = -2.5  # dva
+bar_xend = 2.5  # dva
+bar_midpath = 0  # dva
 bar_ystart = 4  # dva
 bar_yend = 4  # dva
 motion_dur_ms = 500

@@ -73,7 +73,7 @@ xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
 xline(0)
 
 yticks(-5:.25:5)
-ylim([-.5 1.5])
+ylim([-.75 1.5])
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 
@@ -97,7 +97,7 @@ xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
 xline(0)
 
 yticks(-5:.25:5)
-ylim([-.5 1.5])
+ylim([-.75 1.5])
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 

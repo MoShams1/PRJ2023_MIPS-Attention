@@ -4,7 +4,7 @@ close all
 
 % Specify the path to the JSON files
 
-file_dir = dir('../data/cyc05/*exp01_3*');
+file_dir = dir('../data/cyc05/*exp01*');
 nsub = numel(file_dir);
 
 isub = 1;
@@ -28,7 +28,9 @@ ntrials = length(cell2mat(struct2cell(jsonData.probe2bar_dva)));
 bar_dir = cell2mat(struct2cell(jsonData.motion_dir));
 
 probe2bar = cell2mat(struct2cell(jsonData.probe2bar_dva));
-% xoffset = cell2mat(struct2cell(jsonData.bar_xoffset));
+bar_xstart = cell2mat(struct2cell(jsonData.bar_xstart));
+bar_xstart(bar_dir == -1) = -bar_xstart(bar_dir == -1);
+
 probe_pos = reshape(cell2mat(struct2cell(jsonData.probe_pos)), 2, ntrials)';
 
 click_pos = reshape(cell2mat(struct2cell(jsonData.click_pos)), 2, ntrials)';
@@ -36,24 +38,58 @@ click_xpos = click_pos(:,1);
 click_xerr = cell2mat(struct2cell(jsonData.click_xerr));
 click_xerr(bar_dir == -1) = -click_xerr(bar_dir == -1);
 
-cmap = lines(7);
-
 %% Position shift vs. Bar-Probe distance
+cmap = lines(7);
 p2b_base = unique(probe2bar)';
+offset_base = unique(bar_xstart)';
 
 p2b_count = 0;
 for ip2b = p2b_base
-    p2b_count = p2b_count+1;    
-    ind = probe2bar == ip2b;    
-    err_mat(:,p2b_count) = click_xerr(ind);
+    p2b_count = p2b_count+1;
+    offset_count = 0;
+    for ioffset = offset_base
+        offset_count = offset_count+1;
+        ind_p2b = probe2bar == ip2b;
+        ind_offset = bar_xstart == ioffset;
+        err_mat(:,p2b_count,offset_count) = click_xerr(ind_p2b & ind_offset);
+    end
 end
 
 figure('units','inches','outerposition',[0, 0, 5, 5])
+hold on
+
 x = p2b_base;
-y = mean(err_mat);
-e = SE(err_mat);
+
+for icurve = 1:3
+    y = mean(err_mat(:,:,icurve));
+    e = SE(err_mat(:,:,icurve));
+    errorbar(x, y, e, ...
+        'o-','linewidth',2,'color',cmap(icurve,:))
+end
+
+xticks(-4:1:4)
+xlim([-4.5 4.5])
+xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
+xline(0)
+
+yticks(-5:.25:5)
+ylim([-.5 1.5])
+ylabel({'Position shift (dva)', '(in direction of motion)'})
+yline(0)
+
+cleanplot
+
+
+%% Average plot
+figure('units','inches','outerposition',[0, 0, 5, 5])
+
+err_mat_pooled = [err_mat(:,:,1); err_mat(:,:,2); err_mat(:,:,3)];
+
+y = mean(err_mat_pooled);
+e = SE(err_mat_pooled);
 errorbar(x, y, e, ...
-    'o-','linewidth',2)
+    'o-','linewidth',2,'color','k')
+
 
 xticks(-4:1:4)
 xlim([-4.5 4.5])

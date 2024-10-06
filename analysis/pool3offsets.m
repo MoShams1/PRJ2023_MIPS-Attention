@@ -1,15 +1,6 @@
-clc
-clear
-% close all
+function err_mat = pool3offsets(file_dir)
 
-% Specify the path to the JSON files
-
-file_dir = dir('../data/cyc05/*exp01*');
-nsub = numel(file_dir);
-
-isub = 2;
-
-disp(['Subject: ', file_dir(isub).name(end-8:end-5)])
+isub = 1;
 
 % Specify the path to the JSON file
 jsonFilePath = fullfile(file_dir(isub).folder,file_dir(isub).name);
@@ -48,21 +39,3 @@ for ip2b = p2b_base
     err_mat(:,p2b_count) = click_xerr(ind);
 end
 
-figure('units','inches','outerposition',[0, 0, 5, 5])
-x = p2b_base;
-y = mean(err_mat);
-e = SE(err_mat);
-errorbar(x, y, e, ...
-    'o-','linewidth',2)
-
-xticks(-4:1:4)
-xlim([-4.5 4.5])
-xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
-xline(0)
-
-yticks(-5:.25:5)
-% ylim([-.2 1.2])
-ylabel({'Position shift (dva)', '(in direction of motion)'})
-yline(0)
-
-cleanplot

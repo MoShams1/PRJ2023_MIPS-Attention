@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 subID = 'test'  # subject ID (put 'test' for a test run)
 slow_coeff = 1  # on dell:1 | on mac:2
 
-if subID == 'test':
+if subID == '0005':
     full_screen = False
 else:
     full_screen = True

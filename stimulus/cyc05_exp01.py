@@ -50,7 +50,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '0001'  # subject ID (put 'test' for a test run)
+subID = 'test'  # subject ID (put 'test' for a test run)
 slow_coeff = 1  # on dell:1 | on mac:2
 
 if subID == 'test':
@@ -122,7 +122,7 @@ probe2bar_array_dva = np.repeat(probe2bar_base_dva, 3 * 2)
 bar_xstart_array = np.tile(np.repeat(bar_xstart_base, 2), 17)
 motion_dir_array = np.tile(motion_dir_base, 17 * 3)
 
-rep_per_cnd = 3
+rep_per_cnd = 6
 probe2bar_array_dva = np.repeat(probe2bar_array_dva, rep_per_cnd)
 bar_xstart_array = np.repeat(bar_xstart_array, rep_per_cnd)
 motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)

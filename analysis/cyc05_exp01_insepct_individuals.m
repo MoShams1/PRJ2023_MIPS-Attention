@@ -9,6 +9,9 @@ nsub = numel(file_dir);
 
 isub = 1;
 
+y_limit = [-1 2];
+
+subj_id = file_dir(isub).name(end-8:end-5);
 disp(['Subject: ', file_dir(isub).name(end-8:end-5)])
 
 % Specify the path to the JSON file
@@ -72,11 +75,12 @@ xlim([-4.5 4.5])
 xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
 xline(0)
 
-yticks(-5:.25:5)
-ylim([-.75 1.5])
+yticks(-5:.5:5)
+ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 
+title(['Subject: ', subj_id])
 cleanplot
 
 
@@ -96,11 +100,12 @@ xlim([-4.5 4.5])
 xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
 xline(0)
 
-yticks(-5:.25:5)
-ylim([-.75 1.5])
+yticks(-5:.5:5)
+ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 
+title(['Subject: ', subj_id])
 cleanplot
 
 %% Position shift vs. Probe2gaze distance
@@ -120,9 +125,10 @@ xlim([-7 7])
 xlabel({'Probe-Gaze distance (dva)', '(in direction of motion)'})
 xline(0)
 
-yticks(-5:.25:5)
-ylim([-.75 1.5])
+yticks(-5:.5:5)
+ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 
+title(['Subject: ', subj_id])
 cleanplot

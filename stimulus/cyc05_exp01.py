@@ -122,7 +122,7 @@ probe2bar_array_dva = np.repeat(probe2bar_base_dva, 3 * 2)
 bar_xstart_array = np.tile(np.repeat(bar_xstart_base, 2), 17)
 motion_dir_array = np.tile(motion_dir_base, 17 * 3)
 
-rep_per_cnd = 6
+rep_per_cnd = 3
 probe2bar_array_dva = np.repeat(probe2bar_array_dva, rep_per_cnd)
 bar_xstart_array = np.repeat(bar_xstart_array, rep_per_cnd)
 motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)
@@ -165,7 +165,7 @@ fixdot2 = visual.Circle(win,
 # /// OTHER SETTINGS ///
 
 # pause trials
-nblocks = rep_per_cnd  # number of blocks
+nblocks = rep_per_cnd * 2  # number of blocks
 pause_array = np.linspace(0, ntrials, nblocks + 1)
 pause_array = pause_array[:-1]
 

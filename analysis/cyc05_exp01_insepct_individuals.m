@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc05/*exp01*');
 nsub = numel(file_dir);
 
-isub = 5;
+isub = 6;
 
 subj_id = file_dir(isub).name(end-8:end-5);
 disp(['Subject: ', file_dir(isub).name(end-8:end-5)])
@@ -55,7 +55,7 @@ end
 
 
 %% Figure variables
-y_limit = [-1.5 2];
+y_limit = [-.5 1.5];
 cmap = lines(7);
 
 %% Position shift vs. Bar-Probe distance
@@ -64,7 +64,7 @@ hold on
 
 x = p2b_base;
 
-for icurve = 1:3
+for icurve = 1:1
     y = mean(err_mat(:,:,icurve));
     e = SE(err_mat(:,:,icurve));
     errorbar(x, y, e, ...

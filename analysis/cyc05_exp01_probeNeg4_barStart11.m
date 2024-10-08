@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc05/*exp01*');
 nsub = numel(file_dir);
 
-isub = 5;
+isub = 7;
 
 subj_id = file_dir(isub).name(end-8:end-5);
 disp(['Subject: ', file_dir(isub).name(end-8:end-5)])
@@ -53,81 +53,30 @@ for ip2b = p2b_base
     end
 end
 
+err_mat = squeeze(err_mat);
+probe2gaze = (-7:11)-4;
 
 %% Figure variables
 y_limit = [-.5 1.5];
 cmap = lines(7);
 
-%% Position shift vs. Bar-Probe distance
-figure('units','inches','outerposition',[0, 0, 5, 5])
-hold on
-
-x = p2b_base;
-
-for icurve = 1:3
-    y = mean(err_mat(:,:,icurve));
-    e = SE(err_mat(:,:,icurve));
-    errorbar(x, y, e, ...
-        'o-','linewidth',2,'color',cmap(icurve,:))
-end
-
-xticks(-4:1:4)
-xlim([-4.5 4.5])
-xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
-xline(0)
-
-yticks(-5:.5:5)
-ylim(y_limit)
-ylabel({'Position shift (dva)', '(in direction of motion)'})
-yline(0)
-
-title(['Subject: ', subj_id])
-cleanplot
-
-
-%% Average plot
-figure('units','inches','outerposition',[0, 0, 5, 5])
-
-err_mat_pooled = [err_mat(:,:,1); err_mat(:,:,2); err_mat(:,:,3)];
-
-y = mean(err_mat_pooled);
-e = SE(err_mat_pooled);
-errorbar(x, y, e, ...
-    'o-','linewidth',2,'color','k')
-
-
-xticks(-4:1:4)
-xlim([-4.5 4.5])
-xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
-xline(0)
-
-yticks(-5:.5:5)
-ylim(y_limit)
-ylabel({'Position shift (dva)', '(in direction of motion)'})
-yline(0)
-
-title(['Subject: ', subj_id])
-cleanplot
-
-
 %% Position shift vs. Probe2gaze distance
 figure('units','inches','outerposition',[0, 0, 7, 5])
 hold on
-offset = [-2.5, 0, 2.5];
-for icurve = 1:3
-    y = mean(err_mat(:,:,icurve));
-    e = SE(err_mat(:,:,icurve));
-    errorbar(x+offset(icurve), y, e, ...
-        'o-','linewidth',2,'color',cmap(icurve,:))
-end
 
-xticks(-7:1:7)
-xlim([-7 7])
+x = probe2gaze;
+y = mean(err_mat);
+e = SE(err_mat);
+errorbar(x, y, e, ...
+    'o-','linewidth',2)
+
+xticks(-20:1:20)
+% xlim([-7 7])
 xlabel({'Probe-Gaze distance (dva)', '(in direction of motion)'})
 xline(0)
 
 yticks(-5:.5:5)
-ylim(y_limit)
+% ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 

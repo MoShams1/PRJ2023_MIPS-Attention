@@ -6,8 +6,8 @@
 
 Task Procedure:
     A vertical bar moves horizontally 10 dva/s along a path of 5 dva
-    The starting position of the bar was selected randomly from {0, 2.5,
-    5} dva away from the midline.
+    The starting position of the bar was -5, -2.5, or 0 dva from the
+    vertical meridian in direction of motion.
     A probe flashes at -4 dva to +4 dva from the bar, at the time the bar
     reaches the midway of its path.
 

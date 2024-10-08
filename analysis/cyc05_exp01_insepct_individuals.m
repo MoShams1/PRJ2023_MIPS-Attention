@@ -7,9 +7,7 @@ close all
 file_dir = dir('../data/cyc05/*exp01*');
 nsub = numel(file_dir);
 
-isub = 1;
-
-y_limit = [-1 2];
+isub = 5;
 
 subj_id = file_dir(isub).name(end-8:end-5);
 disp(['Subject: ', file_dir(isub).name(end-8:end-5)])
@@ -24,7 +22,6 @@ fclose(fileID);
 
 % Parse the JSON content
 jsonData = jsondecode(jsonContent);
-
 
 %%% convert structure to arrays
 ntrials = length(cell2mat(struct2cell(jsonData.probe2bar_dva)));
@@ -41,8 +38,6 @@ click_xpos = click_pos(:,1);
 click_xerr = cell2mat(struct2cell(jsonData.click_xerr));
 click_xerr(bar_dir == -1) = -click_xerr(bar_dir == -1);
 
-%% Position shift vs. Bar-Probe distance
-cmap = lines(7);
 p2b_base = unique(probe2bar)';
 offset_base = unique(bar_xstart)';
 
@@ -58,6 +53,12 @@ for ip2b = p2b_base
     end
 end
 
+
+%% Figure variables
+y_limit = [-1.5 2];
+cmap = lines(7);
+
+%% Position shift vs. Bar-Probe distance
 figure('units','inches','outerposition',[0, 0, 5, 5])
 hold on
 
@@ -108,8 +109,8 @@ yline(0)
 title(['Subject: ', subj_id])
 cleanplot
 
-%% Position shift vs. Probe2gaze distance
 
+%% Position shift vs. Probe2gaze distance
 figure('units','inches','outerposition',[0, 0, 7, 5])
 hold on
 offset = [-2.5, 0, 2.5];

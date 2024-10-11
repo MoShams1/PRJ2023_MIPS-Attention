@@ -7,8 +7,8 @@
 This experiment is to replicate Watanabe et al. 2003/2005
 
 Task Procedure:
-    A vertical bar rotates around center.
-    A probe flashes at same location, at different times relative to bar's
+    A vertical bar rotates for 180 deg around the center.
+    A probe flashes at the same location, at different times relative to bar's
     motion start.
 
 """

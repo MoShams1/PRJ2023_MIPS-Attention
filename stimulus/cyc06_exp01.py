@@ -30,7 +30,7 @@ def get_mouseclick(win, mouse_correctionFactor=1):
                         newPos=[ms_posx * mouse_correctionFactor,
                                 ms_posy * mouse_correctionFactor])
     while not mouse.getPressed()[0]:
-        escape_session()  # force exit with 'escape' button
+        escape_session()
         win.flip()
     while mouse.getPressed()[0]:
         pass
@@ -51,13 +51,9 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # subject ID (put 'test' for a test run)
-slow_coeff = 1  # on dell:1 | on mac:2
+subID = '0001'  # put 'test' for a test run
+slow_coeff = 1
 
-if subID == 'test':
-    full_screen = False
-else:
-    full_screen = True
 # ----------------------------------------------------------------------------
 # /// CONFIGURATION ///
 
@@ -76,28 +72,28 @@ save_path = os.path.join("..", "data", "cyc06", output_name)
 # initialize the display and the keyboard
 refresh_rate = 60
 
-# define the flash duration in frames
+# flash duration in frames (motion resolution will change accordingly)
 frame_repeat = 2
 
-# configure the monitor and the stimulus window
+if subID == 'test':
+    full_screen = False
+else:
+    full_screen = True
 bg_color = [-.8, -.8, -.8]
 mon = sfc.config_mon_dell()
 win = sfc.config_win(mon=mon, fullscr=full_screen, color=bg_color)
 sfc.test_refresh_rate(win, refresh_rate)
 
-# fixation mark
 fixdot_radius = .2
 fixMark_x = 0
 fixMark_y = 0
 fixdot_color = 'white'
 
-# probe
 probe_rad = .3
 probe_color = 'red'
 probe_x = 0
 probe_y = 5
 
-# lines
 bar_width = 0.1
 bar_length = 2
 bar_color = 'white'
@@ -105,11 +101,9 @@ motion_dur_ms = 800
 motion_dur_frames = int(motion_dur_ms / 1000 * 60 + 1)
 motion_dir_base = np.array([-1, 1])
 
-# potential gap durations (0.75 - 1.25 sec)
-gap_durations_base = range(int(refresh_rate * .75),
-                           int(refresh_rate * 1.25) + 1, 1)
+gap_durations_base = range(int(.75 * refresh_rate),
+                           int(1.25 * refresh_rate) + 1, 1)
 
-# when to flash the probe
 flash_frameArray_base = np.arange(0, 25, 2)
 
 # ----------------------------------------------------------------------------
@@ -137,18 +131,15 @@ assert (motion_dir_array.size == ntrials)
 # ----------------------------------------------------------------------------
 # /// CREATE VISUAL OBJECTS ///
 
-# bar
 bar = visual.Rect(win=win,
                   size=(bar_width, bar_length),
                   fillColor=bar_color)
 
-# probe
 probe = visual.Circle(win,
                       radius=probe_rad,
                       fillColor=probe_color,
                       pos=[probe_x, probe_y])
 
-# fixation dot
 fixdot1 = visual.Circle(win,
                         radius=fixdot_radius,
                         pos=(fixMark_x, fixMark_y),
@@ -165,13 +156,10 @@ nblocks = 10  # number of blocks
 pause_array = np.linspace(0, ntrials, nblocks + 1)
 pause_array = pause_array[:-1]
 
-# initialize mouse
 mouse = event.Mouse(win=win, visible=False)
 
-# initialize clock
 my_clock = core.Clock()
 
-# turn off Numpy's FutureWarning
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # ----------------------------------------------------------------------------
@@ -182,7 +170,6 @@ for itrial in range(ntrials):
     # --------------------------------
     # /// resets
 
-    # reset mouse position
     mouse.setPos((0, 0))
     mouse.setVisible(False)
 
@@ -201,8 +188,6 @@ for itrial in range(ntrials):
     bar_thetaArray = np.repeat(bar_thetaArray_base, frame_repeat)
     if motion_dir == -1:
         bar_thetaArray = np.flip(bar_thetaArray)
-
-    # --------------------------------
 
     # --------------------------------
     # /// run stimulus
@@ -263,7 +248,7 @@ for itrial in range(ntrials):
     print(f'Motion duration measured: {motion_dur_measured_ms} ms')
 
     probe_duration_measured = round(probe_off_ms - probe_on_ms)
-    # print('Probe duration: 33 ms')
+    print('Probe duration: 33 ms')
     print(f'Probe duration measured: {probe_duration_measured} ms')
         
     # print(f'bar_thetaStart: {bar_thetaArray[0]} deg')
@@ -282,6 +267,7 @@ for itrial in range(ntrials):
                   'bar_thetaStart': bar_thetaArray[0],
                   'bar_thetaEnd': bar_thetaArray[-1],
                   'motion_dir': motion_dir,
+                  'motion_dur_ms': motion_dur_ms,
                   'motion_start_ms': motion_start_ms,
                   'motion_end_ms': motion_end_ms,
                   'probe_on_ms': probe_on_ms,
@@ -291,7 +277,6 @@ for itrial in range(ntrials):
                   'click_yerr': click_err[1]}
 
     dfnew = pd.DataFrame(trial_dict)
-    # if not first trial, load the existing data frame and concatenate
     if itrial > 0:
         df = pd.read_json(save_path)
         dfnew = pd.concat([df, dfnew], ignore_index=True)

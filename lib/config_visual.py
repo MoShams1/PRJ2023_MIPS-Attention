@@ -84,12 +84,20 @@ def addbar(win, size, color, theta, radius):
     bar = visual.Rect(win=win, size=size, fillColor=color,
                       ori=orientation, pos=(posx, posy),
                       lineWidth=.3)
-    # cover = visual.Rect(win=win, size=width, fillColor=color, pos=pos,
-    #                     width=line_width, ori=45)
-    # inner_frame = visual.Rect(win=win, size=[width[0] - line_width,
-    #                                          width[1] - line_width],
-    #                           fillColor=fillcolor, pos=pos)
-    # outer_frame.draw()
+    bar.draw()
+
+
+def add_bar_polar(win, size, color, theta, radius, x_offset, y_offset):
+    # convert degree to radian
+    theta_rad = (theta / 360) * 2 * np.pi
+    # calculate the bar position
+    posx = radius * np.cos(theta_rad) + x_offset
+    posy = radius * np.sin(theta_rad) + y_offset
+    # convert theta to the orientation convention of Pcyhopy
+    orientation = (360 - theta) + 90
+    bar = visual.Rect(win=win, size=size, fillColor=color,
+                      ori=orientation, pos=(posx, posy),
+                      lineWidth=.3)
     bar.draw()
 
 

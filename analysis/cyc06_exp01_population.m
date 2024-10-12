@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc06/*exp01*');
 nsub = numel(file_dir);
 
-for isub = 1:3
+for isub = 1:4
 
     % Specify the path to the JSON file
     jsonFilePath = fullfile(file_dir(isub).folder,file_dir(isub).name);
@@ -71,5 +71,5 @@ ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 
-title(['N: ', num2str(nsub)])
+title(['N = ', num2str(nsub)])
 cleanplot

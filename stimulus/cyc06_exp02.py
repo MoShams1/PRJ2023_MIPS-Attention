@@ -8,8 +8,8 @@ This experiment is to replicate Watanabe et al. 2003/2005
 
 Task Procedure:
     A bar rotates for 180 deg around the center.
-    A probe flashes at the same location, at different times relative to bar's
-    motion start.
+    When the bar reaches its midway, a probe flashes at different locations
+    relative to the bar.
 
 """
 
@@ -61,7 +61,7 @@ slow_coeff = 1
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc06_exp01_{date}_{time}_{subID}.json"
+output_name = f"cyc06_exp02_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc06", output_name)
@@ -91,7 +91,6 @@ fixdot_color = 'white'
 
 probe_rad = .3
 probe_color = 'red'
-probe_x = 0
 probe_y = 5
 
 bar_width = 0.1
@@ -104,28 +103,28 @@ motion_dir_base = np.array([-1, 1])
 gap_durations_base = range(int(.75 * refresh_rate),
                            int(1.25 * refresh_rate) + 1, 1)
 
-flash_frameArray_base = np.arange(0, 25, 2)
+probe2bar_base = np.arange(-4, 4 + .1, .5)
 
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
-ncnds = 13 * 2
+ncnds = 17 * 2
 # probe2bar x motionDirection
 
-flash_frame_array = np.repeat(flash_frameArray_base, 2)
-motion_dir_array = np.tile(motion_dir_base, 13)
+probe2bar_array = np.repeat(probe2bar_base, 2)
+motion_dir_array = np.tile(motion_dir_base, 17)
 
 rep_per_cnd = 15
-flash_frame_array = np.repeat(flash_frame_array, rep_per_cnd)
+probe2bar_array = np.repeat(probe2bar_array, rep_per_cnd)
 motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)
 
 ntrials = ncnds * rep_per_cnd
 ind_shuffle = np.arange(ntrials)
 np.random.shuffle(ind_shuffle)
-flash_frame_array = flash_frame_array[ind_shuffle]
+probe2bar_array = probe2bar_array[ind_shuffle]
 motion_dir_array = motion_dir_array[ind_shuffle]
 
-assert (flash_frame_array.size == ntrials)
+assert (probe2bar_array.size == ntrials)
 assert (motion_dir_array.size == ntrials)
 
 # ----------------------------------------------------------------------------
@@ -137,8 +136,7 @@ bar = visual.Rect(win=win,
 
 probe = visual.Circle(win,
                       radius=probe_rad,
-                      fillColor=probe_color,
-                      pos=[probe_x, probe_y])
+                      fillColor=probe_color)
 
 fixdot1 = visual.Circle(win,
                         radius=fixdot_radius,
@@ -178,8 +176,8 @@ for itrial in range(ntrials):
 
     iti = np.random.choice(gap_durations_base)
     postFixGap = np.random.choice(gap_durations_base)
-    flash_frame = flash_frame_array[itrial] * frame_repeat
     motion_dir = motion_dir_array[itrial]
+    probe2bar = probe2bar_array[itrial]
 
     # /// create motion trajectory array
     bar_thetaArray_base = np.linspace(180, 0,
@@ -188,6 +186,8 @@ for itrial in range(ntrials):
     bar_thetaArray = np.repeat(bar_thetaArray_base, frame_repeat)
     if motion_dir == -1:
         bar_thetaArray = np.flip(bar_thetaArray)
+
+    flash_frame = len(bar_thetaArray) / 2
 
     # --------------------------------
     # /// run stimulus
@@ -228,7 +228,7 @@ for itrial in range(ntrials):
             if (i == flash_frame) or (i == flash_frame + 1):
                 if i == flash_frame:
                     probe_on_ms = my_clock.getTime() * 1000
-                    probe2bar_deg = (bar_thetaArray[i] - 90) * motion_dir
+                probe.pos = [probe2bar, probe_y]
                 probe.draw()
 
             win.flip()
@@ -237,11 +237,12 @@ for itrial in range(ntrials):
                 probe_off_ms = my_clock.getTime() * 1000
 
     motion_end_ms = my_clock.getTime() * 1000
+    probe2bar_rel2motion = probe2bar * motion_dir
 
     print('---------------------------')
     print(f'trial number    : {itrial + 1}')
     # print(f'motion direction: {motion_dir}')
-    print(f'probe2bar_deg: {round(probe2bar_deg, 2)} deg')
+    print(f'probe2bar: {probe2bar_rel2motion} dva')
 
     motion_dur_measured_ms = round(motion_end_ms - motion_start_ms)
     # print(f'Motion duration: {motion_dur_ms} ms')
@@ -250,7 +251,7 @@ for itrial in range(ntrials):
     probe_duration_measured = round(probe_off_ms - probe_on_ms)
     print('Probe duration: 33 ms')
     print(f'Probe duration measured: {probe_duration_measured} ms')
-        
+
     # print(f'bar_thetaStart: {bar_thetaArray[0]} deg')
     # print(f'bar_thetaEnd: {bar_thetaArray[-1]} deg')
 
@@ -263,7 +264,7 @@ for itrial in range(ntrials):
     # /// save trial parameters
 
     trial_dict = {'trial_num': itrial + 1,
-                  'probe2bar_deg': probe2bar_deg,
+                  'probe2bar_rel2motion': probe2bar_rel2motion,
                   'bar_thetaStart': bar_thetaArray[0],
                   'bar_thetaEnd': bar_thetaArray[-1],
                   'motion_dir': motion_dir,

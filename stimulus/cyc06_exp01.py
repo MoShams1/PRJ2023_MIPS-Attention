@@ -131,9 +131,9 @@ assert (motion_dir_array.size == ntrials)
 # ----------------------------------------------------------------------------
 # /// CREATE VISUAL OBJECTS ///
 
-bar = visual.Rect(win=win,
-                  size=(bar_width, bar_length),
-                  fillColor=bar_color)
+# bar = visual.Rect(win=win,
+#                   size=(bar_width, bar_length),
+#                   fillColor=bar_color)
 
 probe = visual.Circle(win,
                       radius=probe_rad,

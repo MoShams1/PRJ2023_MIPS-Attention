@@ -6,10 +6,11 @@
 
 This experiment is to replicate Watanabe et al. 2003/2005
 
-Task Procedure:
+Stimulus and task procedure:
     A bar rotates for 180 deg around the center.
     A probe flashes at the same location, at different times relative to bar's
     motion start.
+    Subjects locate the probe with a mouse click.
 
 """
 
@@ -130,10 +131,6 @@ assert (motion_dir_array.size == ntrials)
 
 # ----------------------------------------------------------------------------
 # /// CREATE VISUAL OBJECTS ///
-
-# bar = visual.Rect(win=win,
-#                   size=(bar_width, bar_length),
-#                   fillColor=bar_color)
 
 probe = visual.Circle(win,
                       radius=probe_rad,

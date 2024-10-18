@@ -4,12 +4,13 @@
     Mohammad Shams <m.shams.ahmar@gmail.com>
     Oct 2024
 
-This experiment is to replicate Watanabe et al. 2003/2005
+This experiment is to measure the spatial profile of the position shift
 
-Task Procedure:
+Stimulus and task procedure:
     A bar rotates for 180 deg around the center.
     When the bar reaches its midway, a probe flashes at different locations
     relative to the bar.
+    Subjects locate the probe with a mouse click.
 
 """
 

@@ -114,7 +114,7 @@ ncnds = 17 * 2
 probe2bar_array = np.repeat(probe2bar_base, 2)
 motion_dir_array = np.tile(motion_dir_base, 17)
 
-rep_per_cnd = 15
+rep_per_cnd = 12
 probe2bar_array = np.repeat(probe2bar_array, rep_per_cnd)
 motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)
 
@@ -129,10 +129,6 @@ assert (motion_dir_array.size == ntrials)
 
 # ----------------------------------------------------------------------------
 # /// CREATE VISUAL OBJECTS ///
-
-# bar = visual.Rect(win=win,
-#                   size=(bar_width, bar_length),
-#                   fillColor=bar_color)
 
 probe = visual.Circle(win,
                       radius=probe_rad,

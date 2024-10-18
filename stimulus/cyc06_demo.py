@@ -55,6 +55,7 @@ def pol2cart(rho, phi):
     y_cart = rho * np.sin(phi)
     return x_cart, y_cart
 
+
 # disable Panda's false warning message
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -94,24 +95,24 @@ mon = sfc.config_mon_dell()
 win = sfc.config_win(mon=mon, fullscr=full_screen, color=bg_color)
 sfc.test_refresh_rate(win, refresh_rate)
 
-fixdot_radius = .2
+fixdot_radius = .4
 fixMark_x = 0
 fixMark_y = 0
 fixdot_color = 'white'
 
-probe_rad = .3
-probe_color = 'red'
-theta_offset = 150
-probe_theta = 90 + theta_offset
-probe_x, probe_y = pol2cart(5, probe_theta)
-
-bar_width = 0.1
-bar_length = 2
+bar_width = 0.2
+bar_length = 5
 bar_color = 'white'
+motion_path_radius = 8
 motion_dur_ms = 800
 motion_dur_frames = int(motion_dur_ms / 1000 * 60 + 1)
 motion_dir_base = np.array([-1, 1])
 
+probe_rad = .6
+probe_color = 'red'
+theta_offset = 150
+probe_theta = 90 + theta_offset
+probe_x, probe_y = pol2cart(motion_path_radius, probe_theta)
 gap_durations_base = range(int(.75 * refresh_rate),
                            int(1.25 * refresh_rate) + 1, 1)
 
@@ -194,7 +195,7 @@ for itrial in range(len(flash_frame_array)):
                                   size=[bar_width, bar_length],
                                   color=bar_color,
                                   theta=bar_thetaArray[i],
-                                  radius=5,
+                                  radius=motion_path_radius,
                                   x_offset=fixMark_x,
                                   y_offset=fixMark_y)
 
@@ -211,14 +212,12 @@ for itrial in range(len(flash_frame_array)):
 
     motion_end_ms = my_clock.getTime() * 1000
 
-    # for i in range(20):
-    #     win.flip()
     for i in range(10):
         con_vis.add_bar_polar(win=win,
-                              size=[bar_width, 5],
+                              size=[bar_width, motion_path_radius],
                               color='green',
                               theta=probe_theta,
-                              radius=3,
+                              radius=motion_path_radius/2,
                               x_offset=fixMark_x,
                               y_offset=fixMark_y)
         win.flip()

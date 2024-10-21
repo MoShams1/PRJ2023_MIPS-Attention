@@ -262,28 +262,30 @@ for itrial in range(ntrials):
     # --------------------------------
     # /// save trial parameters
 
-    trial_dict = {'trial_num': itrial + 1,
-                  'probe2bar_deg': probe2bar_deg,
-                  'bar_thetaStart': bar_thetaArray[0],
-                  'bar_thetaEnd': bar_thetaArray[-1],
-                  'motion_dir': motion_dir,
-                  'motion_dur_ms': motion_dur_ms,
-                  'motion_start_ms': motion_start_ms,
-                  'motion_end_ms': motion_end_ms,
-                  'probe_on_ms': probe_on_ms,
-                  'probe_off_ms': probe_off_ms,
-                  'click_pos': [click_pos],
-                  'click_xerr': click_err[0],
-                  'click_yerr': click_err[1]}
+    if subID != 'test':
 
-    dfnew = pd.DataFrame(trial_dict)
-    if itrial > 0:
-        df = pd.read_json(save_path)
-        dfnew = pd.concat([df, dfnew], ignore_index=True)
-    dfnew.to_json(save_path)
+        trial_dict = {'trial_num': itrial + 1,
+                      'probe2bar_deg': probe2bar_deg,
+                      'bar_thetaStart': bar_thetaArray[0],
+                      'bar_thetaEnd': bar_thetaArray[-1],
+                      'motion_dir': motion_dir,
+                      'motion_dur_ms': motion_dur_ms,
+                      'motion_start_ms': motion_start_ms,
+                      'motion_end_ms': motion_end_ms,
+                      'probe_on_ms': probe_on_ms,
+                      'probe_off_ms': probe_off_ms,
+                      'click_pos': [click_pos],
+                      'click_xerr': click_err[0],
+                      'click_yerr': click_err[1]}
 
-    if itrial == ntrials - 1:
-        sfc.end_screen(win, color='white')
+        dfnew = pd.DataFrame(trial_dict)
+        if itrial > 0:
+            df = pd.read_json(save_path)
+            dfnew = pd.concat([df, dfnew], ignore_index=True)
+        dfnew.to_json(save_path)
+
+        if itrial == ntrials - 1:
+            sfc.end_screen(win, color='white')
 
 # --------------------------------
 win.close()

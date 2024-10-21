@@ -231,6 +231,8 @@ for itrial in range(ntrials):
                                   y_offset=fixMark_y)
 
             if i >= (flash_frame - probe2bar2_frame):
+                if i == (flash_frame - probe2bar2_frame):
+                    bar2_start_ms = my_clock.getTime() * 1000
                 con_vis.add_bar_polar(win=win,
                                       size=[bar_width, bar_length],
                                       color=bar_color,
@@ -255,28 +257,26 @@ for itrial in range(ntrials):
     bar1bar2_relOffset_deg = -motion_dir * bar1bar2_offset_deg
 
     print('---------------------------')
-
-    print(bar1bar2_relOffset_deg)
-
-    print(f'trial number    : {itrial + 1}')
+    print(f'trial number: {itrial + 1}')
     # print(f'motion direction: {motion_dir}')
     print(f'probe2bar2_ms: {probe2bar2_ms} ms')
+    print(f'bar1bar2_relOffset_deg: {bar1bar2_relOffset_deg} deg')
 
     motion_dur_measured_ms = round(motion_end_ms - motion_start_ms)
     # print(f'Motion duration: {motion_dur_ms} ms')
-    print(f'Motion duration measured: {motion_dur_measured_ms} ms')
+    print(f'motion_dur_measured_ms: {motion_dur_measured_ms} ms')
 
     probe_duration_measured = round(probe_off_ms - probe_on_ms)
-    print('Probe duration: 33 ms')
-    print(f'Probe duration measured: {probe_duration_measured} ms')
+    print('probe_duration: 33 ms')
+    print(f'probe_duration_measured: {probe_duration_measured} ms')
 
     # print(f'bar_thetaStart: {bar_thetaArray[0]} deg')
     # print(f'bar_thetaEnd: {bar_thetaArray[-1]} deg')
 
     click_pos = np.round(get_mouseclick(win), 2)
     click_err = np.round(click_pos - probe.pos, 2)
-    # print(f'click position  : {click_pos} dva')
-    print(f'click error     : {click_err} dva')
+    # print(f'click position: {click_pos} dva')
+    print(f'click error: {click_err} dva')
 
     # --------------------------------
     # /// save trial parameters
@@ -292,6 +292,7 @@ for itrial in range(ntrials):
                       'motion_dur_ms': motion_dur_ms,
                       'motion_start_ms': motion_start_ms,
                       'motion_end_ms': motion_end_ms,
+                      'bar2_start_ms': bar2_start_ms,
                       'probe_on_ms': probe_on_ms,
                       'probe_off_ms': probe_off_ms,
                       'click_pos': [click_pos],

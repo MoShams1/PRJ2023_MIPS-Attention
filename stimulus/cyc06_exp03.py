@@ -108,7 +108,6 @@ gap_durations_base = range(int(.75 * refresh_rate),
                            int(1.25 * refresh_rate) + 1, 1)
 
 probe2bar2_frame_base = np.arange(-12, 18 + 1, 3)
-
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
@@ -234,8 +233,7 @@ for itrial in range(ntrials):
             if i >= (flash_frame - probe2bar2_frame):
                 con_vis.add_bar_polar(win=win,
                                       size=[bar_width, bar_length],
-                                      # color=bar_color,
-                                      color='blue',
+                                      color=bar_color,
                                       theta=bar_thetaArray[
                                                 i] + bar1bar2_offset_deg,
                                       radius=motion_radius,
@@ -287,6 +285,7 @@ for itrial in range(ntrials):
 
         trial_dict = {'trial_num': itrial + 1,
                       'probe2bar2_ms': probe2bar2_ms,
+                      'bar1bar2_relOffset_deg': bar1bar2_relOffset_deg,
                       'bar_thetaStart': bar_thetaArray[0],
                       'bar_thetaEnd': bar_thetaArray[-1],
                       'motion_dir': motion_dir,

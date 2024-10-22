@@ -4,10 +4,10 @@ close all
 
 % Specify the path to the JSON files
 
-file_dir = dir('../data/cyc06/*exp01*');
+file_dir = dir('../data/cyc06/*exp02*');
 nsub = numel(file_dir);
 
-for isub = 1:4
+for isub = 1:nsub
 
     % Specify the path to the JSON file
     jsonFilePath = fullfile(file_dir(isub).folder,file_dir(isub).name);
@@ -22,10 +22,10 @@ for isub = 1:4
 
 
     %%% convert structure to arrays
-    ntrials = length(cell2mat(struct2cell(jsonData.probe2bar_deg)));
+    ntrials = length(cell2mat(struct2cell(jsonData.probe2bar_rel2motion)));
     bar_dir = cell2mat(struct2cell(jsonData.motion_dir));
 
-    probe2bar = cell2mat(struct2cell(jsonData.probe2bar_deg));
+    probe2bar = cell2mat(struct2cell(jsonData.probe2bar_rel2motion));
     probe_pos = repmat([0,5], ntrials, 1);
     click_pos = reshape(cell2mat(struct2cell(jsonData.click_pos)), 2, ntrials)';
     click_xpos = click_pos(:,1);
@@ -47,7 +47,7 @@ for isub = 1:4
 end
 
 %% Figure variables
-y_limit = [-.2 .65];
+y_limit = [-.5 1.5];
 cmap = lines(7);
 
 %% Position shift vs. Bar-Probe distance
@@ -61,12 +61,12 @@ errorbar(x, y, e, ...
     'o-','linewidth',2,'color','k')
 
 
-xticks(-90:15:90)
-xlim([-100 100])
-xlabel({'Probe-Bar distance (deg)', '(in direction of motion)'})
+xticks(-4:1:4)
+xlim([-4.5 4.5])
+xlabel({'Probe-Bar distance (dva)', '(in direction of motion)'})
 xline(0)
 
-yticks(-5:.2:5)
+yticks(-5:.25:5)
 ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)

@@ -62,7 +62,7 @@ slow_coeff = 1
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc06_exp01_{date}_{time}_{subID}.json"
+output_name = f"cyc06_exp02_2_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc06", output_name)

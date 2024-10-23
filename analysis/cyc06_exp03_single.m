@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc06/*exp03*');
 nsub = numel(file_dir);
 
-isub = 3;
+isub = 2;
 
 subj_id = file_dir(isub).name(end-8:end-5);
 disp(['Subject: ', file_dir(isub).name(end-8:end-5)])
@@ -60,7 +60,7 @@ end
 probe2bar2_measured_base = unique(round(probe2bar2_measured))';
 
 %% Figure variables
-y_limit = [-1 1.5];
+y_limit = [-1 2];
 cmap = lines(7);
 
 %% Position shift vs. Bar-Probe distance
@@ -76,11 +76,11 @@ errorbar(x, y, e, ...
 
 xticks(-200:100:300)
 xlim([-250 350])
-xlabel({'Probe-Bar2 distance (dva)', '(in direction of motion)'})
+xlabel({'Probe-Bar2 SOA (ms)'})
 xline(0)
 
 yticks(-5:.25:5)
-% ylim(y_limit)
+ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 
@@ -88,26 +88,26 @@ title(['Subject: ', subj_id])
 cleanplot
 
 
-%% Position shift vs. Bar1-Bar2 distance
-figure('units','inches','outerposition',[0, 0, 5, 5])
-hold on
-
-x = b2b_base;
-y = mean(err_mat_b2b);
-e = SE(err_mat_b2b);
-errorbar(x, y, e, ...
-    'o-','linewidth',2,'color','k')
-
-
+% %% Position shift vs. Bar1-Bar2 distance
+% figure('units','inches','outerposition',[0, 0, 5, 5])
+% hold on
+% 
+% x = b2b_base;
+% y = mean(err_mat_b2b);
+% e = SE(err_mat_b2b);
+% errorbar(x, y, e, ...
+%     'o-','linewidth',2,'color','k')
+% 
+% 
 % xticks(-200:100:300)
 % xlim([-250 350])
-xlabel({'Bar1-Bar2 distance (deg)', '(in direction of motion)'})
-xline(0)
-
+% xlabel({'Bar1-Bar2 distance (deg)', '(in direction of motion)'})
+% xline(0)
+% 
 % yticks(-5:.25:5)
 % ylim(y_limit)
-ylabel({'Position shift (dva)', '(in direction of motion)'})
-yline(0)
-
-title(['Subject: ', subj_id])
-cleanplot
+% ylabel({'Position shift (dva)', '(in direction of motion)'})
+% yline(0)
+% 
+% title(['Subject: ', subj_id])
+% cleanplot

@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # /// INSERT SESSION'S META DATA ///
 
 subID = 'test'  # put 'test' for a test run
-slow_coeff = 1
+slow_coeff = 2
 
 # ----------------------------------------------------------------------------
 # /// CONFIGURATION ///
@@ -270,6 +270,8 @@ for itrial in range(ntrials):
     click_err = np.round(click_pos - probe.pos, 2)
     # print(f'click position: {click_pos} dva')
     print(f'click error: {click_err} dva')
+
+    print(f'motion2probe: {probe_on_ms - motion_start_ms}')
 
     # --------------------------------
     # /// save trial parameters

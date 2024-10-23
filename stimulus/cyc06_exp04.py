@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # /// INSERT SESSION'S META DATA ///
 
 subID = 'test'  # put 'test' for a test run
-slow_coeff = 10
+slow_coeff = 1
 
 # ----------------------------------------------------------------------------
 # /// CONFIGURATION ///
@@ -228,8 +228,6 @@ for itrial in range(ntrials):
                                     motion_dir * 15
                 else:
                     theta_current = bar_thetaArray[i]
-                if i == (flash_frame - probe2bar_frame):
-                    print(f'***{theta_current}***')
                 con_vis.add_bar_polar(win=win,
                                       size=[bar_width, bar_length],
                                       color=bar_color,

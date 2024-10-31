@@ -4,13 +4,12 @@
     Mohammad Shams <m.shams.ahmar@gmail.com>
     Oct 2024
 
-This experiment is to replicate Watanabe et al. 2003/2005
+This experiment is to measure the temporal profile of the position shift
 
 Stimulus and task procedure:
-    Bar1 rotates for 180 deg around the center.
-    A probe flashes each time at the same location, 15 deg ahead of Bar1.
-    Bar2 appears 45 deg ahead of the probe's location.
-    The onset time of Bar2 varies from -200 to 300 ms in 50 ms steps.
+    A probe flashes at the same location, 15 deg ahead of a rotating bar at
+    different times relative to bar's motion start.
+    The bar's motion end at 0 or 180 deg.
     Subjects locate the probe with a mouse click.
 
 """
@@ -53,7 +52,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # put 'test' for a test run
+subID = '0006'  # put 'test' for a test run
 slow_coeff = 1
 
 # ----------------------------------------------------------------------------
@@ -63,7 +62,7 @@ slow_coeff = 1
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc06_exp03_{date}_{time}_{subID}.json"
+output_name = f"cyc06_exp04_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc06", output_name)
@@ -107,27 +106,27 @@ probe_y = motion_radius
 gap_durations_base = range(int(.75 * refresh_rate),
                            int(1.25 * refresh_rate) + 1, 1)
 
-probe2bar2_frame_base = np.arange(-12, 18 + 1, 3)
+probe2bar_frame_base = np.arange(-12, 18 + 1, 3)
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
 ncnds = 11 * 2
 # probe2bar x motionDirection
 
-probe2bar2_frame_array = np.repeat(probe2bar2_frame_base, 2)
+probe2bar_frame_array = np.repeat(probe2bar_frame_base, 2)
 motion_dir_array = np.tile(motion_dir_base, 11)
 
 rep_per_cnd = 15
-probe2bar2_frame_array = np.repeat(probe2bar2_frame_array, rep_per_cnd)
+probe2bar_frame_array = np.repeat(probe2bar_frame_array, rep_per_cnd)
 motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)
 
 ntrials = ncnds * rep_per_cnd
 ind_shuffle = np.arange(ntrials)
 np.random.shuffle(ind_shuffle)
-probe2bar2_frame_array = probe2bar2_frame_array[ind_shuffle]
+probe2bar_frame_array = probe2bar_frame_array[ind_shuffle]
 motion_dir_array = motion_dir_array[ind_shuffle]
 
-assert (probe2bar2_frame_array.size == ntrials)
+assert (probe2bar_frame_array.size == ntrials)
 assert (motion_dir_array.size == ntrials)
 
 # ----------------------------------------------------------------------------
@@ -177,9 +176,10 @@ for itrial in range(ntrials):
     iti = np.random.choice(gap_durations_base)
     postFixGap = np.random.choice(gap_durations_base)
     flash_frame = 10 * frame_repeat
-    probe2bar2_frame = probe2bar2_frame_array[itrial]
+    probe2bar_frame = probe2bar_frame_array[itrial]
+    probe2bar_ms = probe2bar_frame / refresh_rate * 1000
     motion_dir = motion_dir_array[itrial]
-    assert (flash_frame >= probe2bar2_frame)
+    assert (flash_frame >= probe2bar_frame)
 
     # /// create motion trajectory array
     bar_thetaArray_base = np.linspace(180, 0,
@@ -187,12 +187,8 @@ for itrial in range(ntrials):
                                           frame_repeat))
     bar_thetaArray = np.repeat(bar_thetaArray_base, frame_repeat)
 
-    bar1bar2_offset_deg = bar_thetaArray[flash_frame] - \
-                          bar_thetaArray[flash_frame - probe2bar2_frame] - 60
-
     if motion_dir == -1:
         bar_thetaArray = np.flip(bar_thetaArray)
-        bar1bar2_offset_deg = -bar1bar2_offset_deg
 
     # --------------------------------
     # /// run stimulus
@@ -222,22 +218,20 @@ for itrial in range(ntrials):
     for i in range(len(bar_thetaArray)):
         for islow in range(slow_coeff):
 
-            con_vis.add_bar_polar(win=win,
-                                  size=[bar_width, bar_length],
-                                  color=bar_color,
-                                  theta=bar_thetaArray[i],
-                                  radius=motion_radius,
-                                  x_offset=fixMark_x,
-                                  y_offset=fixMark_y)
-
-            if i >= (flash_frame - probe2bar2_frame):
-                if i == (flash_frame - probe2bar2_frame):
-                    bar2_start_ms = my_clock.getTime() * 1000
+            if i >= (flash_frame - probe2bar_frame):
+                if i == (flash_frame - probe2bar_frame):
+                    bar_onset = my_clock.getTime() * 1000
+                if probe2bar_ms < 0:
+                    theta_current = bar_thetaArray[i] + 180 - \
+                                    bar_thetaArray[flash_frame -
+                                                   probe2bar_frame] - 90 + \
+                                    motion_dir * 15
+                else:
+                    theta_current = bar_thetaArray[i]
                 con_vis.add_bar_polar(win=win,
                                       size=[bar_width, bar_length],
                                       color=bar_color,
-                                      theta=bar_thetaArray[
-                                                i] + bar1bar2_offset_deg,
+                                      theta=theta_current,
                                       radius=motion_radius,
                                       x_offset=fixMark_x,
                                       y_offset=fixMark_y)
@@ -253,18 +247,17 @@ for itrial in range(ntrials):
                 probe_off_ms = my_clock.getTime() * 1000
 
     motion_end_ms = my_clock.getTime() * 1000
-    probe2bar2_ms = probe2bar2_frame / refresh_rate * 1000
-    bar1bar2_relOffset_deg = -motion_dir * bar1bar2_offset_deg
 
     print('---------------------------')
     print(f'trial number: {itrial + 1}')
     # print(f'motion direction: {motion_dir}')
-    print(f'probe2bar2_ms: {probe2bar2_ms} ms')
-    print(f'bar1bar2_relOffset_deg: {bar1bar2_relOffset_deg} deg')
+    print(f'probe2bar_ms: {probe2bar_ms} ms')
 
     motion_dur_measured_ms = round(motion_end_ms - motion_start_ms)
+    motionVisible_dur_measured_ms = round(motion_end_ms - bar_onset)
     # print(f'Motion duration: {motion_dur_ms} ms')
     print(f'motion_dur_measured_ms: {motion_dur_measured_ms} ms')
+    print(f'motionVisible_dur_measured_ms: {motionVisible_dur_measured_ms} ms')
 
     probe_duration_measured = round(probe_off_ms - probe_on_ms)
     print('probe_duration: 33 ms')
@@ -278,21 +271,22 @@ for itrial in range(ntrials):
     # print(f'click position: {click_pos} dva')
     print(f'click error: {click_err} dva')
 
+    # print(f'motion2probe: {probe_on_ms - motion_start_ms}')
+
     # --------------------------------
     # /// save trial parameters
 
     if subID != 'test':
 
         trial_dict = {'trial_num': itrial + 1,
-                      'probe2bar2_ms': probe2bar2_ms,
-                      'bar1bar2_relOffset_deg': bar1bar2_relOffset_deg,
+                      'probe2bar_ms': probe2bar_ms,
                       'bar_thetaStart': bar_thetaArray[0],
                       'bar_thetaEnd': bar_thetaArray[-1],
                       'motion_dir': motion_dir,
                       'motion_dur_ms': motion_dur_ms,
                       'motion_start_ms': motion_start_ms,
+                      'bar_onset': bar_onset,
                       'motion_end_ms': motion_end_ms,
-                      'bar2_start_ms': bar2_start_ms,
                       'probe_on_ms': probe_on_ms,
                       'probe_off_ms': probe_off_ms,
                       'click_pos': [click_pos],

@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc06/*exp01*');
 nsub = numel(file_dir);
 
-for isub = 1:4
+for isub = 1:nsub
 
     % Specify the path to the JSON file
     jsonFilePath = fullfile(file_dir(isub).folder,file_dir(isub).name);

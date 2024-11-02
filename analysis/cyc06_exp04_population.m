@@ -5,6 +5,7 @@ close all
 % Specify the path to the JSON files
 
 file_dir = dir('../data/cyc06/*exp04*');
+file_dir(7) = [];
 nsub = numel(file_dir);
 
 for isub = 1:nsub
@@ -50,7 +51,7 @@ end
 y_limit = [-.5 1.5];
 cmap = lines(7);
 
-%% Position shift vs. Bar-Probe distance
+%% Position shift vs. Bar-Probe distance (average)
 figure('units','inches','outerposition',[0, 0, 5, 5])
 hold on
 
@@ -68,6 +69,27 @@ xline(0)
 
 yticks(-5:.25:5)
 ylim(y_limit)
+ylabel({'Position shift (dva)', '(in direction of motion)'})
+yline(0)
+
+title(['N = ', num2str(nsub)])
+cleanplot
+
+%% Position shift vs. Bar-Probe distance (individuals)
+figure('units','inches','outerposition',[0, 0, 5, 5])
+hold on
+
+x = p2b_base;
+y = err_mat_pop;
+plot(x, y',  ...
+    'o-','linewidth',2)
+xticks(-200:100:300)
+xlim([-250 350])
+xlabel({'Probe-Bar SOA (ms)'})
+xline(0)
+
+yticks(-5:.25:5)
+% ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 

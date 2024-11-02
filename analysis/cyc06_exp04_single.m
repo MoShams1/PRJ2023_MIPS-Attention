@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc06/*exp04*');
 nsub = numel(file_dir);
 
-isub = 4;
+isub = 7;
 
 subj_id = file_dir(isub).name(end-8:end-5);
 disp(['Subject: ', file_dir(isub).name(end-8:end-5)])
@@ -66,7 +66,7 @@ xlabel({'Probe-Bar SOA (ms)'})
 xline(0)
 
 yticks(-5:.25:5)
-ylim(y_limit)
+% ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 yline(0)
 

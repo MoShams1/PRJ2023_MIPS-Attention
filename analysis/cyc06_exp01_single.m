@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc06/*exp01*');
 nsub = numel(file_dir);
 
-isub = 4;
+isub = 6;
 
 subj_id = file_dir(isub).name(end-8:end-5);
 disp(['Subject: ', file_dir(isub).name(end-8:end-5)])

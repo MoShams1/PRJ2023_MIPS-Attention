@@ -62,7 +62,7 @@ slow_coeff = 1
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc06_exp04_{date}_{time}_{subID}.json"
+output_name = f"cyc06_exp04_2_{date}_{time}_{subID}.json"
 
 # set data directory
 save_path = os.path.join("..", "data", "cyc06", output_name)
@@ -222,9 +222,13 @@ for itrial in range(ntrials):
                 if i == (flash_frame - probe2bar_frame):
                     bar_onset = my_clock.getTime() * 1000
                 if probe2bar_ms < 0:
+                    # theta_current = \
+                    #     bar_thetaArray[i] + 180 - \
+                    #     bar_thetaArray[flash_frame - probe2bar_frame] - \
+                    #     90 + motion_dir * 15
                     theta_current = \
-                        bar_thetaArray[i] + 180 - \
-                        bar_thetaArray[flash_frame - probe2bar_frame] - \
+                        bar_thetaArray[i] - \
+                        bar_thetaArray[flash_frame - probe2bar_frame] + \
                         90 + motion_dir * 15
                 else:
                     theta_current = bar_thetaArray[i]

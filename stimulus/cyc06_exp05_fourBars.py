@@ -66,7 +66,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '0003'  # put 'test' for a test run
+subID = 'test'  # put 'test' for a test run
 slow_coeff = 1
 
 # ----------------------------------------------------------------------------
@@ -143,7 +143,7 @@ cue_condition_array = np.repeat(cue_condition_base, 4 * 2)
 cue_theta_array = np.tile(np.repeat(cue_theta_base, 2), 2)
 dis_condition_array = np.tile(dis_condition_base, 2 * 4)
 
-rep_per_cnd = 25
+rep_per_cnd = 15
 cue_condition_array = np.repeat(cue_condition_array, rep_per_cnd)
 cue_theta_array = np.repeat(cue_theta_array, rep_per_cnd)
 dis_condition_array = np.repeat(dis_condition_array, rep_per_cnd)

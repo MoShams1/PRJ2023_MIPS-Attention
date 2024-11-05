@@ -2,7 +2,7 @@
 ***** project: PRJ2023_MIPS-Attention
 
     Mohammad Shams <m.shams.ahmar@gmail.com>
-    Nov 2024
+    Oct 2024
 
 This experiment is to measure the role of attention on the position shift
 
@@ -12,7 +12,6 @@ Stimulus and task procedure:
     bar.
     Bars' motion starts at the same time as the probes flash.
     The bars stop 45 deg after probe's location.
-    In half of the trials only the cued bar-probe appear.
     Subjects locate the probe with a mouse click.
 
 """
@@ -67,7 +66,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # /// INSERT SESSION'S META DATA ///
 
 subID = 'test'  # put 'test' for a test run
-slow_coeff = 1
+slow_coeff = 5
 
 # ----------------------------------------------------------------------------
 # /// CONFIGURATION ///
@@ -127,37 +126,39 @@ cue_condition_base = [0, 1]  # uncued (cue before motion) vs. cued (cue after
 # motion)
 cue_rectangle_mask_width = .6
 cue_circle_mask_rad = .2
-
-dis_condition_base = [0, 1]
-
 gap_durations_base = range(int(.75 * refresh_rate),
                            int(1.25 * refresh_rate) + 1, 1)
 
+probe2bar_frame_base = np.arange(-12, 18 + 1, 3)
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
-ncnds = 2 * 4 * 2
-# cue_condition x cue_theta x distractor_condition
+ncnds = 11 * 2 * 4 * 2
+# probe2bar x cue_conditin x cue_theta x motionDirection
 
-cue_condition_array = np.repeat(cue_condition_base, 4 * 2)
-cue_theta_array = np.tile(np.repeat(cue_theta_base, 2), 2)
-dis_condition_array = np.tile(dis_condition_base, 2 * 4)
+probe2bar_frame_array = np.repeat(probe2bar_frame_base, 2 * 4 * 2)
+cue_condition_array = np.tile(np.repeat(cue_condition_base, 4 * 2), 11)
+cue_theta_array = np.tile(np.repeat(cue_theta_base, 2), 11 * 2)
+motion_dir_array = np.tile(motion_dir_base, 11 * 2 * 4)
 
-rep_per_cnd = 25
+rep_per_cnd = 2
+probe2bar_frame_array = np.repeat(probe2bar_frame_array, rep_per_cnd)
 cue_condition_array = np.repeat(cue_condition_array, rep_per_cnd)
 cue_theta_array = np.repeat(cue_theta_array, rep_per_cnd)
-dis_condition_array = np.repeat(dis_condition_array, rep_per_cnd)
+motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)
 
 ntrials = ncnds * rep_per_cnd
 ind_shuffle = np.arange(ntrials)
 np.random.shuffle(ind_shuffle)
+probe2bar_frame_array = probe2bar_frame_array[ind_shuffle]
 cue_condition_array = cue_condition_array[ind_shuffle]
 cue_theta_array = cue_theta_array[ind_shuffle]
-dis_condition_array = dis_condition_array[ind_shuffle]
+motion_dir_array = motion_dir_array[ind_shuffle]
 
+assert (probe2bar_frame_array.size == ntrials)
 assert (cue_condition_array.size == ntrials)
 assert (cue_theta_array.size == ntrials)
-assert (dis_condition_array.size == ntrials)
+assert (motion_dir_array.size == ntrials)
 
 # ----------------------------------------------------------------------------
 # /// CREATE VISUAL OBJECTS ///
@@ -230,13 +231,10 @@ for itrial in range(ntrials):
     postFixGap = np.random.choice(gap_durations_base)
     flash_frame = 10 * frame_repeat  # to make probe 15 deg ahead
     bar_offset = 16 * frame_repeat  # to make bar disappear 30 deg after
-    probe2bar_frame = 0
+    probe2bar_frame = probe2bar_frame_array[itrial]
     cue_theta = cue_theta_array[itrial]
     cue_condition = cue_condition_array[itrial]
-    dis_condition = dis_condition_array[itrial]
     probe2bar_ms = probe2bar_frame / refresh_rate * 1000
-
-    ind_cue = np.where(cue_theta_base == cue_theta)[0][0]
 
     assert (flash_frame >= probe2bar_frame)
 
@@ -247,22 +245,22 @@ for itrial in range(ntrials):
     bar_thetaArray = np.repeat(bar_thetaArray_base, frame_repeat)
 
     theta_current = np.full(4, np.nan)
-
-    motion_dir_4bars = [-1, -1, 1, 1]
-    np.random.shuffle(motion_dir_4bars)
-    if motion_dir_4bars[0] == -1:
+    # motion_dir = [-1, -1, 1, 1]
+    motion_dir = [1, 1, 1, 1]
+    np.random.shuffle(motion_dir)
+    if motion_dir[0] == -1:
         bar1_thetaArray = np.flip(bar_thetaArray + probe1_theta)
     else:
         bar1_thetaArray = bar_thetaArray + probe1_theta
-    if motion_dir_4bars[1] == -1:
+    if motion_dir[1] == -1:
         bar2_thetaArray = np.flip(bar_thetaArray + probe2_theta)
     else:
         bar2_thetaArray = bar_thetaArray + probe2_theta
-    if motion_dir_4bars[2] == -1:
+    if motion_dir[2] == -1:
         bar3_thetaArray = np.flip(bar_thetaArray + probe3_theta)
     else:
         bar3_thetaArray = bar_thetaArray + probe3_theta
-    if motion_dir_4bars[3] == -1:
+    if motion_dir[3] == -1:
         bar4_thetaArray = np.flip(bar_thetaArray + probe4_theta)
     else:
         bar4_thetaArray = bar_thetaArray + probe4_theta
@@ -299,56 +297,40 @@ for itrial in range(ntrials):
     motion_start_ms = my_clock.getTime() * 1000
 
     for i in range(len(bar_thetaArray)):
-        if i == 0:
-            print(cue_theta)
-            print(ind_cue)
         for islow in range(slow_coeff):
 
             if i >= (flash_frame - probe2bar_frame):
                 if i == (flash_frame - probe2bar_frame):
                     bar_onset = my_clock.getTime() * 1000
+                if probe2bar_ms < 0:
+                    theta_current[1] = \
+                        bar2_thetaArray[i] + (probe2_theta + 90) - \
+                        bar2_thetaArray[flash_frame - probe2bar_frame] - \
+                        probe2_theta + motion_dir[1] * 15
+                else:
+                    theta_current[0] = bar1_thetaArray[i]
+                    theta_current[1] = bar2_thetaArray[i]
+                    theta_current[2] = bar3_thetaArray[i]
+                    theta_current[3] = bar4_thetaArray[i]
 
-                theta_current[0] = bar1_thetaArray[i]
-                theta_current[1] = bar2_thetaArray[i]
-                theta_current[2] = bar3_thetaArray[i]
-                theta_current[3] = bar4_thetaArray[i]
-
-                if i <= bar_offset:
-                    if dis_condition == 1:
-                        for ibar in range(4):
-                            con_vis.add_bar_polar(win=win,
-                                                  size=[bar_width, bar_length],
-                                                  color=bar_color,
-                                                  theta=theta_current[ibar],
-                                                  radius=motion_radius,
-                                                  x_offset=fixMark_x,
-                                                  y_offset=fixMark_y)
-                    else:
-                        con_vis.add_bar_polar(win=win,
-                                              size=[bar_width, bar_length],
-                                              color=bar_color,
-                                              theta=theta_current[ind_cue],
-                                              radius=motion_radius,
-                                              x_offset=fixMark_x,
-                                              y_offset=fixMark_y)
+                # if i <= bar_offset:
+                # for ibar in range(4):
+                ibar = 1
+                con_vis.add_bar_polar(win=win,
+                                      size=[bar_width, bar_length],
+                                      color=bar_color,
+                                      theta=theta_current[ibar],
+                                      radius=motion_radius,
+                                      x_offset=fixMark_x,
+                                      y_offset=fixMark_y)
 
             if (i == flash_frame) or (i == flash_frame + 1):
                 if i == flash_frame:
                     probe_on_ms = my_clock.getTime() * 1000
-                if dis_condition == 1:
-                    probe1.draw()
-                    probe2.draw()
-                    probe3.draw()
-                    probe4.draw()
-                else:
-                    if ind_cue == 0:
-                        probe1.draw()
-                    if ind_cue == 1:
-                        probe2.draw()
-                    if ind_cue == 2:
-                        probe3.draw()
-                    if ind_cue == 3:
-                        probe4.draw()
+                probe1.draw()
+                probe2.draw()
+                probe3.draw()
+                probe4.draw()
 
             win.flip()
             escape_session()
@@ -357,12 +339,14 @@ for itrial in range(ntrials):
 
     motion_end_ms = my_clock.getTime() * 1000
 
-    for ifix in range(refresh_rate):
+    for ifix in range(int(refresh_rate/2)):
         cue_mark1.pos = pol2cart(cue_r, cue_theta)
         cue_mark2.pos = pol2cart(cue_r, cue_theta)
         cue_mark1.draw()
         cue_mark2.draw()
         cue_mark3.draw()
+        # fixdot1.draw()
+        # fixdot2.draw()
         win.flip()
         escape_session()
 
@@ -385,57 +369,41 @@ for itrial in range(ntrials):
     # print(f'bar_thetaEnd: {bar2_thetaArray[-1]} deg')
 
     click_pos = np.round(get_mouseclick(win), 2)
-    if cue_theta == 0:
-        position_shift_norm = np.round(click_pos[1] - probe1.pos[1], 2) * \
-                              (-motion_dir_4bars[0])
-    if cue_theta == 90:
-        position_shift_norm = np.round(click_pos[0] - probe2.pos[0], 2) * \
-                              motion_dir_4bars[1]
-    if cue_theta == 180:
-        position_shift_norm = np.round(click_pos[1] - probe3.pos[1], 2) * \
-                              motion_dir_4bars[2]
-    if cue_theta == 270:
-        position_shift_norm = np.round(click_pos[0] - probe4.pos[0], 2) * \
-                              (-motion_dir_4bars[3])
-
-    print(f'click position: {click_pos} dva')
-    print(f'position shift: {position_shift_norm} dva')
+    # probe.pos =
+    # click_err_norm = np.round(click_pos - probe.pos, 2)
+    # print(f'click position: {click_pos} dva')
+    # print(f'click error: {click_err} dva')
 
     # print(f'motion2probe: {probe_on_ms - motion_start_ms}')
 
     # --------------------------------
     # /// save trial parameters
 
-    if subID != 'test':
-
-        trial_dict = {
-            'trial_num': itrial + 1,
-            'cue_theta': cue_theta,
-            'cue_condition': cue_condition,
-            'dis_condition': dis_condition,
-            'probe2bar_ms': probe2bar_ms,
-            'bar_thetaStart': bar_thetaArray[0],
-            'bar_thetaEnd': bar_thetaArray[-1],
-            'motion_dir_4bars': motion_dir_4bars,
-            'motion_dur_ms': motion_dur_ms,
-            'motion_start_ms': motion_start_ms,
-            'bar_onset': bar_onset,
-            'motion_end_ms': motion_end_ms,
-            'probe_on_ms': probe_on_ms,
-            'probe_off_ms': probe_off_ms,
-            'probe_pos': probe1.pos,
-            'click_pos': [click_pos],
-            'position_shift_norm': [position_shift_norm],
-        }
-
-        dfnew = pd.DataFrame(trial_dict)
-        if itrial > 0:
-            df = pd.read_json(save_path)
-            dfnew = pd.concat([df, dfnew], ignore_index=True)
-        dfnew.to_json(save_path)
-
-        if itrial == ntrials - 1:
-            sfc.end_screen(win, color='white')
+    # if subID != 'test':
+    #
+    #     trial_dict = {'trial_num': itrial + 1,
+    #                   'probe2bar_ms': probe2bar_ms,
+    #                   'bar_thetaStart': bar_thetaArray[0],
+    #                   'bar_thetaEnd': bar_thetaArray[-1],
+    #                   'motion_dir': motion_dir,
+    #                   'motion_dur_ms': motion_dur_ms,
+    #                   'motion_start_ms': motion_start_ms,
+    #                   'bar_onset': bar_onset,
+    #                   'motion_end_ms': motion_end_ms,
+    #                   'probe_on_ms': probe_on_ms,
+    #                   'probe_off_ms': probe_off_ms,
+    #                   'click_pos': [click_pos],
+    #                   'click_xerr': click_err[0],
+    #                   'click_yerr': click_err[1]}
+    #
+    #     dfnew = pd.DataFrame(trial_dict)
+    #     if itrial > 0:
+    #         df = pd.read_json(save_path)
+    #         dfnew = pd.concat([df, dfnew], ignore_index=True)
+    #     dfnew.to_json(save_path)
+    #
+    #     if itrial == ntrials - 1:
+    #         sfc.end_screen(win, color='white')
 
 # --------------------------------
 win.close()

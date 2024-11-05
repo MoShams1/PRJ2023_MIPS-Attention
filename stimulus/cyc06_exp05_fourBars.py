@@ -66,7 +66,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # put 'test' for a test run
+subID = '0003'  # put 'test' for a test run
 slow_coeff = 1
 
 # ----------------------------------------------------------------------------
@@ -416,14 +416,14 @@ for itrial in range(ntrials):
             'probe2bar_ms': probe2bar_ms,
             'bar_thetaStart': bar_thetaArray[0],
             'bar_thetaEnd': bar_thetaArray[-1],
-            'motion_dir_4bars': motion_dir_4bars,
+            'motion_dir_4bars': [motion_dir_4bars],
             'motion_dur_ms': motion_dur_ms,
             'motion_start_ms': motion_start_ms,
             'bar_onset': bar_onset,
             'motion_end_ms': motion_end_ms,
             'probe_on_ms': probe_on_ms,
             'probe_off_ms': probe_off_ms,
-            'probe_pos': probe1.pos,
+            'probe_pos': [probe1.pos],
             'click_pos': [click_pos],
             'position_shift_norm': [position_shift_norm],
         }

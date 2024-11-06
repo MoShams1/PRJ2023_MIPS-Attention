@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc06/*exp05*');
 nsub = numel(file_dir);
 
-isub = 1;
+isub = 2;
 
 subj_id = file_dir(isub).name(end-8:end-5);
 disp(['Subject: ', file_dir(isub).name(end-8:end-5)])
@@ -46,7 +46,7 @@ position_shift = cell2mat(struct2cell(jsonData.position_shift_norm));
 % end
 
 %% Figure variables
-% y_limit = [-.5 1.5];
+y_limit = [1.5 2.5];
 cmap = lines(7);
 
 %% Position shift (Uncued vs. Cued)
@@ -76,7 +76,7 @@ xticklabels({'1Bar-Uncued', '1Bar-Cued', '4Bar-Uncued', '4Bar-Cued'})
 xline(0)
 
 yticks(-5:.1:5)
-% ylim(y_limit)
+ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 % yline(0)
 

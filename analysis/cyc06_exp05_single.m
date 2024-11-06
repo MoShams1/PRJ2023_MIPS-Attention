@@ -7,7 +7,7 @@ close all
 file_dir = dir('../data/cyc06/*exp05*');
 nsub = numel(file_dir);
 
-isub = 2;
+isub = 4;
 
 subj_id = file_dir(isub).name(end-8:end-5);
 disp(['Subject: ', file_dir(isub).name(end-8:end-5)])
@@ -26,27 +26,13 @@ jsonData = jsondecode(jsonContent);
 
 %%% convert structure to arrays
 ntrials = length(cell2mat(struct2cell(jsonData.probe2bar_ms)));
-% bar_dir = cell2mat(struct2cell(jsonData.motion_dir));
-
 cue_cnd = cell2mat(struct2cell(jsonData.cue_condition));
 dis_cnd = cell2mat(struct2cell(jsonData.dis_condition));
-
-% probe_pos = repmat([0,5], ntrials, 1);
-% click_pos = reshape(cell2mat(struct2cell(jsonData.click_pos)), 2, ntrials)';
-% click_xpos = click_pos(:,1);
 position_shift = cell2mat(struct2cell(jsonData.position_shift_norm));
-% click_xerr(bar_dir == -1) = -click_xerr(bar_dir == -1);
 
-% p2b_base = unique(probe2bar)';
-% p2b_count = 0;
-% for ip2b = p2b_base
-%     p2b_count = p2b_count+1;
-%     ind_p2b = probe2bar == ip2b;
-%     err_mat(:,p2b_count) = click_xerr(ind_p2b);
-% end
 
 %% Figure variables
-y_limit = [1.5 2.5];
+y_limit = [1 2.5];
 cmap = lines(7);
 
 %% Position shift (Uncued vs. Cued)
@@ -68,7 +54,6 @@ e = [
     ];
 errorbar(x, y, e, ...
     'o','linewidth',2,'color','k')
-cleanplot
 
 xticks(1:4)
 xlim([.5 4.5])

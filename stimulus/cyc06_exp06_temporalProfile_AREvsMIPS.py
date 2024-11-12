@@ -53,8 +53,8 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # put 'test' for a test run
-slow_coeff = 20
+subID = '123'  # put 'test' for a test run
+slow_coeff = 1
 
 # ----------------------------------------------------------------------------
 # /// CONFIGURATION ///
@@ -95,8 +95,8 @@ bar_width = 0.1
 bar_length = 2
 bar_color = 'white'
 motion_radius = 5
-motion_dur_ms = 800
-motion_dur_frames = int(motion_dur_ms / 1000 * 60 + 1)
+motion_halfCycle_dur_ms = 800
+motion_dur_frames = int(motion_halfCycle_dur_ms / 1000 * 60 + 1)
 motion_dir_base = np.array([-1, 1])
 motion_state_base = np.array(['static', 'dynamic'])
 
@@ -109,7 +109,7 @@ gap_durations_base = range(int(.75 * refresh_rate),
                            int(1.25 * refresh_rate) + 1, 1)
 
 probe2bar_frame_base = np.arange(-12, 18 + 1, 3)
-# probe2bar_frame_base = np.full(11, 18)
+
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
@@ -221,8 +221,6 @@ for itrial in range(ntrials):
     for ifix in range(postFixGap):
         win.flip()
 
-    motion_start_ms = my_clock.getTime() * 1000
-
     # motion period at negative SOAs
     if probe2bar_ms < 0 and motion_state == 'dynamic':
         for iprobe in range(frame_repeat):
@@ -238,7 +236,7 @@ for itrial in range(ntrials):
         for itheta in bar_thetaArray[flash_frame:]:
             for islow in range(slow_coeff):
                 if itheta == bar_thetaArray[flash_frame]:
-                    bar_onset = my_clock.getTime() * 1000
+                    bar_on_ms = my_clock.getTime() * 1000
                 con_vis.add_bar_polar(win=win,
                                       size=[bar_width, bar_length],
                                       color=bar_color,
@@ -257,7 +255,7 @@ for itrial in range(ntrials):
             for islow in range(slow_coeff):
                 if i >= (flash_frame - probe2bar_frame):
                     if i == (flash_frame - probe2bar_frame):
-                        bar_onset = my_clock.getTime() * 1000
+                        bar_on_ms = my_clock.getTime() * 1000
 
                     con_vis.add_bar_polar(win=win,
                                           size=[bar_width, bar_length],
@@ -279,8 +277,6 @@ for itrial in range(ntrials):
         theta_start = bar_thetaArray[flash_frame - probe2bar_frame]
         theta_end = bar_thetaArray[-1]
 
-    motion_end_ms = my_clock.getTime() * 1000
-
     # bar period at negative SOAs
     if probe2bar_ms < 0 and motion_state == 'static':
         for iprobe in range(frame_repeat):
@@ -296,7 +292,7 @@ for itrial in range(ntrials):
         for iframe in range(3):
             for islow in range(slow_coeff):
                 if iframe == 0:
-                    bar_onset = my_clock.getTime() * 1000
+                    bar_on_ms = my_clock.getTime() * 1000
                 con_vis.add_bar_polar(win=win,
                                       size=[bar_width, bar_length],
                                       color=bar_color,
@@ -316,7 +312,7 @@ for itrial in range(ntrials):
                 if (flash_frame - probe2bar_frame) <= i \
                         < (flash_frame - probe2bar_frame + 3):
                     if i == (flash_frame - probe2bar_frame):
-                        bar_onset = my_clock.getTime() * 1000
+                        bar_on_ms = my_clock.getTime() * 1000
 
                     con_vis.add_bar_polar(win=win,
                                           size=[bar_width, bar_length],
@@ -336,7 +332,9 @@ for itrial in range(ntrials):
                 if i == flash_frame + 1:
                     probe_off_ms = my_clock.getTime() * 1000
         theta_start = bar_thetaArray[flash_frame - probe2bar_frame]
-        theta_end = bar_thetaArray[-1]
+        theta_end = theta_start
+
+    bar_off_ms = my_clock.getTime() * 1000
 
     print('---------------------------')
     # # print(f'***last theta: {theta_current} deg***')
@@ -345,11 +343,9 @@ for itrial in range(ntrials):
     # print(f'motion direction: {motion_dir}')
     print(f'probe2bar_ms: {probe2bar_ms} ms')
 
-    motion_dur_measured_ms = round(motion_end_ms - motion_start_ms)
-    motionVisible_dur_measured_ms = round(motion_end_ms - bar_onset)
-    # print(f'Motion duration: {motion_dur_ms} ms')
-    print(f'motion_dur_measured_ms: {motion_dur_measured_ms} ms')
-    print(f'motionVisible_dur_measured_ms: {motionVisible_dur_measured_ms} ms')
+    bar_dur_measured_ms = round(bar_off_ms - bar_on_ms)
+    # print(f'Motion duration: {motion_halfCycle_dur_ms} ms')
+    print(f'motion_dur_measured_ms: {bar_dur_measured_ms} ms')
 
     print(f'theta_start: {theta_start}')
     print(f'theta_end: {theta_end}')
@@ -375,13 +371,14 @@ for itrial in range(ntrials):
 
         trial_dict = {'trial_num': itrial + 1,
                       'probe2bar_ms': probe2bar_ms,
+                      'motion_state': motion_state,
                       'theta_start': theta_start,
                       'theta_end': theta_end,
                       'motion_dir': motion_dir,
-                      'motion_dur_ms': motion_dur_ms,
-                      'motion_start_ms': motion_start_ms,
-                      'bar_onset': bar_onset,
-                      'motion_end_ms': motion_end_ms,
+                      'motion_halfCycle_dur_ms': motion_halfCycle_dur_ms,
+                      'bar_dur_measured_ms': bar_dur_measured_ms,
+                      'bar_on_ms': bar_on_ms,
+                      'bar_off_ms': bar_off_ms,
                       'probe_on_ms': probe_on_ms,
                       'probe_off_ms': probe_off_ms,
                       'click_pos': [click_pos],

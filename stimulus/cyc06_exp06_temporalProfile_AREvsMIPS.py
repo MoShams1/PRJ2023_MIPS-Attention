@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '0001'  # put 'test' for a test run
+subID = 'test'  # put 'test' for a test run
 slow_coeff = 1
 
 # ----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ probe2bar_frame_array = np.repeat(probe2bar_frame_base, 2 * 2)
 motion_dir_array = np.tile(np.repeat(motion_dir_base, 2), 11)
 motion_state_array = np.tile(motion_state_base, 11 * 2)
 
-rep_per_cnd = 5
+rep_per_cnd = 10
 probe2bar_frame_array = np.repeat(probe2bar_frame_array, rep_per_cnd)
 motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)
 motion_state_array = np.repeat(motion_state_array, rep_per_cnd)
@@ -227,10 +227,10 @@ for itrial in range(ntrials):
             for islow in range(slow_coeff):
                 if iprobe == 0:
                     probe_on_ms = my_clock.getTime() * 1000
-                if iprobe == frame_repeat - 1:
-                    probe_off_ms = my_clock.getTime() * 1000
                 probe.draw()
                 win.flip()
+                if iprobe == frame_repeat - 1:
+                    probe_off_ms = my_clock.getTime() * 1000
                 escape_session()
 
         for itheta in bar_thetaArray[flash_frame:]:
@@ -244,8 +244,8 @@ for itrial in range(ntrials):
                                       radius=motion_radius,
                                       x_offset=fixMark_x,
                                       y_offset=fixMark_y)
-            win.flip()
-            escape_session()
+                win.flip()
+                escape_session()
         theta_start = bar_thetaArray[flash_frame]
         theta_end = bar_thetaArray[-1]
 
@@ -271,9 +271,9 @@ for itrial in range(ntrials):
                     probe.draw()
 
                 win.flip()
-                escape_session()
                 if i == flash_frame + 1:
                     probe_off_ms = my_clock.getTime() * 1000
+                escape_session()
         theta_start = bar_thetaArray[flash_frame - probe2bar_frame]
         theta_end = bar_thetaArray[-1]
 
@@ -285,9 +285,9 @@ for itrial in range(ntrials):
                     probe_on_ms = my_clock.getTime() * 1000
                 probe.draw()
                 win.flip()
-                escape_session()
                 if iprobe == frame_repeat - 1:
                     probe_off_ms = my_clock.getTime() * 1000
+                escape_session()
 
         for iframe in range(3):
             for islow in range(slow_coeff):
@@ -300,8 +300,8 @@ for itrial in range(ntrials):
                                       radius=motion_radius,
                                       x_offset=fixMark_x,
                                       y_offset=fixMark_y)
-            win.flip()
-            escape_session()
+                win.flip()
+                escape_session()
         theta_start = bar_thetaArray[flash_frame]
         theta_end = theta_start
 
@@ -328,9 +328,9 @@ for itrial in range(ntrials):
                     probe.draw()
 
                 win.flip()
-                escape_session()
                 if i == flash_frame + 1:
                     probe_off_ms = my_clock.getTime() * 1000
+                escape_session()
         theta_start = bar_thetaArray[flash_frame - probe2bar_frame]
         theta_end = theta_start
 

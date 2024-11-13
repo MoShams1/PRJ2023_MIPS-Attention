@@ -53,7 +53,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '0004'  # put 'test' for a test run
+subID = '0001'  # put 'test' for a test run
 slow_coeff = 1
 
 # ----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ probe2bar_frame_array = np.repeat(probe2bar_frame_base, 2 * 2)
 motion_dir_array = np.tile(np.repeat(motion_dir_base, 2), 11)
 motion_state_array = np.tile(motion_state_base, 11 * 2)
 
-rep_per_cnd = 7
+rep_per_cnd = 5
 probe2bar_frame_array = np.repeat(probe2bar_frame_array, rep_per_cnd)
 motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)
 motion_state_array = np.repeat(motion_state_array, rep_per_cnd)

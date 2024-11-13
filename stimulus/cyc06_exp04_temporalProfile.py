@@ -107,6 +107,7 @@ gap_durations_base = range(int(.75 * refresh_rate),
                            int(1.25 * refresh_rate) + 1, 1)
 
 probe2bar_frame_base = np.arange(-12, 18 + 1, 3)
+
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 

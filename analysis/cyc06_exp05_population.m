@@ -1,13 +1,14 @@
 clc
 clear
-close all
+% close all
 
 % Specify the path to the JSON files
 
 file_dir = dir('../data/cyc06/*exp05*');
+file_dir(12) = [];
 nsub = numel(file_dir);
 
-for isub = 1:nsub-1
+for isub = 1:nsub
 
     % Specify the path to the JSON file
     jsonFilePath = fullfile(file_dir(isub).folder,file_dir(isub).name);
@@ -32,10 +33,15 @@ for isub = 1:nsub-1
     position_shift(isub, 3) = mean(position_shift_single(dis_cnd == 1 & cue_cnd == 0));
     position_shift(isub, 4) = mean(position_shift_single(dis_cnd == 1 & cue_cnd == 1));
 
+    variability(isub,1) = std(position_shift_single(dis_cnd == 0 & cue_cnd == 0));
+    variability(isub,2) = std(position_shift_single(dis_cnd == 0 & cue_cnd == 1));
+    variability(isub,3) = std(position_shift_single(dis_cnd == 1 & cue_cnd == 0));
+    variability(isub,4) = std(position_shift_single(dis_cnd == 1 & cue_cnd == 1));
+
 end
 
 %% Figure variables
-% y_limit = [-.5 1.5];
+y_limit = [1.2 2.2];
 cmap = lines(7);
 
 %% Position shift vs. Bar-Probe distance (average)
@@ -54,7 +60,7 @@ xticklabels({'1Bar-Uncued', '1Bar-Cued', '4Bar-Uncued', '4Bar-Cued'})
 xline(0)
 
 yticks(-5:.1:5)
-% ylim(y_limit)
+ylim(y_limit)
 ylabel({'Position shift (dva)', '(in direction of motion)'})
 % yline(0)
 
@@ -65,3 +71,6 @@ cleanplot
 
 signrank(position_shift(:,1), position_shift(:,3))
 signrank(position_shift(:,2), position_shift(:,4))
+
+figure
+plot(variability)

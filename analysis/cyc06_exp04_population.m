@@ -5,7 +5,7 @@ close all
 % Specify the path to the JSON files
 
 file_dir = dir('../data/cyc06/*exp04*');
-file_dir(7) = [];
+% file_dir(7) = [];
 nsub = numel(file_dir);
 
 for isub = 1:nsub

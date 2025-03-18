@@ -8,6 +8,7 @@ This experiment is to replicate Watanabe et al. 2003/2005
 
 Stimulus and task procedure:
     A bar rotates for 180 deg around the center.
+    Same trajectory every time. Random direction.
     A probe flashes at the same location, at different times relative to bar's
     motion start.
     Subjects locate the probe with a mouse click.

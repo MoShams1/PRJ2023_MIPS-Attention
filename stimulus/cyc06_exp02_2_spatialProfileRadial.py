@@ -9,8 +9,8 @@ This experiment is to measure the spatial profile of the position shift
 Stimulus and task procedure:
     A bar rotates for 180 deg around the center.
     Same trajectory every time. Random direction.
-    When the bar reaches its midway, a probe flashes at different
-    horizontal locations relative to the bar (-4:.5:+4 dva).
+    When the bar reaches its midway, a probe flashes at different locations
+    on the motion trajectory relative to the bar (-90:15:+90 deg).
     Subjects locate the probe with a mouse click.
 
 """
@@ -47,6 +47,17 @@ def escape_session():
         core.quit()
 
 
+def deg2rad(angle):
+    return angle / 360 * 2 * np.pi
+
+
+def pol2cart(rho, phi):
+    phi = deg2rad(phi)
+    x_cart = rho * np.cos(phi)
+    y_cart = rho * np.sin(phi)
+    return x_cart, y_cart
+
+
 # disable Panda's false warning message
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -63,10 +74,10 @@ slow_coeff = 1
 date = sfc.get_date()
 time = sfc.get_time()
 
-output_name = f"cyc06_exp02_{date}_{time}_{subID}.json"
+output_name = f"cyc06_exp02_2_{date}_{time}_{subID}.json"
 
 # set data directory
-save_path = os.path.join("..", "data", "cyc06", output_name)
+save_path = os.path.join("", "data", "cyc06", output_name)
 
 # --------------------------------
 # /// set stimulus parameters
@@ -91,42 +102,43 @@ fixMark_x = 0
 fixMark_y = 0
 fixdot_color = 'white'
 
-probe_rad = .3
-probe_color = 'red'
-probe_y = 5
-
 bar_width = 0.1
 bar_length = 2
 bar_color = 'white'
+motion_radius = 5
 motion_dur_ms = 800
 motion_dur_frames = int(motion_dur_ms / 1000 * 60 + 1)
 motion_dir_base = np.array([-1, 1])
 
+probe_rad = .3
+probe_color = 'red'
+probe_radius = motion_radius
+
 gap_durations_base = range(int(.75 * refresh_rate),
                            int(1.25 * refresh_rate) + 1, 1)
 
-probe2bar_base = np.arange(-4, 4 + .1, .5)
+probe2bar_theta_base = np.arange(180, 0 - 1, -15)
 
 # ----------------------------------------------------------------------------
 # /// CONDITIONS ///
 
-ncnds = 17 * 2
+ncnds = 13 * 2
 # probe2bar x motionDirection
 
-probe2bar_array = np.repeat(probe2bar_base, 2)
-motion_dir_array = np.tile(motion_dir_base, 17)
+probe2bar_theta_array = np.repeat(probe2bar_theta_base, 2)
+motion_dir_array = np.tile(motion_dir_base, 13)
 
-rep_per_cnd = 12
-probe2bar_array = np.repeat(probe2bar_array, rep_per_cnd)
+rep_per_cnd = 15
+probe2bar_theta_array = np.repeat(probe2bar_theta_array, rep_per_cnd)
 motion_dir_array = np.repeat(motion_dir_array, rep_per_cnd)
 
 ntrials = ncnds * rep_per_cnd
 ind_shuffle = np.arange(ntrials)
 np.random.shuffle(ind_shuffle)
-probe2bar_array = probe2bar_array[ind_shuffle]
+probe2bar_theta_array = probe2bar_theta_array[ind_shuffle]
 motion_dir_array = motion_dir_array[ind_shuffle]
 
-assert (probe2bar_array.size == ntrials)
+assert (probe2bar_theta_array.size == ntrials)
 assert (motion_dir_array.size == ntrials)
 
 # ----------------------------------------------------------------------------
@@ -148,7 +160,7 @@ fixdot2 = visual.Circle(win,
 # ----------------------------------------------------------------------------
 # /// OTHER SETTINGS ///
 
-nblocks = 12  # number of blocks
+nblocks = 10  # number of blocks
 pause_array = np.linspace(0, ntrials, nblocks + 1)
 pause_array = pause_array[:-1]
 
@@ -175,7 +187,8 @@ for itrial in range(ntrials):
     iti = np.random.choice(gap_durations_base)
     postFixGap = np.random.choice(gap_durations_base)
     motion_dir = motion_dir_array[itrial]
-    probe2bar = probe2bar_array[itrial]
+    probe2bar_theta = probe2bar_theta_array[itrial]
+    probe_x, probe_y = pol2cart(probe_radius, probe2bar_theta)
 
     # /// create motion trajectory array
     bar_thetaArray_base = np.linspace(180, 0,
@@ -219,14 +232,14 @@ for itrial in range(ntrials):
                                   size=[bar_width, bar_length],
                                   color=bar_color,
                                   theta=bar_thetaArray[i],
-                                  radius=5,
+                                  radius=motion_radius,
                                   x_offset=fixMark_x,
                                   y_offset=fixMark_y)
 
             if (i == flash_frame) or (i == flash_frame + 1):
                 if i == flash_frame:
                     probe_on_ms = my_clock.getTime() * 1000
-                probe.pos = [probe2bar, probe_y]
+                probe.pos = [probe_x, probe_y]
                 probe.draw()
 
             win.flip()
@@ -235,12 +248,13 @@ for itrial in range(ntrials):
                 probe_off_ms = my_clock.getTime() * 1000
 
     motion_end_ms = my_clock.getTime() * 1000
-    probe2bar_rel2motion = probe2bar * motion_dir
+    probe2bar_rel2motion = -probe2bar_theta + 90
+    probe2bar_rel2motion = probe2bar_rel2motion * motion_dir
 
     print('---------------------------')
     print(f'trial number    : {itrial + 1}')
     # print(f'motion direction: {motion_dir}')
-    print(f'probe2bar: {probe2bar_rel2motion} dva')
+    print(f'probe2bar: {probe2bar_rel2motion} deg')
 
     motion_dur_measured_ms = round(motion_end_ms - motion_start_ms)
     # print(f'Motion duration: {motion_dur_ms} ms')

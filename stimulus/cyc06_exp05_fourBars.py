@@ -79,7 +79,7 @@ time = sfc.get_time()
 output_name = f"cyc06_exp05_{date}_{time}_{subID}.json"
 
 # set data directory
-save_path = os.path.join("..", "data", "cyc06", output_name)
+save_path = os.path.join("", "data", "cyc06", output_name)
 
 # --------------------------------
 # /// set stimulus parameters

@@ -26,8 +26,8 @@ To do:
 [done] keep one moving bar in two potential locations around two separate
 centers: left and right
 
-[] finalize conditions
-[] finalize save variables
+[done] finalize conditions
+[done] finalize save variables
 
 """
 

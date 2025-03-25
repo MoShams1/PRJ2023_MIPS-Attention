@@ -69,7 +69,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = 'test'  # put 'test' for a test run
+subID = '0003'  # put 'test' for a test run
 slow_coeff = 1
 
 # ----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ time = sfc.get_time()
 output_name = f"cyc06_exp08_{date}_{time}_{subID}.json"
 
 # set data directory
-save_path = os.path.join("", "data", "cyc06", output_name)
+save_path = os.path.join("..", "data", "cyc06", output_name)
 
 # --------------------------------
 # /// set stimulus parameters
@@ -207,7 +207,7 @@ cue_mark3 = visual.Rect(win=win,
 # ----------------------------------------------------------------------------
 # /// OTHER SETTINGS ///
 
-nblocks = 10  # number of blocks
+nblocks = 8  # number of blocks
 pause_array = np.linspace(0, ntrials, nblocks + 1)
 pause_array = pause_array[:-1]
 

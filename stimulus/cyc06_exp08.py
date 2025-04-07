@@ -69,7 +69,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # ----------------------------------------------------------------------------
 # /// INSERT SESSION'S META DATA ///
 
-subID = '0001'  # put 'test' for a test run
+subID = '0002'  # put 'test' for a test run
 slow_coeff = 1
 
 # ----------------------------------------------------------------------------
